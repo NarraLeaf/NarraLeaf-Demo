@@ -1,0 +1,21 @@
+{
+  "name": "my-narraleaf-project",
+  "version": "0.0.1",
+  "private": true,
+  "description": "A new NarraLeaf project",
+  "scripts": {
+    "build": "narraleaf build",
+    "dev": "narraleaf dev"
+  },
+  "dependencies": {
+    "narraleaf": "latest",
+    "narraleaf-react": "0.4.1",
+    "react": ">=19",
+    "react-dom": ">=19"
+  },
+  "devDependencies": {
+    "@types/react": "19",
+    "@types/react-dom": "19",
+    "typescript": "latest"
+  }
+}
