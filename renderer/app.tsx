@@ -5,6 +5,9 @@ import {Meta, SplashScreenDefinition, useGameState} from 'narraleaf/client';
 // Import your assets
 import "./src/base.css";
 import {story} from "./src/story";
+import { QuickMenu } from './src/components/QuickMenu';
+import { GameDialog } from './src/components/Dialog';
+import { DefaultMenu } from './src/components/Menu';
 
 const App = ({children}: {children: React.ReactNode}) => {
     // Access the game instance by using the useGame hook
@@ -19,10 +22,11 @@ const App = ({children}: {children: React.ReactNode}) => {
 
             ratioUpdateInterval: 0, // disable the ratio update interval
             cps: 50, // set the dialog characters per second to 10
-            /* Add your custom configurations here */
 
             stage: ( // WARNING: This is a hack, we will fix this in the future. DO NOT USE THIS IN YOUR PROJECTS.
-                isPlaying ? null : <Stage>
+                isPlaying ? <Stage>
+                    <QuickMenu />
+                </Stage> : <Stage>
                     <div
                         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                         style={{ backgroundImage: "url('/static/img/ui/bg/outside.jpg')" }}
@@ -30,6 +34,13 @@ const App = ({children}: {children: React.ReactNode}) => {
                     </div>
                 </Stage>
             ),
+            dialog: GameDialog,
+            defaultTextColor: "white",
+            defaultNametagColor: "white",
+            menu: DefaultMenu,
+            app: {
+                logger: true,
+            }
         });
         console.log(game);
     }, [isPlaying]);
@@ -133,6 +144,6 @@ const splashScreen: SplashScreenDefinition[] = [{
 export default App;
 export const meta: Meta = {
     story,
-    // splashScreen
+    splashScreen
 };
 

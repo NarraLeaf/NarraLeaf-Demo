@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useRouter } from "narraleaf-react";
+import React, { useEffect, useState } from "react";
+import { useGame, useRouter } from "narraleaf-react";
 import { useApp } from "narraleaf/client";
 import Panel from "../src/components/Panel";
 
@@ -17,17 +17,30 @@ const SettingItem: React.FC<SettingItemProps> = ({ label, children }) => (
 
 export default function Settings() {
     const { app } = useApp();
+    const game = useGame();
     const router = useRouter();
     const [volume, setVolume] = useState(80);
     const [textSpeed, setTextSpeed] = useState(50);
     const [fullscreen, setFullscreen] = useState(false);
+
+    useEffect(() => {
+        game.configure({
+            cps: textSpeed,
+        });
+    }, [textSpeed]);
+
+    function handleTextSpeedChange(e: React.ChangeEvent<HTMLInputElement>) {
+        game.configure({
+            cps: Number(e.target.value),
+        });
+    }
 
     return (
         <Panel>
             <h1 className="text-2xl font-bold text-white mb-6">设置</h1>
             
             <div className="space-y-4">
-                <SettingItem label="音量">
+                <SettingItem label="音量（摆设）">
                     <input
                         type="range"
                         min="0"
@@ -49,7 +62,7 @@ export default function Settings() {
                     />
                 </SettingItem>
 
-                <SettingItem label="全屏">
+                <SettingItem label="全屏（摆设）">
                     <input
                         type="checkbox"
                         checked={fullscreen}

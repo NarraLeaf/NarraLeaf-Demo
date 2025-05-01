@@ -36,13 +36,13 @@ export default function Load() {
         if (selectedSlot !== null) {
             // TODO: Implement actual loading logic
             console.log(`Loading save slot ${selectedSlot}`);
-            router.push("game");
+            router.back();
         }
     };
 
     return (
         <Panel>
-            <h1 className="text-2xl font-bold text-white mb-6">读取存档</h1>
+            <h1 className="text-2xl font-bold text-white mb-6">读取存档（摆设）</h1>
             
             <div className="space-y-4">
                 {saveSlots.map((slot) => (
