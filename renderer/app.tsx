@@ -17,26 +17,46 @@ const App = ({children}: {children: React.ReactNode}) => {
             aspectRatio: 16 / 9, // set the aspect ratio
 
             ratioUpdateInterval: 0, // disable the ratio update interval
-            cps: 10, // set the dialog characters per second to 10
+            cps: 50, // set the dialog characters per second to 10
             /* Add your custom configurations here */
         });
     }, []);
 
     return (
         <>
+            
             {children}
         </>
     );
 };
 
 const splashScreen: SplashScreenDefinition[] = [{
-    initial: {opacity: 0},
-    animate: {opacity: 1, transition: {duration: 2}}, // enter in 2 seconds
-    exit: {opacity: 0, transition: {duration: 1}}, // exit in 1 second
-    duration: 3, // stay for 3 seconds
+    initial: {opacity: 0, scale: 0.95},
+    animate: {
+        opacity: 1,
+        scale: 1,
+        transition: {
+            duration: 1.5,
+            ease: "easeOut"
+        }
+    },
+    exit: {
+        opacity: 0,
+        scale: 0.95,
+        transition: {
+            duration: 1,
+            ease: "easeIn"
+        }
+    },
+    duration: 300,
     splashScreen:(
-        <div className={"splash-screen"}>
-            <div><p className={"splash-text"}>Created with NarraLeaf</p></div>
+        <div className="flex justify-center items-center w-full h-full min-w-screen min-h-screen bg-gray-500 text-white">
+            <div className="transform transition-all">
+                {/* <p className="text-3xl text-white font-medium tracking-wide">Created with NarraLeaf</p> */}
+                <h1 className="text-3xl font-bold underline">
+                Hello world!
+                </h1>
+            </div>
         </div>
     )
 }];

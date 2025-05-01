@@ -13,12 +13,17 @@ app.onReady(async () => {
     const window = await app.launchApp({
         backgroundColor: "black",
         width: 1920 * 0.7,
-        height: 1080 * 0.7
+        height: 1080 * 0.7,
+        devTools: true,
     });
     window.setTitle("My NarraLeaf App");
 
     // Close the app when the window is closed
     window.onClose(() => {
         app.quit();
+    });
+
+    window.onKeyUp("F12", () => {
+        window.toggleDevTools();
     });
 });
