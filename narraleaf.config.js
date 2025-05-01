@@ -6,7 +6,7 @@ module.exports = {
   },
   main: "./main/index.ts",
   build: {
-    appId: "com.example.app",
+    appId: "com.narraleaf",
     targets: [
       BuildTarget.Windows({
         target: WindowsBuildTarget.dir,

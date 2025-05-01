@@ -11,9 +11,9 @@ const app = new AppConfig({
 app.onReady(async () => {
     // Launch the app with a window
     const window = await app.launchApp({
-        backgroundColor: "black",
-        width: 1920 * 0.7,
-        height: 1080 * 0.7,
+        backgroundColor: "white",
+        width: 1280,
+        height: 720,
         devTools: true,
     });
     window.setTitle("My NarraLeaf App");
