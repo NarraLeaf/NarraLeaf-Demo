@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {Stage, useGame} from 'narraleaf-react';
-import {Meta, SplashScreenDefinition, useGameState} from 'narraleaf/client';
+import {Meta, SplashScreenDefinition, useGameFlow} from 'narraleaf/client';
 
 // Import your assets
 import "./src/base.css";
@@ -12,7 +12,7 @@ import { DefaultMenu } from './src/components/Menu';
 const App = ({children}: {children: React.ReactNode}) => {
     // Access the game instance by using the useGame hook
     const game = useGame();
-    const {gameState: {isPlaying}} = useGameState();
+    const {gameFlow: {isPlaying}} = useGameFlow();
 
     useEffect(() => {
         game.configure({
@@ -39,7 +39,15 @@ const App = ({children}: {children: React.ReactNode}) => {
             defaultNametagColor: "white",
             menu: DefaultMenu,
             app: {
-                logger: true,
+                logger: {
+                    log: true,
+                    warn: true,
+                    error: true,
+                    debug: true,
+                    info: true,
+                    trace: true,
+                    verbose: true,
+                },
             }
         });
         console.log(game);
@@ -144,6 +152,6 @@ const splashScreen: SplashScreenDefinition[] = [{
 export default App;
 export const meta: Meta = {
     story,
-    splashScreen
+    // splashScreen
 };
 

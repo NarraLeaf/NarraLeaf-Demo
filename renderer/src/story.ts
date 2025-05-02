@@ -40,10 +40,10 @@ function black(t: string) {
 
 
 const start = new Scene("Start", {
-    background: SRoomBG,
+    background: "white",
 });
 start.action([
-    // start.background.char(SRoomBG, new Dissolve(500)),
+    start.background.char(SRoomBG, new Dissolve(500)),
 
     CNarrator.say`窗外阳光明媚，看来是一个好天气。`
     .say`现在是早上八点，不知道为什么今天自己会起的这么早。`,
