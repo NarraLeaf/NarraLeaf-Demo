@@ -22,6 +22,7 @@ const App = ({children}: {children: React.ReactNode}) => {
 
             ratioUpdateInterval: 0, // disable the ratio update interval
             cps: 50, // set the dialog characters per second to 10
+            skipInterval: 10, // set the skip interval to 10ms
 
             stage: ( // WARNING: This is a hack, we will fix this in the future. DO NOT USE THIS IN YOUR PROJECTS.
                 isPlaying ? <Stage>

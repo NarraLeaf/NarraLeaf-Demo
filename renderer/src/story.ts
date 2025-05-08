@@ -1,9 +1,7 @@
-import {Story, Scene, Character, c, Image, Dissolve, Menu, Sentence, Transform} from "narraleaf-react";
-
-const character1 = new Character("Character 1");
+import {Story, Scene, Character, Image, Dissolve, Menu, Sentence, Transform} from "narraleaf-react";
 
 const Nattou = new Image({
-    src: "/static/img/char/nattou/Nattou.png",
+    src: "/static/img/char/nattou/Nattou_.png",
     scale: 0.5,
     position: {
         yalign: 0.2,
@@ -11,7 +9,7 @@ const Nattou = new Image({
     },
 });
 const Youki = new Image({
-    src: "/static/img/char/youki/Youki.png",
+    src: "/static/img/char/youki/Youki_.png",
     scale: 0.5,
     position: {
         yalign: 0.2,
