@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useGame, useRouter } from "narraleaf-react";
 import { useApp } from "narraleaf/client";
 import Panel from "../src/components/Panel";
+import { MenuButton } from "./home";
 
 interface SettingItemProps {
     label: string;
@@ -16,7 +17,7 @@ const SettingItem: React.FC<SettingItemProps> = ({ label, children }) => (
 );
 
 export default function Settings() {
-    const { app } = useApp();
+    const app = useApp();
     const game = useGame();
     const router = useRouter();
     const [volume, setVolume] = useState(80);
@@ -73,14 +74,12 @@ export default function Settings() {
             </div>
 
             {/* Back Button */}
-            <button
+            <MenuButton
                 onClick={() => router.push("home")}
-                className="mt-8 w-full px-6 py-4 bg-indigo-600/90 hover:bg-indigo-700 text-white rounded-lg shadow-lg 
-                         transform hover:-translate-y-1 transition-all duration-300 ease-in-out
-                         hover:shadow-xl active:translate-y-0"
+                className="mt-8"
             >
                 返回
-            </button>
+            </MenuButton>
         </Panel>
     );
 }

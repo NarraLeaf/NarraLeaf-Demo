@@ -6,7 +6,7 @@ interface PanelProps {
 }
 
 const Panel: React.FC<PanelProps> = ({ children, className = "" }) => (
-    <div className={`absolute left-8 top-0 h-full w-1/3 bg-black/20 shadow-2xl ${className} p-4`}>
+    <div className={`absolute left-8 top-0 h-full w-1/3 bg-black/50 shadow-2xl ${className} p-4`}>
         {children}
     </div>
 );

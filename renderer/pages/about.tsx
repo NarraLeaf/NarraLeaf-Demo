@@ -1,6 +1,7 @@
 import React from "react";
 import { useRouter } from "narraleaf-react";
 import Panel from "../src/components/Panel";
+import { MenuButton } from "./home";
 export default function About() {
     const router = useRouter();
 
@@ -10,35 +11,33 @@ export default function About() {
             
             <div className="space-y-6 text-white">
                 <div>
-                    <h2 className="text-xl font-semibold mb-2">NarraLeaf</h2>
-                    <p className="text-white/80">版本 1.0.0</p>
+                    <h2 className="text-xl font-semibold mb-2">NarraLeaf Demo</h2>
+                    <p className="text-white/80">版本 0.1.0</p>
                 </div>
 
                 <div>
                     <h2 className="text-xl font-semibold mb-2">开发团队</h2>
-                    <p className="text-white/80">NarraLeaf Team</p>
+                    <p className="text-white/80">NarraLeaf Project</p>
                 </div>
 
                 <div>
                     <h2 className="text-xl font-semibold mb-2">联系方式</h2>
-                    <p className="text-white/80">support@narraleaf.com</p>
+                    <p className="text-white/80">github.com/NarraLeaf</p>
                 </div>
 
                 <div>
                     <h2 className="text-xl font-semibold mb-2">版权信息</h2>
-                    <p className="text-white/80">© 2024 NarraLeaf. All rights reserved.</p>
+                    <p className="text-white/80">© 2025 NarraLeaf. All rights reserved.</p>
                 </div>
             </div>
 
             {/* Back Button */}
-            <button
+            <MenuButton
                 onClick={() => router.push("home")}
-                className="mt-8 w-full px-6 py-4 bg-indigo-600/90 hover:bg-indigo-700 text-white rounded-lg shadow-lg 
-                         transform hover:-translate-y-1 transition-all duration-300 ease-in-out
-                         hover:shadow-xl active:translate-y-0"
+                className="mt-8"
             >
                 返回
-            </button>
+            </MenuButton>
         </Panel>
     );
 }

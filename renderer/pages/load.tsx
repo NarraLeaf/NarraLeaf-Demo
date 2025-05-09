@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useRouter } from "narraleaf-react";
 import Panel from "../src/components/Panel";
+import { MenuButton } from "./home";
 interface SaveSlot {
     id: number;
     title: string;
@@ -51,7 +52,7 @@ export default function Load() {
                         onClick={() => setSelectedSlot(slot.id)}
                         className={`p-4 rounded-lg cursor-pointer transition-all duration-200
                                  ${selectedSlot === slot.id 
-                                    ? 'bg-indigo-600/90' 
+                                    ? 'bg-primary/90' 
                                     : 'bg-white/20 hover:bg-white/30'}`}
                     >
                         <div className="flex justify-between items-center">
@@ -77,20 +78,18 @@ export default function Load() {
                     disabled={selectedSlot === null}
                     className={`w-full px-6 py-4 rounded-lg shadow-lg transform transition-all duration-300 ease-in-out
                              ${selectedSlot !== null
-                                ? 'bg-indigo-600/90 hover:bg-indigo-700 hover:-translate-y-1 hover:shadow-xl active:translate-y-0'
-                                : 'bg-gray-500/50 cursor-not-allowed'}`}
+                                ? 'bg-transparent border-2 border-primary/90 hover:border-primary/95 hover:-translate-y-1 hover:shadow-xl active:translate-y-0 text-primary/90 hover:text-primary/95'
+                                : 'bg-transparent border-2 text-white cursor-not-allowed'}`}
                 >
                     读取选中存档
                 </button>
 
-                <button
+                <MenuButton
                     onClick={() => router.push("home")}
-                    className="w-full px-6 py-4 bg-indigo-600/90 hover:bg-indigo-700 text-white rounded-lg shadow-lg 
-                             transform hover:-translate-y-1 transition-all duration-300 ease-in-out
-                             hover:shadow-xl active:translate-y-0"
+                    className="mt-8"
                 >
                     返回
-                </button>
+                </MenuButton>
             </div>
         </Panel>
     );

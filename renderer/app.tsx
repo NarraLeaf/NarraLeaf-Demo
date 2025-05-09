@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
-import {Stage, useGame} from 'narraleaf-react';
-import {Meta, SplashScreenDefinition, useGameFlow} from 'narraleaf/client';
+import {useGame} from 'narraleaf-react';
+import {GameMetadata, SplashScreenDefinition, useApp, useGamePlayback} from 'narraleaf/client';
 
 // Import your assets
 import "./src/base.css";
@@ -12,33 +12,27 @@ import { DefaultMenu } from './src/components/Menu';
 const App = ({children}: {children: React.ReactNode}) => {
     // Access the game instance by using the useGame hook
     const game = useGame();
-    const {gameFlow: {isPlaying}} = useGameFlow();
+    const app = useApp();
 
     useEffect(() => {
         game.configure({
+            // Set the resolution
             width: 1280, // set the resolution width
             height: 720, // set the resolution height
             aspectRatio: 16 / 9, // set the aspect ratio
 
+            // Configure the game behavior
             ratioUpdateInterval: 0, // disable the ratio update interval
             cps: 50, // set the dialog characters per second to 10
             skipInterval: 10, // set the skip interval to 10ms
 
-            stage: ( // WARNING: This is a hack, we will fix this in the future. DO NOT USE THIS IN YOUR PROJECTS.
-                isPlaying ? <Stage>
-                    <QuickMenu />
-                </Stage> : <Stage>
-                    <div
-                        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                        style={{ backgroundImage: "url('/static/img/ui/bg/outside.jpg')" }}
-                    >
-                    </div>
-                </Stage>
-            ),
+            // Customize the styles
             dialog: GameDialog,
+            menu: DefaultMenu,
             defaultTextColor: "white",
             defaultNametagColor: "white",
-            menu: DefaultMenu,
+
+            // Debug mode
             app: {
                 logger: {
                     log: true,
@@ -52,7 +46,7 @@ const App = ({children}: {children: React.ReactNode}) => {
             }
         });
         console.log(game);
-    }, [isPlaying]);
+    }, []);
 
     return (
         <>
@@ -150,9 +144,20 @@ const splashScreen: SplashScreenDefinition[] = [{
     )
 }];
 
+const Stage = () => {
+    const {isPlaying} = useGamePlayback();
+    if (!isPlaying) return null;
+
+    return (
+        <QuickMenu />
+    );
+};
+
 export default App;
-export const meta: Meta = {
+export const metadata: GameMetadata = {
     story,
     // splashScreen
+    stage: (<Stage />),
+    backgroundImage: "/static/img/ui/bg/outside.jpg",
 };
 

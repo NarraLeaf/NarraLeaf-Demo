@@ -1,7 +1,7 @@
 import {Story, Scene, Character, Image, Dissolve, Menu, Sentence, Transform} from "narraleaf-react";
 
 const Nattou = new Image({
-    src: "/static/img/char/nattou/Nattou_.png",
+    src: "/static/img/char/nattou/Nattou.png",
     scale: 0.5,
     position: {
         yalign: 0.2,
@@ -9,7 +9,7 @@ const Nattou = new Image({
     },
 });
 const Youki = new Image({
-    src: "/static/img/char/youki/Youki_.png",
+    src: "/static/img/char/youki/Youki.png",
     scale: 0.5,
     position: {
         yalign: 0.2,
@@ -74,6 +74,7 @@ start.action([
     CNarrator.say`我和她来到了街道旁，正值寒冬，街上满是雪。`,
     CNarrator.say`她的手往垃圾桶那边指着，我向那边看过去，看见一个红发少女，与遍地雪白产生了鲜明的对比。`,
 
+    Nattou.hide({duration: 500}),
     Youki.show({duration: 500}),
 
     Y.say`嘿？Nattou早上好，这就是Mina吗？`,

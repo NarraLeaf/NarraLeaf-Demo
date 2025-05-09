@@ -2,25 +2,27 @@ import { useRouter } from "narraleaf-react";
 import { PageConfig, useApp } from "narraleaf/client";
 import React from "react";
 import Panel from "../src/components/Panel";
+import clsx from "clsx";
 // Menu Button Component
 interface MenuButtonProps {
     onClick: () => void;
     children: React.ReactNode;
+    className?: string;
 }
 
-const MenuButton: React.FC<MenuButtonProps> = ({ onClick, children }) => (
+export const MenuButton: React.FC<MenuButtonProps> = ({ onClick, children, className }) => (
     <button
         onClick={onClick}
-        className="w-full px-6 py-4 bg-indigo-600/90 hover:bg-indigo-700 text-white rounded-lg shadow-lg 
+        className={clsx(`w-full px-6 py-4 bg-primary/90 hover:bg-primary/95 text-white rounded-lg shadow-lg 
                  transform hover:-translate-y-1 transition-all duration-300 ease-in-out
-                 hover:shadow-xl active:translate-y-0"
+                 hover:shadow-xl active:translate-y-0`, className)}
     >
         {children}
     </button>
 );
 
 export default function Home() {
-    const { app } = useApp();
+    const app = useApp();
     const router = useRouter();
 
     return (
@@ -55,7 +57,7 @@ export default function Home() {
             {/* Copyright Information */}
             <div className="absolute bottom-8 right-8 text-gray-700 text-lg text-right">
                 <h1 className="font-bold text-2xl mb-1">NarraLeaf</h1>
-                <p>© 2024 NarraLeaf Project.</p>
+                <p>© 2025 NarraLeaf Project.</p>
                 <p className="text-xs mt-1">这是NarraLeaf引擎的演示项目，仅用于展示引擎基础特性，无法代表最终成品</p>
             </div>
         </>
