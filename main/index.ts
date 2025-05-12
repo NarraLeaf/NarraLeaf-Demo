@@ -1,5 +1,9 @@
 import {AppConfig} from "narraleaf";
 
+type WindowState = {
+    mode: "fullscreen" | "windowed";
+};
+
 // Create a new app
 const app = new AppConfig({
     forceSandbox: true
@@ -25,5 +29,18 @@ app.onReady(async () => {
 
     window.onKeyUp("F12", () => {
         window.toggleDevTools();
+    });
+
+    window.onEvent<void, WindowState>("getWindowState", async () => {
+        return {
+            mode: window.isFullScreen() ? "fullscreen" : "windowed",
+        };
+    });
+    window.onEvent<WindowState, void>("setWindowState", async (state) => {
+        if (state.mode === "fullscreen") {
+            window.enterFullScreen();
+        } else {
+            window.exitFullScreen();
+        }
     });
 });

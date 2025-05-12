@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useGame, useRouter } from "narraleaf-react";
-import { useApp } from "narraleaf/client";
+import { useApp, requestMain } from "narraleaf/client";
 import Panel from "../src/components/Panel";
 import { MenuButton } from "./home";
 
@@ -8,6 +8,10 @@ interface SettingItemProps {
     label: string;
     children: React.ReactNode;
 }
+
+type WindowState = {
+    mode: "fullscreen" | "windowed";
+};
 
 const SettingItem: React.FC<SettingItemProps> = ({ label, children }) => (
     <div className="flex items-center justify-between py-3 border-b border-white/20">
@@ -30,10 +34,24 @@ export default function Settings() {
         });
     }, [textSpeed]);
 
+    useEffect(() => {
+        requestMain<void, WindowState>("getWindowState").then((state) => {
+            setFullscreen(state.mode === "fullscreen");
+        });
+    }, []);
+
     function handleTextSpeedChange(e: React.ChangeEvent<HTMLInputElement>) {
         game.configure({
             cps: Number(e.target.value),
         });
+        setTextSpeed(Number(e.target.value));
+    }
+
+    function handleFullscreenChange(e: React.ChangeEvent<HTMLInputElement>) {
+        requestMain<WindowState, void>("setWindowState", {
+            mode: e.target.checked ? "fullscreen" : "windowed",
+        });
+        setFullscreen(e.target.checked);
     }
 
     return (
@@ -58,16 +76,16 @@ export default function Settings() {
                         min="0"
                         max="100"
                         value={textSpeed}
-                        onChange={(e) => setTextSpeed(Number(e.target.value))}
+                        onChange={handleTextSpeedChange}
                         className="w-32"
                     />
                 </SettingItem>
 
-                <SettingItem label="全屏（摆设）">
+                <SettingItem label="全屏">
                     <input
                         type="checkbox"
                         checked={fullscreen}
-                        onChange={(e) => setFullscreen(e.target.checked)}
+                        onChange={handleFullscreenChange}
                         className="w-5 h-5"
                     />
                 </SettingItem>
