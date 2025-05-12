@@ -10,8 +10,8 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "lucide-react": "^0.503.0",
-    "narraleaf": "latest",
-    "narraleaf-react": "0.4.2",
+    "narraleaf": "0.0.7",
+    "narraleaf-react": "0.4.4",
     "postcss": "^8.5.3",
     "react": ">=19",
     "react-dom": ">=19"

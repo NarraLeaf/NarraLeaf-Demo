@@ -2,36 +2,13 @@ import React, { useState } from "react";
 import { useRouter } from "narraleaf-react";
 import Panel from "../src/components/Panel";
 import { MenuButton } from "./home";
-interface SaveSlot {
-    id: number;
-    title: string;
-    date: string;
-    thumbnail?: string;
-}
+import { useSavedGames } from "narraleaf/client";
+import type { SavedGameMetadata } from "narraleaf/client";
 
 export default function Load() {
     const router = useRouter();
-    const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
-
-    // Mock save slots data
-    const saveSlots: SaveSlot[] = [
-        {
-            id: 1,
-            title: "存档 1",
-            date: "2024-03-20 15:30",
-            thumbnail: "/static/img/ui/save-thumb-1.jpg"
-        },
-        {
-            id: 2,
-            title: "存档 2",
-            date: "2024-03-20 14:15"
-        },
-        {
-            id: 3,
-            title: "存档 3",
-            date: "2024-03-19 20:45"
-        }
-    ];
+    const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+    const savedGames = useSavedGames();
 
     const handleLoad = () => {
         if (selectedSlot !== null) {
@@ -41,12 +18,26 @@ export default function Load() {
         }
     };
 
+    if (!savedGames) {
+        return <Panel>Loading...</Panel>;
+    }
+
+    const { results, error, isLoading } = savedGames;
+
+    if (error) {
+        return <Panel>Error loading saved games: {error.message}</Panel>;
+    }
+
+    if (isLoading) {
+        return <Panel>Loading saved games...</Panel>;
+    }
+
     return (
         <Panel>
-            <h1 className="text-2xl font-bold text-white mb-6">读取存档（摆设）</h1>
+            <h1 className="text-2xl font-bold text-white mb-6">读取存档</h1>
             
             <div className="space-y-4">
-                {saveSlots.map((slot) => (
+                {results.map((slot: SavedGameMetadata) => (
                     <div
                         key={slot.id}
                         onClick={() => setSelectedSlot(slot.id)}
@@ -57,13 +48,17 @@ export default function Load() {
                     >
                         <div className="flex justify-between items-center">
                             <div>
-                                <h3 className="text-white text-lg font-medium">{slot.title}</h3>
-                                <p className="text-white/70 text-sm">{slot.date}</p>
+                                <h3 className="text-white text-lg font-medium">
+                                    {slot.type === 0 ? "存档" : slot.type === 1 ? "快速存档" : "恢复存档"}
+                                </h3>
+                                <p className="text-white/70 text-sm">
+                                    {new Date(slot.updated).toLocaleString()}
+                                </p>
                             </div>
-                            {slot.thumbnail && (
+                            {slot.capture && (
                                 <img 
-                                    src={slot.thumbnail} 
-                                    alt={`${slot.title} thumbnail`}
+                                    src={slot.capture} 
+                                    alt="存档预览"
                                     className="w-16 h-16 object-cover rounded"
                                 />
                             )}

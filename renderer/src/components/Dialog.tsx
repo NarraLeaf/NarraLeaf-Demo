@@ -9,9 +9,9 @@ function SentenceContext() {
 
     return (
         <>
-            <Texts className="text-[22px] max-w-max pt-[63px] pl-[128px]" />
+            <Texts className="text-[22px] max-w-max flex items-center" />
             {/* Add inverted triangle and underline */}
-            <div className="flex flex-col items-center mt-[70px]">
+            <div className="flex flex-col items-center">
                 {/* Inverted triangle */}
                 <div className={clsx(
                     "w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[10px] border-t-white filter drop-shadow-[0_0_10px_white]",
@@ -26,13 +26,11 @@ function SentenceContext() {
 
 export function GameDialog() {
     return (
-        <Dialog className="rounded-lg p-6 shadow-lg w-full h-full mb-4 AlimamaFangYuanTiVF-Thin bg-contain bg-no-repeat bg-bottom relative" style={{
-            backgroundImage: "url('/static/img/ui/dialog/dialog.png')"
-        }}>
-            <div className="absolute left-[133px] flex justify-center w-[200px] top-[28px]">
-                <Nametag />
+        <Dialog className="rounded-2xl p-8 shadow-lg w-[90%] h-[90%] mb-4 AlimamaFangYuanTiVF-Thin bg-bottom relative bg-black/50 backdrop-blur-md border-2 border-primary mx-auto">
+            <div className="absolute left-[30px] -top-8">
+                <Nametag className="rounded-2xl border-2 border-primary bg-black/50 backdrop-blur-sm px-4 py-2 min-w-[220px] min-h-[56px] flex items-center justify-center" />
             </div>
-            <div className="flex items-center gap-[5px]">
+            <div className="flex items-center gap-[5px] h-full">
                 <SentenceContext />
             </div>
         </Dialog>
