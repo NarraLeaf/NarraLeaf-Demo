@@ -15,16 +15,16 @@ start.action([
     Nattou.show({duration: 500}),
     Nattou.darken(0.5, 500, "easeIn"),
 
-    N.say`早上好！Mina！`,
+    N`早上好！Mina！`,
     "身旁站着一个女孩，一看就是趁着我睡觉的时候溜进来的。",
-    M.say`已经和你说过好多次了，不要在睡觉的时候进到我家里。`,
-    N.say`看你屋门没有关，我就直接进来了。`,
+    M`已经和你说过好多次了，不要在睡觉的时候进到我家里。`,
+    N`看你屋门没有关，我就直接进来了。`,
 
     Menu.prompt(undefined)
         .choose("我们一起出去玩吧？", [
-            N.say`真的吗？你终于愿意和我出去玩了吗？那我们现在就出发！`,
-            N.say`不过去玩之前，先和我去见一个朋友吧。`,
-            M.say`才八点就要出去吗？你不困吗？不再睡一会吗？`,
+            N`真的吗？你终于愿意和我出去玩了吗？那我们现在就出发！`,
+            N`不过去玩之前，先和我去见一个朋友吧。`,
+            M`才八点就要出去吗？你不困吗？不再睡一会吗？`,
             "她摇摇头，没办法，跟她去吧。",
         ])
         .choose("累了 ，摆烂吧", [
@@ -44,12 +44,14 @@ start.action([
     Nattou.hide({ duration: 500 }),
     Youki.show({ duration: 500 }),
 
-    Y.say`嘿？Nattou早上好，这就是Mina吗？`,
-    Y.say`初次见面～！我叫Youki，是Nattou的朋友喔～`,
+    Y`嘿？Nattou早上好，这就是Mina吗？`,
+    Y`初次见面～！我叫Youki，是Nattou的朋友喔～`,
+
     "Youki.......？好熟悉的名字。",
-    M.say`我叫Mina，也是Nattou的......朋友？`,
-    Y.say`早有耳闻，听Nattou说，你会画画吧？`,
-    M.say`的确如此，Nattou告诉你这个干什么。`,
+    
+    M`我叫Mina，也是Nattou的......朋友？`,
+    Y`早有耳闻，听Nattou说，你会画画吧？`,
+    M`的确如此，Nattou告诉你这个干什么。`,
 
     Youki.hide({ duration: 100 }),
     Nattou.show({ duration: 100 }),
