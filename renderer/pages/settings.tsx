@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useGame, useRouter } from "narraleaf-react";
+import { useGame, usePreference, useRouter } from "narraleaf-react";
 import { useApp, requestMain } from "narraleaf/client";
 import Panel from "../src/components/Panel";
 import { MenuButton } from "./home";
@@ -21,18 +21,10 @@ const SettingItem: React.FC<SettingItemProps> = ({ label, children }) => (
 );
 
 export default function Settings() {
-    const app = useApp();
-    const game = useGame();
     const router = useRouter();
     const [volume, setVolume] = useState(80);
-    const [textSpeed, setTextSpeed] = useState(50);
+    const [cps, setCps] = usePreference("cps");
     const [fullscreen, setFullscreen] = useState(false);
-
-    useEffect(() => {
-        game.configure({
-            cps: textSpeed,
-        });
-    }, [textSpeed]);
 
     useEffect(() => {
         requestMain<void, WindowState>("getWindowState").then((state) => {
@@ -41,10 +33,7 @@ export default function Settings() {
     }, []);
 
     function handleTextSpeedChange(e: React.ChangeEvent<HTMLInputElement>) {
-        game.configure({
-            cps: Number(e.target.value),
-        });
-        setTextSpeed(Number(e.target.value));
+        setCps(Number(e.target.value));
     }
 
     function handleFullscreenChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -75,7 +64,7 @@ export default function Settings() {
                         type="range"
                         min="0"
                         max="100"
-                        value={textSpeed}
+                        value={cps}
                         onChange={handleTextSpeedChange}
                         className="w-32"
                     />
