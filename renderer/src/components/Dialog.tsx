@@ -25,9 +25,12 @@ function SentenceContext() {
 }
 
 export function GameDialog() {
+    const {isNarrator} = useDialog();
     return (
         <Dialog className="rounded-2xl p-8 shadow-lg w-[90%] h-[90%] mb-4 AlimamaFangYuanTiVF-Thin bg-bottom relative bg-black/50 backdrop-blur-md border-2 border-primary mx-auto">
-            <div className="absolute left-[30px] -top-8">
+            <div className={clsx("absolute left-[30px] -top-8", {
+                "hidden": isNarrator
+            })}>
                 <Nametag className="rounded-2xl border-2 border-primary bg-black/50 backdrop-blur-sm px-4 py-2 min-w-[220px] min-h-[56px] flex items-center justify-center" />
             </div>
             <div className="flex items-center gap-[5px] h-full">

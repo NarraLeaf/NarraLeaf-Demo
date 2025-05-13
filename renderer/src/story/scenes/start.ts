@@ -9,14 +9,14 @@ const start = new Scene("Start", {
 start.action([
     start.background.char(Backgrounds.Room, new Dissolve(500)),
 
-    Narrator.say`窗外阳光明媚，看来是一个好天气。`
-    .say`现在是早上八点，不知道为什么今天自己会起的这么早。`,
+    "窗外阳光明媚，看来是一个好天气。",
+    "现在是早上八点，不知道为什么今天自己会起的这么早。",
     
     Nattou.show({duration: 500}),
     Nattou.darken(0.5, 500, "easeIn"),
 
     N.say`早上好！Mina！`,
-    Narrator.say`身旁站着一个女孩，一看就是趁着我睡觉的时候溜进来的。`,
+    "身旁站着一个女孩，一看就是趁着我睡觉的时候溜进来的。",
     M.say`已经和你说过好多次了，不要在睡觉的时候进到我家里。`,
     N.say`看你屋门没有关，我就直接进来了。`,
 
@@ -25,28 +25,28 @@ start.action([
             N.say`真的吗？你终于愿意和我出去玩了吗？那我们现在就出发！`,
             N.say`不过去玩之前，先和我去见一个朋友吧。`,
             M.say`才八点就要出去吗？你不困吗？不再睡一会吗？`,
-            Narrator.say`她摇摇头，没办法，跟她去吧。`,
+            "她摇摇头，没办法，跟她去吧。",
         ])
         .choose("累了 ，摆烂吧", [
             N.say`真是个杂鱼，一早上起来就摆烂了。`,
             N.say`不过，我想去见一个朋友，和我一起去，好不好？`,
             M.say`啊喂，现在才八点啊，你不困吗？不再睡一会吗？`,
-            Narrator.say`她摇摇头，没办法，虽然还不想起，但还是跟她去吧。`,
+            "她摇摇头，没办法，虽然还不想起，但还是跟她去吧。",
         ]),
 
     start.background.char(Backgrounds.Outside, new Dissolve(500)),
 
-    Narrator.say`这个人会是谁呢？走在路上的时候，我一直在想。`,
-    Narrator.say`难道我认识吗？`,
-    Narrator.say`我和她来到了街道旁，正值寒冬，街上满是雪。`,
-    Narrator.say`她的手往垃圾桶那边指着，我向那边看过去，看见一个红发少女，与遍地雪白产生了鲜明的对比。`,
+    "这个人会是谁呢？走在路上的时候，我一直在想。",
+    "难道我认识吗？",
+    "我和她来到了街道旁，正值寒冬，街上满是雪。",
+    "她的手往垃圾桶那边指着，我向那边看过去，看见一个红发少女，与遍地雪白产生了鲜明的对比。",
 
     Nattou.hide({ duration: 500 }),
     Youki.show({ duration: 500 }),
 
     Y.say`嘿？Nattou早上好，这就是Mina吗？`,
     Y.say`初次见面～！我叫Youki，是Nattou的朋友喔～`,
-    Narrator.say`Youki.......？好熟悉的名字。`,
+    "Youki.......？好熟悉的名字。",
     M.say`我叫Mina，也是Nattou的......朋友？`,
     Y.say`早有耳闻，听Nattou说，你会画画吧？`,
     M.say`的确如此，Nattou告诉你这个干什么。`,
@@ -59,7 +59,7 @@ start.action([
     Youki.show({ duration: 100 }),
 
     Y.say`真的会画画对吗，好诶好诶！那个，能和我做一辈子的游戏吗？`,
-    Narrator.say`她眼睛里像是有什么东西在燃烧，果然不能低估红发少女的性格啊。`,
+    "她眼睛里像是有什么东西在燃烧，果然不能低估红发少女的性格啊。",
 
     Menu.prompt(undefined)
         .choose("你这Youki，还真是满脑子都是自己呢。", [
@@ -73,14 +73,14 @@ start.action([
     start.background.char(Backgrounds.Studio, new Dissolve(500)),
 
     M.say`感觉去画画总比在家里宅着无所事事好些一些，所以就这样同意了。`,
-    Narrator.say`在Youki那里工作了很久，Youki的游戏也非常顺利地发布了。`,
+    "在Youki那里工作了很久，Youki的游戏也非常顺利地发布了。",
 
     Youki.show({ duration: 500 }),
     Y.say`要出去走走吗？Mina？`,
-    Narrator.say`发布工作结束后，Youki约我出去走走。`,
+    "发布工作结束后，Youki约我出去走走。",
 
     start.background.char(Backgrounds.Outside_s, new Dissolve(500)),
-    Narrator.say`我和Youki走在工作室门外的小路上，不知道说些什么。`,
+    "我和Youki走在工作室门外的小路上，不知道说些什么。",
 
     Y.say`Mina，你认识我吗？我是说以前。`,
     M.say`刚见到你的时候，感觉名字有些熟悉。所以应该是见过，但好像又没见过。`,
@@ -114,8 +114,8 @@ start.action([
     Y.say`好诶！`,
 
     Youki.hide({ duration: 500 }),
-    Narrator.say`我和她望着远处的风景，不再说话。`,
-    Narrator.say`之后的之后，就没有之后了`,
+    "我和她望着远处的风景，不再说话。",
+    "之后的之后，就没有之后了",
 ]);
 
 export { start };

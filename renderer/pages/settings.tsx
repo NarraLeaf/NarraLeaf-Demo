@@ -22,9 +22,12 @@ const SettingItem: React.FC<SettingItemProps> = ({ label, children }) => (
 
 export default function Settings() {
     const router = useRouter();
-    const [volume, setVolume] = useState(80);
     const [cps, setCps] = usePreference("cps");
     const [fullscreen, setFullscreen] = useState(false);
+    const [soundVolume, setSoundVolume] = usePreference("soundVolume");
+    const [globalVolume, setGlobalVolume] = usePreference("globalVolume");
+    const [voiceVolume, setVoiceVolume] = usePreference("voiceVolume");
+    const [bgmVolume, setBgmVolume] = usePreference("bgmVolume");
 
     useEffect(() => {
         requestMain<void, WindowState>("getWindowState").then((state) => {
@@ -43,22 +46,27 @@ export default function Settings() {
         setFullscreen(e.target.checked);
     }
 
+    function handleSoundVolumeChange(e: React.ChangeEvent<HTMLInputElement>) {
+        setSoundVolume(Number(e.target.value));
+    }
+
+    function handleGlobalVolumeChange(e: React.ChangeEvent<HTMLInputElement>) {
+        setGlobalVolume(Number(e.target.value));
+    }
+
+    function handleBgmVolumeChange(e: React.ChangeEvent<HTMLInputElement>) {
+        setBgmVolume(Number(e.target.value));
+    }
+
+    function handleVoiceVolumeChange(e: React.ChangeEvent<HTMLInputElement>) {
+        setVoiceVolume(Number(e.target.value));
+    }
+
     return (
         <Panel>
             <h1 className="text-2xl font-bold text-white mb-6">设置</h1>
             
             <div className="space-y-4">
-                <SettingItem label="音量（摆设）">
-                    <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={volume}
-                        onChange={(e) => setVolume(Number(e.target.value))}
-                        className="w-32"
-                    />
-                </SettingItem>
-
                 <SettingItem label="文字速度">
                     <input
                         type="range"
@@ -66,6 +74,54 @@ export default function Settings() {
                         max="100"
                         value={cps}
                         onChange={handleTextSpeedChange}
+                        className="w-32"
+                    />
+                </SettingItem>
+
+                <SettingItem label="全局音量">
+                    <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={globalVolume}
+                        onChange={handleGlobalVolumeChange}
+                        className="w-32"
+                    />
+                </SettingItem>
+
+                <SettingItem label="音效音量">
+                    <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={soundVolume}
+                        onChange={handleSoundVolumeChange}
+                        className="w-32"
+                    />
+                </SettingItem>
+
+                <SettingItem label="BGM音量">
+                    <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={bgmVolume}
+                        onChange={handleBgmVolumeChange}
+                        className="w-32"
+                    />
+                </SettingItem>
+
+                <SettingItem label="语音音量">
+                    <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={voiceVolume}
+                        onChange={handleVoiceVolumeChange}
                         className="w-32"
                     />
                 </SettingItem>
