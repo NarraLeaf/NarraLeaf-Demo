@@ -25,7 +25,6 @@ const App = ({children}: {children: React.ReactNode}) => {
 
             // Configure the game behavior
             ratioUpdateInterval: 0, // disable the ratio update interval
-            cps: 50, // set the dialog characters per second to 10
             skipInterval: 10, // set the skip interval to 10ms
 
             // Customize the styles
