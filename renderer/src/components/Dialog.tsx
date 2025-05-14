@@ -5,8 +5,6 @@ import clsx from 'clsx';
 function SentenceContext() {
     const {done} = useDialog();
 
-    console.log(done);
-
     return (
         <>
             <Texts className="text-[22px] max-w-max flex items-center" />

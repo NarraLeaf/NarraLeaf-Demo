@@ -1,4 +1,4 @@
-import { Scene, Dissolve, Menu, Transform } from "narraleaf-react";
+import { Scene, Dissolve, Menu, Transform, Control } from "narraleaf-react";
 import { Nattou, Youki, M, Y, N, Narrator } from "../chars";
 import { Backgrounds } from "../assets";
 
