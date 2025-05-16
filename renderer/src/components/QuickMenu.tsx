@@ -1,4 +1,5 @@
 import { History, FastForward, Save, Settings, Home, Play, FileText, FileUp, ArrowLeft } from 'lucide-react';
+import { useGame, useRouter } from 'narraleaf-react';
 
 interface MenuItemProps {
     icon: React.ElementType;
@@ -32,10 +33,22 @@ function MenuItem({ icon: Icon, label, onClick, disabled, active }: MenuItemProp
 }
 
 export function QuickMenu() {
+    const game = useGame();
+    const liveGame = game.getLiveGame();
+    const router = useRouter();
+
+    function handleUndo() {
+        liveGame.undo();
+    }
+
+    function handleHistory() {
+        router.push("history");
+    }
+
     return (
         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 px-4 py-2 rounded-full">
-            <MenuItem icon={ArrowLeft} label="上一步" />
-            <MenuItem icon={History} label="历史" />
+            <MenuItem icon={ArrowLeft} label="上一步" onClick={handleUndo} />
+            <MenuItem icon={History} label="历史" onClick={handleHistory} />
             <MenuItem icon={FastForward} label="快进" />
             <MenuItem icon={Play} label="自动" />
             <MenuItem icon={Save} label="保存" />

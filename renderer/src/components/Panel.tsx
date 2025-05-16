@@ -11,8 +11,8 @@ const Panel: React.FC<PanelProps> = ({ children, className = "" }) => {
     const {isPlaying} = useGamePlayback();
 
     return (
-        <div className={clsx(`absolute left-8 top-0 h-full bg-black/50 shadow-2xl ${className} p-4`, 
-            isPlaying ? "w-full backdrop-blur-sm" : "w-1/3",
+        <div className={clsx(`absolute top-0 h-full bg-black/50 shadow-2xl ${className} p-4`, 
+            isPlaying ? "w-full backdrop-blur-sm" : "w-1/3 left-8 ",
         )}>
             {children}
         </div>
