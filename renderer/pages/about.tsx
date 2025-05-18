@@ -1,4 +1,3 @@
-import React from "react";
 import { useRouter } from "narraleaf-react";
 import Panel from "../src/components/Panel";
 import { MenuButton } from "./home";

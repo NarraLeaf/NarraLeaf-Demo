@@ -35,7 +35,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent"></div>
             </div>
 
-            <Panel className="flex-1 flex flex-col justify-center gap-6">
+            <Panel route={false} className="flex-1 flex flex-col justify-center gap-6">
                 {/* Vertical Stack Container */}
                 <div className="flex-1 flex flex-col justify-center gap-8 m-8 max-w-md mx-auto w-full">
                     <MenuButton onClick={() => app.newGame()}>

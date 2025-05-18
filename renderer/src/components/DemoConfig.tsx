@@ -23,7 +23,7 @@ export const DemoConfigContext = createContext<DemoConfigContextType | null>(nul
 
 export function DemoConfigProvider({ children }: { children: React.ReactNode }) {
     const [demoConfig, setDemoConfig] = useState<DemoConfig>({
-        useVisualEffect: false,
+        useVisualEffect: true,
     });
 
     return (
@@ -41,9 +41,13 @@ export function useDemoConfig<K extends keyof DemoConfig>(key: K): UseDemoConfig
     };
     
     useEffect(() => {
-        event.on("clientEvent:demoConfig.flush", () => {
+        const listener = () => {
             forceUpdate(prev => prev + 1);
-        });
+        };
+        window.addEventListener("clientEvent:demoConfig.flush", listener);
+        return () => {
+            window.removeEventListener("clientEvent:demoConfig.flush", listener);
+        };
     }, []);
 
     const { demoConfig, setDemoConfig } = demoConfigContext;

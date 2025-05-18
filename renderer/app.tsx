@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {useGame} from 'narraleaf-react';
+import {useGame, usePreference} from 'narraleaf-react';
 import {GameMetadata, useApp, useGamePlayback} from 'narraleaf/client';
 
 // Import your assets
@@ -10,11 +10,15 @@ import { GameDialog } from './src/components/Dialog';
 import { DefaultMenu } from './src/components/Menu';
 import { createPreloadEntryPlugin } from './src/plugins';
 import {splashScreen} from './src/splashScreens';
+import { DemoConfigProvider } from './src/components/DemoConfig';
+import { useRouter } from 'narraleaf-react';
 
 const App = ({children}: {children: React.ReactNode}) => {
     // Access the game instance by using the useGame hook
     const game = useGame();
+    const router = useRouter();
     const app = useApp();
+    const [, setCps] = usePreference("cps");
 
     useEffect(() => {
         game.configure({
@@ -46,8 +50,9 @@ const App = ({children}: {children: React.ReactNode}) => {
                 },
             }
         });
+        setCps(30);
 
-        console.log(game);
+        console.log(game, router, app);
     }, []);
 
     useEffect(() => {
@@ -57,7 +62,9 @@ const App = ({children}: {children: React.ReactNode}) => {
 
     return (
         <>
-            {children}
+            <DemoConfigProvider>
+                {children}
+            </DemoConfigProvider>
         </>
     );
 };

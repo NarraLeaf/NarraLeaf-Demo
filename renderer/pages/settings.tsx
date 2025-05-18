@@ -1,8 +1,10 @@
+import { usePreference, useRouter } from "narraleaf-react";
+import { requestMain } from "narraleaf/client";
 import React, { useEffect, useState } from "react";
-import { useGame, usePreference, useRouter } from "narraleaf-react";
-import { useApp, requestMain, useGamePlayback } from "narraleaf/client";
+import { useDemoConfig } from "../src/components/DemoConfig";
 import Panel from "../src/components/Panel";
-import { MenuButton } from "./home";
+import { Checkbox } from "../src/components/lib/Checkbox";
+import { Slider } from "../src/components/lib/Slider";
 
 interface SettingItemProps {
     label: string;
@@ -20,50 +22,6 @@ const SettingItem: React.FC<SettingItemProps> = ({ label, children }) => (
     </div>
 );
 
-// Custom slider component with value display
-const CustomSlider: React.FC<{
-    value: number;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    min: number;
-    max: number;
-    step?: number;
-    unit?: string;
-    isPercentage?: boolean;
-}> = ({ value, onChange, min, max, step = 1, unit = "", isPercentage = false }) => (
-    <div className="flex items-center gap-4">
-        <input
-            type="range"
-            min={min}
-            max={max}
-            step={step}
-            value={value}
-            onChange={onChange}
-            className="w-32 h-2 bg-white/20 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer"
-        />
-        <div className="w-16 text-right">
-            <span className="text-white/80 text-sm">
-                {isPercentage ? `${Math.round(value * 100)}%` : `${value}${unit}`}
-            </span>
-        </div>
-    </div>
-);
-
-// Custom checkbox component
-const CustomCheckbox: React.FC<{
-    checked: boolean;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}> = ({ checked, onChange }) => (
-    <label className="relative inline-flex items-center cursor-pointer">
-        <input
-            type="checkbox"
-            checked={checked}
-            onChange={onChange}
-            className="sr-only peer"
-        />
-        <div className="w-11 h-6 bg-white/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-    </label>
-);
-
 export default function Settings() {
     const router = useRouter();
     const [cps, setCps] = usePreference("cps");
@@ -72,6 +30,7 @@ export default function Settings() {
     const [globalVolume, setGlobalVolume] = usePreference("globalVolume");
     const [voiceVolume, setVoiceVolume] = usePreference("voiceVolume");
     const [bgmVolume, setBgmVolume] = usePreference("bgmVolume");
+    const [visualEffect, setVisualEffect] = useDemoConfig("useVisualEffect");
 
     useEffect(() => {
         requestMain<void, WindowState>("getWindowState").then((state) => {
@@ -79,108 +38,96 @@ export default function Settings() {
         });
     }, []);
 
-    function handleTextSpeedChange(e: React.ChangeEvent<HTMLInputElement>) {
-        setCps(Number(e.target.value));
-    }
-
-    function handleFullscreenChange(e: React.ChangeEvent<HTMLInputElement>) {
-        requestMain<WindowState, void>("setWindowState", {
-            mode: e.target.checked ? "fullscreen" : "windowed",
-        });
-        setFullscreen(e.target.checked);
-    }
-
-    function handleSoundVolumeChange(e: React.ChangeEvent<HTMLInputElement>) {
-        setSoundVolume(Number(e.target.value));
-    }
-
-    function handleGlobalVolumeChange(e: React.ChangeEvent<HTMLInputElement>) {
-        setGlobalVolume(Number(e.target.value));
-    }
-
-    function handleBgmVolumeChange(e: React.ChangeEvent<HTMLInputElement>) {
-        setBgmVolume(Number(e.target.value));
-    }
-
-    function handleVoiceVolumeChange(e: React.ChangeEvent<HTMLInputElement>) {
-        setVoiceVolume(Number(e.target.value));
-    }
-
     return (
         <Panel>
-            <h1 className="text-2xl font-bold text-white mb-8">设置</h1>
+            <div className="flex flex-col h-full">
+                <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-2xl font-bold text-white">设置</h1>
+                    <button 
+                        onClick={() => router.back()}
+                        className="px-4 py-2 text-white border border-primary rounded-lg hover:bg-primary/10 transition-colors duration-200"
+                    >
+                        返回
+                    </button>
+                </div>
             
-            <div className="space-y-2">
-                <SettingItem label="文字速度">
-                    <CustomSlider
-                        value={cps}
-                        onChange={handleTextSpeedChange}
-                        min={0}
-                        max={100}
-                        unit="字/秒"
-                    />
-                </SettingItem>
+                <div className="space-y-2">
+                    <SettingItem label="文字速度">
+                        <Slider
+                            value={cps}
+                            onChange={(e) => setCps(Number(e.target.value))}
+                            min={0}
+                            max={100}
+                            unit="字/秒"
+                        />
+                    </SettingItem>
 
-                <SettingItem label="全局音量">
-                    <CustomSlider
-                        value={globalVolume}
-                        onChange={handleGlobalVolumeChange}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                        isPercentage={true}
-                    />
-                </SettingItem>
+                    <SettingItem label="全局音量">
+                        <Slider
+                            value={globalVolume}
+                            onChange={(e) => setGlobalVolume(Number(e.target.value))}
+                            min={0}
+                            max={1}
+                            step={0.01}
+                            isPercentage={true}
+                        />
+                    </SettingItem>
 
-                <SettingItem label="音效音量">
-                    <CustomSlider
-                        value={soundVolume}
-                        onChange={handleSoundVolumeChange}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                        isPercentage={true}
-                    />
-                </SettingItem>
+                    <SettingItem label="音效音量">
+                        <Slider
+                            value={soundVolume}
+                            onChange={(e) => setSoundVolume(Number(e.target.value))}
+                            min={0}
+                            max={1}
+                            step={0.01}
+                            isPercentage={true}
+                        />
+                    </SettingItem>
 
-                <SettingItem label="BGM音量">
-                    <CustomSlider
-                        value={bgmVolume}
-                        onChange={handleBgmVolumeChange}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                        isPercentage={true}
-                    />
-                </SettingItem>
+                    <SettingItem label="BGM音量">
+                        <Slider
+                            value={bgmVolume}
+                            onChange={(e) => setBgmVolume(Number(e.target.value))}
+                            min={0}
+                            max={1}
+                            step={0.01}
+                            isPercentage={true}
+                        />
+                    </SettingItem>
 
-                <SettingItem label="语音音量">
-                    <CustomSlider
-                        value={voiceVolume}
-                        onChange={handleVoiceVolumeChange}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                        isPercentage={true}
-                    />
-                </SettingItem>
+                    <SettingItem label="语音音量">
+                        <Slider
+                            value={voiceVolume}
+                            onChange={(e) => setVoiceVolume(Number(e.target.value))}
+                            min={0}
+                            max={1}
+                            step={0.01}
+                            isPercentage={true}
+                        />
+                    </SettingItem>
 
-                <SettingItem label="全屏">
-                    <CustomCheckbox
-                        checked={fullscreen}
-                        onChange={handleFullscreenChange}
-                    />
-                </SettingItem>
+                    <SettingItem label="全屏">
+                        <Checkbox
+                            checked={fullscreen}
+                            onChange={(e) => {
+                                requestMain<WindowState, void>("setWindowState", {
+                                    mode: e.target.checked ? "fullscreen" : "windowed",
+                                });
+                                setFullscreen(e.target.checked);
+                            }}
+                        />
+                    </SettingItem>
+
+                    <SettingItem label="视觉效果">
+                        <Checkbox
+                            checked={visualEffect}
+                            onChange={(e) => setVisualEffect(e.target.checked)}
+                        />
+                    </SettingItem>
+                </div>
             </div>
-
-            <MenuButton
-                onClick={() => router.push("home")}
-                className="mt-8"
-            >
-                返回
-            </MenuButton>
         </Panel>
     );
 }
 
-export {config} from "./home"; 
+export { config } from "./home";

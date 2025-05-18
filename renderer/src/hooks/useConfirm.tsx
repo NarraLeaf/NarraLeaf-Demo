@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Confirm } from '../components/Confirm';
+import { Confirm } from '../components/lib/Confirm';
 
 interface UseConfirmOptions {
     title?: string;

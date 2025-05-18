@@ -2,6 +2,8 @@ import { History, FastForward, Save, Settings, Home, Play, FileText, FileUp, Arr
 import { useGame, usePreference, useRouter } from 'narraleaf-react';
 import { useConfirm } from '../hooks/useConfirm';
 import { useApp } from 'narraleaf/client';
+import { useBackdrop } from '../hooks/useBackdrop';
+import clsx from 'clsx';
 
 interface MenuItemProps {
     icon: React.ElementType;
@@ -47,6 +49,7 @@ export function QuickMenu() {
     const liveGame = game.getLiveGame();
     const router = useRouter();
     const app = useApp();
+    const backdrop = useBackdrop();
 
     const [autoForward] = usePreference("autoForward");
     const [gameSpeed] = usePreference("gameSpeed");
@@ -85,18 +88,30 @@ export function QuickMenu() {
         });
     }
 
+    function handleLoad() {
+        router.push("loadgame");
+    }
+
+    function handleSave() {
+        router.push("savegame");
+    }
+
+    function handleSettings() {
+        router.push("settings");
+    }
+
     return (
         <>
-            <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 px-4 py-2 rounded-full">
+            <div className={clsx("fixed bottom-4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 px-4 py-1 rounded-full bg-black/10", backdrop)}>
                 <MenuItem icon={ArrowLeft} label="上一步" onClick={handleUndo} />
                 <MenuItem icon={History} label="历史" onClick={handleHistory} />
                 <MenuItem icon={FastForward} label="快进" onClick={handleGameSpeed} active={gameSpeed > 1}/>
                 <MenuItem icon={Play} label="自动" onClick={handleAutoForward} active={autoForward}/>
-                <MenuItem icon={Save} label="保存" />
+                <MenuItem icon={Save} label="保存" onClick={handleSave} />
                 <MenuItem icon={Save} label="快速保存" />
-                <MenuItem icon={FileText} label="读取" />
+                <MenuItem icon={FileText} label="读取" onClick={handleLoad} />
                 <MenuItem icon={FileUp} label="快速读取" />
-                <MenuItem icon={Settings} label="设置" />
+                <MenuItem icon={Settings} label="设置" onClick={handleSettings} />
                 <MenuItem icon={Home} label="主页" onClick={handleExit} />
             </div>
             {ConfirmExitDialog}
