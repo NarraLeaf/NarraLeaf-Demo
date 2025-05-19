@@ -3,7 +3,7 @@ import { useGamePlayback } from "narraleaf/client";
 import React, { useEffect } from "react";
 import { useBackdrop } from "../hooks/useBackdrop";
 import { useRouter } from "narraleaf-react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 
 interface PanelProps {
     children: React.ReactNode;
@@ -35,9 +35,10 @@ const Panel: React.FC<PanelProps> = ({ children, className = "", route = true })
     }, [router, route]);
 
     return (
-        <motion.div 
-            className={clsx(`absolute top-0 h-full bg-black/50 shadow-2xl ${className} p-4`, 
-                isPlaying ? `w-full ${backdrop}` : "w-1/3 left-8",
+        <AnimatePresence>
+            <motion.div
+                className={clsx(`absolute top-0 h-full bg-black/50 shadow-2xl ${className} p-4`, 
+                    isPlaying ? `w-full ${backdrop}` : "w-1/3 left-8",
             )}
             style={{
                 willChange: 'backdrop-filter',
@@ -45,8 +46,9 @@ const Panel: React.FC<PanelProps> = ({ children, className = "", route = true })
                 backfaceVisibility: 'hidden'
             }}
         >
-            {children}
-        </motion.div>
+                {children}
+            </motion.div>
+        </AnimatePresence>
     );
 };
 

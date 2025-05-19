@@ -12,6 +12,7 @@ import { createPreloadEntryPlugin } from './src/plugins';
 import {splashScreen} from './src/splashScreens';
 import { DemoConfigProvider } from './src/components/DemoConfig';
 import { useRouter } from 'narraleaf-react';
+import GameNotification from './src/components/Notifications';
 
 const App = ({children}: {children: React.ReactNode}) => {
     // Access the game instance by using the useGame hook
@@ -33,6 +34,7 @@ const App = ({children}: {children: React.ReactNode}) => {
 
             // Customize the styles
             dialog: GameDialog,
+            notification: GameNotification,
             menu: DefaultMenu,
             defaultTextColor: "white",
             defaultNametagColor: "white",

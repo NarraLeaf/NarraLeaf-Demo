@@ -56,9 +56,9 @@ export default function Settings() {
                         <Slider
                             value={cps}
                             onChange={(e) => setCps(Number(e.target.value))}
-                            min={0}
+                            min={1}
                             max={100}
-                            unit="字/秒"
+                            unit=""
                         />
                     </SettingItem>
 

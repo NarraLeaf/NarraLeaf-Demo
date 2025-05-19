@@ -25,7 +25,7 @@ function SentenceContext() {
 
 export function GameDialog() {
     const {isNarrator} = useDialog();
-    const backdrop = useBackdrop("md");
+    const backdrop = useBackdrop("sm");
     
     return (
         <Dialog className={clsx("rounded-2xl p-8 shadow-lg w-[90%] h-[90%] mb-4 AlimamaFangYuanTiVF-Thin bg-bottom relative bg-black/50 border-2 border-primary mx-auto", backdrop)}>

@@ -26,13 +26,15 @@ export function Confirm({
     useEffect(() => {
         const handleEsc = (event: KeyboardEvent) => {
             if (event.key === 'Escape' && isOpen && onCancel) {
+                event.preventDefault();
+                event.stopPropagation();
                 onCancel();
             }
         };
 
-        window.addEventListener('keydown', handleEsc);
+        window.addEventListener('keydown', handleEsc, true);
         return () => {
-            window.removeEventListener('keydown', handleEsc);
+            window.removeEventListener('keydown', handleEsc, true);
         };
     }, [isOpen, onCancel]);
 

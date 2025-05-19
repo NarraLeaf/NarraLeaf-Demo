@@ -26,7 +26,7 @@ export default function About() {
 
                 <div>
                     <h2 className="text-xl font-semibold mb-2">版权信息</h2>
-                    <p className="text-white/80">© 2025 NarraLeaf. All rights reserved.</p>
+                    <p className="text-white/80">© 2025 NarraLeaf. Published under the MPL-2.0 license.</p>
                 </div>
             </div>
 
