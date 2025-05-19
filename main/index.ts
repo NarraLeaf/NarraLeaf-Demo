@@ -4,6 +4,11 @@ type WindowState = {
     mode: "fullscreen" | "windowed";
 };
 
+type GamePreferences = {
+    windowMode: "fullscreen" | "windowed";
+    playerPreferences: Record<string, any>;
+};
+
 // Create a new app
 const app = new AppConfig({
     forceSandbox: true
@@ -31,9 +36,23 @@ app.onReady(async () => {
         window.toggleDevTools();
     });
 
+    const preferenceStore = app.createJsonStore<GamePreferences>("game_preferences");
+    const initValue = await preferenceStore.read();
+    if (initValue.windowMode === "fullscreen") {
+        window.enterFullScreen();
+    } else {
+        window.exitFullScreen();
+    }
+
+    window.onEvent<GamePreferences, void>("setGamePreferences", async (preferences) => {
+        await preferenceStore.write(preferences);
+    });
+    window.onEvent<void, GamePreferences>("getGamePreferences", async () => {
+        return await preferenceStore.read();
+    });
     window.onEvent<void, WindowState>("getWindowState", async () => {
         return {
-            mode: window.isFullScreen() ? "fullscreen" : "windowed",
+            mode: (await preferenceStore.read()).windowMode,
         };
     });
     window.onEvent<WindowState, void>("setWindowState", async (state) => {

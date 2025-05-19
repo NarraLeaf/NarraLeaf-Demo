@@ -33,16 +33,26 @@ export default function LoadGame() {
         return <Panel>Error loading saved games: {error.message}</Panel>;
     }
 
-    const gridItems: SaveGridItem[] = results.filter((result) => {
-        return result.type === SaveType.Save;
-    }).map((result) => ({
-        id: result.id,
-        thumbnail: result.capture ?? "",
-        title: "Save",
-        timestamp: new Date(result.updated).toLocaleString(),
-    }));
+    const gridItems: SaveGridItem[] = Array.from({ length: 9 }, (_, index) => {
+        const saveId = (index).toString();
+        const existingSave = results.find(result => 
+            result.type === SaveType.Save && result.id === saveId
+        );
+        
+        if (existingSave) {
+            return {
+                id: existingSave.id,
+                thumbnail: existingSave.capture ?? "",
+                title: "Save",
+                timestamp: new Date(existingSave.updated).toLocaleString(),
+            };
+        }
+        
+        return undefined;
+    });
 
     const handleSelect = (item: SaveGridItem | SaveGridCoord) => {
+        if (!item) return;
         if ('index' in item) {
             return;
         } else {

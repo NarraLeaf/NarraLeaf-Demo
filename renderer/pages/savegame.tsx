@@ -34,37 +34,42 @@ export default function SaveGame() {
         return <Panel>Error loading saved games: {error.message}</Panel>;
     }
 
-    const gridItems: SaveGridItem[] = results.filter((result) => {
-        return result.type === SaveType.Save;
-    }).map((result) => ({
-        id: result.id,
-        thumbnail: result.capture ?? "",
-        title: "Save",
-        timestamp: new Date(result.updated).toLocaleString(),
-    }));
-
-    const handleSelect = (item: SaveGridItem | SaveGridCoord) => {
-        if ('index' in item) {
-            // Handle empty slot selection for new save
-            confirmSave().then((result) => {
-                if (result) {
-                    saveAction.save(item.index.toString()).then(() => {
-                        liveGame.notify("保存成功");
-                        router.back();
-                    });
-                }
-            });
-        } else {
-            // Handle overwriting existing save
-            confirmSave().then((result) => {
-                if (result) {
-                    saveAction.save(item.id).then(() => {
-                        liveGame.notify("保存成功");
-                        router.back();
-                    });
-                }
-            });
+    const gridItems: SaveGridItem[] = Array.from({ length: 9 }, (_, index) => {
+        const saveId = (index).toString();
+        const existingSave = results.find(result => 
+            result.type === SaveType.Save && result.id === saveId
+        );
+        
+        if (existingSave) {
+            return {
+                id: existingSave.id,
+                thumbnail: existingSave.capture ?? "",
+                title: "Save",
+                timestamp: new Date(existingSave.updated).toLocaleString(),
+            };
         }
+        
+        return undefined;
+    });
+
+    const handleSelect = async (item: SaveGridItem | SaveGridCoord) => {
+        if (!item) return;
+        const result = await confirmSave();
+        if (!result) return;
+
+        router.clear();
+        await game.getLiveGame().waitForRouterExit().promise;
+
+        setTimeout(async () => {
+            if ('index' in item) {
+                // Handle empty slot selection for new save
+                await saveAction.save(item.index.toString());
+            } else {
+                // Handle overwriting existing save
+                await saveAction.save(item.id);
+            }
+            liveGame.notify("保存成功");
+        }, 1);
     };
 
     return (

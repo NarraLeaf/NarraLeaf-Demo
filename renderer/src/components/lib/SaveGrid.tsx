@@ -6,7 +6,7 @@ export type SaveGridItem = {
     thumbnail: string;
     title: string;
     timestamp: string;
-};
+} | undefined;
 
 export type SaveGridCoord = {
     column: number;
@@ -87,7 +87,7 @@ export function SaveGrid({ columns, rows, onSelect, items, className, isLoading 
                                         alt={item.title} 
                                         className="w-full h-full object-cover rounded-lg" 
                                     />
-                                    <div className="absolute inset-0 bg-black/50 rounded-lg" />
+                                    <div className="absolute inset-0 rounded-lg" />
                                 </div>
                             ) : (
                                 <div className="absolute inset-0 -z-10 bg-black/30 rounded-lg" />

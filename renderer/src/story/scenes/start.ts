@@ -1,10 +1,24 @@
 import { Scene, Dissolve, Menu, Transform, Control } from "narraleaf-react";
-import { Nattou, Youki, M, Y, N, Narrator } from "../chars";
+import { Nattou, Youki, M, Y, N } from "../chars";
 import { Backgrounds } from "../assets";
 
 const start = new Scene("Start", {
     background: "white",
 });
+
+// Create reusable transforms
+const shake = Transform.create()
+    .repeat(3)
+    .position({ xoffset: 10 })
+    .commit({ duration: 75 })
+    .position({ xoffset: 0 })
+    .commit({ duration: 75 });
+
+const bounce = Transform.create()
+    .scale(0.6)
+    .commit({ duration: 500, ease: "easeInOut" })
+    .scale(0.5)
+    .commit({ duration: 500, ease: "easeIn" });
 
 start.action([
     start.background.char(Backgrounds.Room, new Dissolve(500)),
@@ -12,25 +26,32 @@ start.action([
     "窗外阳光明媚，看来是一个好天气。",
     "现在是早上八点，不知道为什么今天自己会起的这么早。",
     
-    Nattou.show({duration: 500}),
-    Nattou.darken(0.5, 500, "easeIn"),
+    Nattou.show({ duration: 500 }),
 
     N`早上好！Mina！`,
+
+    Nattou.darken(0.5, 500, "easeIn"),
     "身旁站着一个女孩，一看就是趁着我睡觉的时候溜进来的。",
+    Nattou.darken(0, 500, "easeOut"),
+
     M`已经和你说过好多次了，不要在睡觉的时候进到我家里。`,
     N`看你屋门没有关，我就直接进来了。`,
 
     Menu.prompt(undefined)
         .choose("我们一起出去玩吧？", [
             N`真的吗？你终于愿意和我出去玩了吗？那我们现在就出发！`,
+            Nattou.pos({ xalign: 0.7 }, 500, "easeInOut"),
             N`不过去玩之前，先和我去见一个朋友吧。`,
             M`才八点就要出去吗？你不困吗？不再睡一会吗？`,
+            Nattou.hide({ duration: 500 }),
             "她摇摇头，没办法，跟她去吧。",
         ])
         .choose("累了 ，摆烂吧", [
             N.say`真是个杂鱼，一早上起来就摆烂了。`,
+            Nattou.transform(shake),
             N.say`不过，我想去见一个朋友，和我一起去，好不好？`,
             M.say`啊喂，现在才八点啊，你不困吗？不再睡一会吗？`,
+            Nattou.hide({ duration: 500 }),
             "她摇摇头，没办法，虽然还不想起，但还是跟她去吧。",
         ]),
 
@@ -41,11 +62,11 @@ start.action([
     "我和她来到了街道旁，正值寒冬，街上满是雪。",
     "她的手往垃圾桶那边指着，我向那边看过去，看见一个红发少女，与遍地雪白产生了鲜明的对比。",
 
-    Nattou.hide({ duration: 500 }),
     Youki.show({ duration: 500 }),
 
     Y`嘿？Nattou早上好，这就是Mina吗？`,
     Y`初次见面～！我叫Youki，是Nattou的朋友喔～`,
+    Youki.transform(bounce),
 
     "Youki.......？好熟悉的名字。",
     
@@ -61,14 +82,17 @@ start.action([
     Youki.show({ duration: 100 }),
 
     Y.say`真的会画画对吗，好诶好诶！那个，能和我做一辈子的游戏吗？`,
+    Youki.transform(shake),
     "她眼睛里像是有什么东西在燃烧，果然不能低估红发少女的性格啊。",
 
     Menu.prompt(undefined)
         .choose("你这Youki，还真是满脑子都是自己呢。", [
             Y.say`是这样......虽然但是，如果Mina能来我这里做画师，我什么都会做的！`,
+            Youki.scale(0.6, 500, "easeInOut"),
             M.say`你是抱着个什么决心说的这句话啊......`,
         ])
         .choose("好，我来", [
+            Youki.transform(shake),
             Y.say`好诶，Mina酱真的是帮大忙了`,
         ]),
 
@@ -99,7 +123,10 @@ start.action([
     M.say`什么事？说吧。`,
 
     Youki.hide({ duration: 300 }),
-    Youki.show(Transform.create().position({ yalign: 0.1, xalign: 0.5 }).commit({ duration: 1000 })),
+    Youki.show(Transform.create()
+        .position({ yalign: -0.5, xalign: 0.5 })
+        .scale(1.1)
+        .commit({ duration: 1000 })),
 
     Y.say`其实，我喜欢你。`,
     M.say`.......？`,
@@ -114,8 +141,8 @@ start.action([
     Y.say`你也喜欢我吗？`,
     M.say`不然呢，我亲爱的Youki......应该是Konado。`,
     Y.say`好诶！`,
+    Youki.transform(shake),
 
-    Youki.hide({ duration: 500 }),
     "我和她望着远处的风景，不再说话。",
     "之后的之后，就没有之后了",
 ]);

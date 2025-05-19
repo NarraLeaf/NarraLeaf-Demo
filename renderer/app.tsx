@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {useGame, usePreference} from 'narraleaf-react';
-import {GameMetadata, useApp, useGamePlayback} from 'narraleaf/client';
+import {GameMetadata, requestMain, useApp, useGamePlayback} from 'narraleaf/client';
 
 // Import your assets
 import "./src/base.css";
@@ -13,6 +13,7 @@ import {splashScreen} from './src/splashScreens';
 import { DemoConfigProvider } from './src/components/DemoConfig';
 import { useRouter } from 'narraleaf-react';
 import GameNotification from './src/components/Notifications';
+import { GamePreferences } from './pages/settings';
 
 const App = ({children}: {children: React.ReactNode}) => {
     // Access the game instance by using the useGame hook
@@ -58,6 +59,12 @@ const App = ({children}: {children: React.ReactNode}) => {
     }, []);
 
     useEffect(() => {
+        requestMain<void, GamePreferences>("getGamePreferences").then((preferences) => {
+            game.preference.importPreferences(preferences.playerPreferences);
+        });
+    }, []);
+
+    useEffect(() => {
         const plugin = createPreloadEntryPlugin(start);
         game.use(plugin);
     }, []);
@@ -85,7 +92,7 @@ const Stage = () => {
 export default App;
 export const metadata: GameMetadata = {
     story,
-    // splashScreen,
+    splashScreen,
     stage: (<Stage />),
     backgroundImage: "/static/img/ui/bg/outside.jpg",
 };

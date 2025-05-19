@@ -1,4 +1,4 @@
-import { usePreference, useRouter } from "narraleaf-react";
+import { usePreference, useRouter, useGame } from "narraleaf-react";
 import { requestMain } from "narraleaf/client";
 import React, { useEffect, useState } from "react";
 import { useDemoConfig } from "../src/components/DemoConfig";
@@ -15,6 +15,11 @@ type WindowState = {
     mode: "fullscreen" | "windowed";
 };
 
+export type GamePreferences = {
+    windowMode: "fullscreen" | "windowed";
+    playerPreferences: Record<string, any>;
+};
+
 const SettingItem: React.FC<SettingItemProps> = ({ label, children }) => (
     <div className="flex items-center justify-between py-4 border-b border-white/20">
         <span className="text-white text-lg font-medium">{label}</span>
@@ -24,6 +29,7 @@ const SettingItem: React.FC<SettingItemProps> = ({ label, children }) => (
 
 export default function Settings() {
     const router = useRouter();
+    const game = useGame();
     const [cps, setCps] = usePreference("cps");
     const [fullscreen, setFullscreen] = useState(false);
     const [soundVolume, setSoundVolume] = usePreference("soundVolume");
@@ -38,13 +44,21 @@ export default function Settings() {
         });
     }, []);
 
+    const handleBack = () => {
+        router.back();
+        requestMain<GamePreferences, void>("setGamePreferences", {
+            windowMode: fullscreen ? "fullscreen" : "windowed",
+            playerPreferences: game.preference.exportPreferences(),
+        });
+    };
+
     return (
         <Panel>
             <div className="flex flex-col h-full">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-bold text-white">设置</h1>
                     <button 
-                        onClick={() => router.back()}
+                        onClick={handleBack}
                         className="px-4 py-2 text-white border border-primary rounded-lg hover:bg-primary/10 transition-colors duration-200"
                     >
                         返回
