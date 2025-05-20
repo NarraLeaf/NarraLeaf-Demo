@@ -12,7 +12,7 @@ export const Nattou = new Image({
 
 export const Y = new Character("Youki");
 export const Youki = new Image({
-    src: "/static/img/char/youki/Youki.png",
+    src: "/static/img/char/youki/YouKi.png",
     scale: 0.5,
     position: {
         yalign: 0.2,
