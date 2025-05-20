@@ -113,6 +113,11 @@ export function QuickMenu() {
         const result = await confirmQuickRead();
         if (result) {
             const savedGame = await quickRead();
+            if (!savedGame) {
+                game.getLiveGame().notify("快速读取失败");
+                return;
+            }
+
             game.getLiveGame().deserialize(savedGame);
             game.getLiveGame().notify("快速读取成功");
         }

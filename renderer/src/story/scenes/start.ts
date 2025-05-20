@@ -43,16 +43,16 @@ start.action([
             Nattou.pos({ xalign: 0.7 }, 500, "easeInOut"),
             N`不过去玩之前，先和我去见一个朋友吧。`,
             M`才八点就要出去吗？你不困吗？不再睡一会吗？`,
-            Nattou.hide({ duration: 500 }),
             "她摇摇头，没办法，跟她去吧。",
+            Nattou.hide({ duration: 500 }),
         ])
         .choose("累了 ，摆烂吧", [
             N.say`真是个杂鱼，一早上起来就摆烂了。`,
             Nattou.transform(shake),
             N.say`不过，我想去见一个朋友，和我一起去，好不好？`,
             M.say`啊喂，现在才八点啊，你不困吗？不再睡一会吗？`,
-            Nattou.hide({ duration: 500 }),
             "她摇摇头，没办法，虽然还不想起，但还是跟她去吧。",
+            Nattou.hide({ duration: 500 }),
         ]),
 
     start.background.char(Backgrounds.Outside, new Dissolve(500)),
