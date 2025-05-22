@@ -59,8 +59,13 @@ export default function LoadGame() {
             confirmLoad().then((result) => {
                 if (result) {
                     readGame(item.id).then((game) => {
-                        liveGame.deserialize(game);
-                        router.back();
+                        if (game) {
+                            liveGame.deserialize(game);
+                            router.back();
+                        } else {
+                            router.back();
+                            liveGame.notify("无法加载游戏，保存文件已损坏");
+                        }
                     });
                 }
             });
