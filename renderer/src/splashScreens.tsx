@@ -7,19 +7,19 @@ export const splashScreen: SplashScreenDefinition[] = [{
         opacity: 1,
         scale: 1,
         transition: {
-            duration: 1.5,
+            duration: 3,
             ease: "easeOut"
         }
     },
     exit: {
         opacity: 0,
-        scale: 0.97,
+        scale: 0.95,
         transition: {
             duration: 0.5,
             ease: "easeInOut"
         }
     },
-    duration: 1.5,
+    duration: 1,
     splashScreen:(
         <div className="flex justify-center items-center w-full h-full min-w-screen min-h-screen text-black overflow-hidden">
             <div className="transform transition-all">
