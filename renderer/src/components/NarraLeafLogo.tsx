@@ -66,7 +66,7 @@ const ANIMATION_CONFIG: Record<AnimationMode, AnimationConfig> = {
             transition: {
                 pathLength: { duration: 0.8, ease: "easeInOut" },
                 opacity: { duration: 0.3 },
-                fillOpacity: { duration: 0.5, delay: 0.4 }
+                fillOpacity: { duration: 0.5, delay: 0.8 }
             }
         }
     },
