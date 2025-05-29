@@ -1,4 +1,5 @@
 import { SplashScreenDefinition } from "narraleaf/client";
+import { NarraLeafLogo } from "./components/NarraLeafLogo";
 
 export const splashScreen: SplashScreenDefinition[] = [{
     initial: {opacity: 0, scale: 0.95},
@@ -15,18 +16,14 @@ export const splashScreen: SplashScreenDefinition[] = [{
         scale: 0.97,
         transition: {
             duration: 0.5,
-            ease: "easeIn"
+            ease: "easeInOut"
         }
     },
     duration: 1.5,
     splashScreen:(
-        <div className="flex justify-center items-center w-full h-full min-w-screen min-h-screen text-white">
+        <div className="flex justify-center items-center w-full h-full min-w-screen min-h-screen text-black overflow-hidden">
             <div className="transform transition-all">
-                <img 
-                    src="/static/img/ui/logo-text-blue.png" 
-                    alt="Logo" 
-                    className="w-auto h-auto max-w-[300px]"
-                />
+                <NarraLeafLogo />
             </div>
         </div>
     )
@@ -53,7 +50,7 @@ export const splashScreen: SplashScreenDefinition[] = [{
                 <img 
                     src="/static/img/ui/mewbaka-logo.png" 
                     alt="Logo" 
-                    className="w-auto h-auto max-w-[400px] invert"
+                    className="w-auto h-auto max-w-[400px]"
                 />
             </div>
         </div>
