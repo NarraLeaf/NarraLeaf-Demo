@@ -15,6 +15,17 @@ import { useRouter } from 'narraleaf-react';
 import GameNotification from './src/components/Notifications';
 import { GamePreferences } from './pages/settings';
 
+// Add font preload function
+const preloadFont = (fontUrl: string) => {
+    const font = new FontFace('AlimamaFangYuanTiVF-Thin', `url(${fontUrl})`);
+    return font.load().then(() => {
+        document.fonts.add(font);
+        console.log('Font loaded successfully');
+    }).catch(err => {
+        console.error('Font loading failed:', err);
+    });
+};
+
 const App = ({children}: {children: React.ReactNode}) => {
     // Access the game instance by using the useGame hook
     const game = useGame();
@@ -23,6 +34,9 @@ const App = ({children}: {children: React.ReactNode}) => {
     const [, setCps] = usePreference("cps");
 
     useEffect(() => {
+        // Preload font
+        preloadFont('/static/font/AlimamaFangYuanTiVF-Thin.ttf');
+
         game.configure({
             // Set the resolution
             width: 1280, // set the resolution width

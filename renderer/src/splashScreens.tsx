@@ -73,7 +73,7 @@ export const splashScreen: SplashScreenDefinition[] = [{
     },
     duration: 1.5,
     splashScreen:(
-        <div className="flex justify-center items-center w-full h-full min-w-screen min-h-screen text-black">
+        <div className="flex justify-center items-center w-full h-full min-w-screen min-h-screen text-black AlimamaFangYuanTiVF-Thin">
             <div className="flex flex-col items-center gap-4">
                 <h1 className="text-4xl font-bold">NarraLeaf Demo</h1>
                 <p className="text-xl text-gray-500">
