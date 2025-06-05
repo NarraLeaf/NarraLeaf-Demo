@@ -16,7 +16,7 @@ export const splashScreen: SplashScreenDefinition[] = [{
         scale: 0.95,
         transition: {
             duration: 0.5,
-            ease: "easeInOut"
+            ease: "circInOut"
         }
     },
     duration: 1,

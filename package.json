@@ -14,6 +14,7 @@
     "narraleaf": "0.0.7",
     "narraleaf-react": "^0.4.4",
     "postcss": "^8.5.3",
+    "postcss-loader": "^8.1.1",
     "react": ">=19",
     "react-dom": ">=19"
   },
