@@ -36,46 +36,45 @@ const App = ({children}: {children: React.ReactNode}) => {
     useEffect(() => {
         // Preload font
         preloadFont('/static/font/AlimamaFangYuanTiVF-Thin.ttf');
-
-        game.configure({
-            // Set the resolution
-            width: 1280, // set the resolution width
-            height: 720, // set the resolution height
-            aspectRatio: 16 / 9, // set the aspect ratio
-
-            // Configure the game behavior
-            ratioUpdateInterval: 0, // disable the ratio update interval
-            skipInterval: 10, // set the skip interval to 10ms
-            screenshotQuality: 0.2,
-
-            // Customize the styles
-            dialog: GameDialog,
-            notification: GameNotification,
-            menu: DefaultMenu,
-            defaultTextColor: "white",
-            defaultNametagColor: "white",
-
-            // Debug mode
-            app: {
-                logger: {
-                    log: true,
-                    warn: true,
-                    error: true,
-                    debug: true,
-                    info: true,
-                    trace: true,
-                    verbose: true,
-                },
-            }
-        });
-        setCps(30);
-
-        console.log(game, router, app);
     }, []);
 
     useEffect(() => {
         requestMain<void, GamePreferences>("getGamePreferences").then((preferences) => {
             game.preference.importPreferences(preferences.playerPreferences);
+
+            game.configure({
+                // Set the resolution
+                width: 1280, // set the resolution width
+                height: 720, // set the resolution height
+                aspectRatio: 16 / 9, // set the aspect ratio
+    
+                // Configure the game behavior
+                ratioUpdateInterval: 0, // disable the ratio update interval
+                skipInterval: 10, // set the skip interval to 10ms
+                screenshotQuality: 0.2,
+    
+                // Customize the styles
+                dialog: GameDialog,
+                notification: GameNotification,
+                menu: DefaultMenu,
+                defaultTextColor: "white",
+                defaultNametagColor: "white",
+    
+                // Debug mode
+                app: {
+                    logger: {
+                        log: true,
+                        warn: true,
+                        error: true,
+                        debug: true,
+                        info: true,
+                        trace: true,
+                        verbose: true,
+                    },
+                }
+            });
+    
+            console.log(game, router, app);
         });
     }, []);
 
@@ -107,7 +106,7 @@ const Stage = () => {
 export default App;
 export const metadata: GameMetadata = {
     story,
-    splashScreen,
+    // splashScreen,
     stage: (<Stage />),
     backgroundImage: "/static/img/ui/bg/outside.jpg",
 };

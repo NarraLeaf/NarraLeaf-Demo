@@ -1,9 +1,10 @@
 import { History, FastForward, Save, Settings, Home, Play, FileText, FileUp, ArrowLeft } from 'lucide-react';
-import { useGame, usePreference, useRouter } from 'narraleaf-react';
+import { NotificationToken, useGame, usePreference, useRouter } from 'narraleaf-react';
 import { useConfirm } from '../hooks/useConfirm';
 import { useApp, useSaveAction } from 'narraleaf/client';
 import { useBackdrop } from '../hooks/useBackdrop';
 import clsx from 'clsx';
+import { useEffect, useRef } from 'react';
 
 interface MenuItemProps {
     icon: React.ElementType;
@@ -53,7 +54,7 @@ export function QuickMenu() {
     const {quickSave, quickRead} = useSaveAction();
 
     const [autoForward] = usePreference("autoForward");
-    const [gameSpeed] = usePreference("gameSpeed");
+    const fastForwardNotification = useRef<NotificationToken | null>(null);
 
     const [confirmExit, ConfirmExitDialog] = useConfirm({
         message: "确定要退出游戏吗？",
@@ -61,6 +62,45 @@ export function QuickMenu() {
     const [confirmQuickRead, ConfirmQuickReadDialog] = useConfirm({
         message: "确定要读取快速保存吗？",
     });
+
+    useEffect(() => {
+        if (fastForwardNotification.current) {
+            fastForwardNotification.current.cancel();
+            fastForwardNotification.current = null;
+        }
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'ArrowRight') {
+                if (fastForwardNotification.current) {
+                    return;
+                }
+                fastForwardNotification.current = game.getLiveGame().notify("快进中...", null);
+                game.preference.setPreference("gameSpeed", 10);
+                game.preference.setPreference("autoForward", true);
+            } else if (e.key === 'Escape' && router.getCurrentId() !== "settings") {
+                router.push("settings");
+            }
+        };
+
+        const handleKeyUp = (e: KeyboardEvent) => {
+            if (e.key === 'ArrowRight') {
+                if (fastForwardNotification.current) {
+                    fastForwardNotification.current.cancel();
+                    fastForwardNotification.current = null;
+                }
+                game.preference.setPreference("gameSpeed", 1);
+                game.preference.setPreference("autoForward", false);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('keyup', handleKeyUp);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('keyup', handleKeyUp);
+        };
+    }, [router]);
 
     function handleUndo() {
         liveGame.undo();
@@ -75,13 +115,13 @@ export function QuickMenu() {
         game.preference.togglePreference("autoForward");
     }
 
-    function handleGameSpeed() {
-        if (gameSpeed === 1) {
-            game.preference.setPreference("gameSpeed", 3);
-        } else {
-            game.preference.setPreference("gameSpeed", 1);
-        }
-    }
+    // function handleGameSpeed() {
+    //     if (gameSpeed === 1) {
+    //         game.preference.setPreference("gameSpeed", 3);
+    //     } else {
+    //         game.preference.setPreference("gameSpeed", 1);
+    //     }
+    // }
 
     
     function handleExit() {
@@ -109,6 +149,10 @@ export function QuickMenu() {
         game.getLiveGame().notify("快速保存成功");
     }
 
+    function handleSkipDialog() {
+        liveGame.skipDialog();
+    }
+
     async function handleQuickRead() {
         const result = await confirmQuickRead();
         if (result) {
@@ -128,7 +172,8 @@ export function QuickMenu() {
             <div className={clsx("fixed bottom-4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 px-4 py-1 rounded-full bg-black/10", backdrop)}>
                 <MenuItem icon={ArrowLeft} label="上一步" onClick={handleUndo} />
                 <MenuItem icon={History} label="历史" onClick={handleHistory} />
-                <MenuItem icon={FastForward} label="快进" onClick={handleGameSpeed} active={gameSpeed > 1}/>
+                <MenuItem icon={FastForward} label="跳过" onClick={handleSkipDialog} />
+                {/* <MenuItem icon={FastForward} label="快进" onClick={handleGameSpeed} active={gameSpeed > 1}/> */}
                 <MenuItem icon={Play} label="自动" onClick={handleAutoForward} active={autoForward}/>
                 <MenuItem icon={Save} label="保存" onClick={handleSave} />
                 <MenuItem icon={Save} label="快速保存" onClick={handleQuickSave} />

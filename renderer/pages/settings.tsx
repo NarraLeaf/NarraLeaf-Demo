@@ -37,6 +37,7 @@ export default function Settings() {
     const [voiceVolume, setVoiceVolume] = usePreference("voiceVolume");
     const [bgmVolume, setBgmVolume] = usePreference("bgmVolume");
     const [visualEffect, setVisualEffect] = useDemoConfig("useVisualEffect");
+    const [skipDelay, setSkipDelay] = usePreference("skipDelay");
 
     useEffect(() => {
         requestMain<void, WindowState>("getWindowState").then((state) => {
@@ -72,7 +73,7 @@ export default function Settings() {
                             onChange={(e) => setCps(Number(e.target.value))}
                             min={1}
                             max={100}
-                            unit=""
+                            unit="cps"
                         />
                     </SettingItem>
 
@@ -117,6 +118,17 @@ export default function Settings() {
                             max={1}
                             step={0.01}
                             isPercentage={true}
+                        />
+                    </SettingItem>
+
+                    <SettingItem label="跳过延迟">
+                    <Slider
+                            value={skipDelay}
+                            onChange={(e) => setSkipDelay(Number(e.target.value))}
+                            min={0}
+                            max={1000}
+                            step={10}
+                            unit="ms"
                         />
                     </SettingItem>
 

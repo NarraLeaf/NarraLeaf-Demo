@@ -46,6 +46,10 @@ export default function SaveGame() {
                 thumbnail: existingSave.capture ?? "",
                 title: "Save",
                 timestamp: new Date(existingSave.updated).toLocaleString(),
+                lastDialog: {
+                    sentence: existingSave.lastSentence,
+                    speaker: existingSave.lastSpeaker,
+                },
             };
         }
         

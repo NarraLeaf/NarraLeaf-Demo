@@ -6,6 +6,10 @@ export type SaveGridItem = {
     thumbnail: string;
     title: string;
     timestamp: string;
+    lastDialog: {
+        sentence: string | null;
+        speaker: string | null;
+    } | null;
 } | undefined;
 
 export type SaveGridCoord = {
@@ -87,14 +91,22 @@ export function SaveGrid({ columns, rows, onSelect, items, className, isLoading 
                                         alt={item.title} 
                                         className="w-full h-full object-cover rounded-lg" 
                                     />
-                                    <div className="absolute inset-0 rounded-lg" />
+                                    <div className="absolute inset-0 rounded-lg bg-black/40" />
                                 </div>
                             ) : (
                                 <div className="absolute inset-0 -z-10 bg-black/30 rounded-lg" />
                             )}
                             <div className="flex-1 flex flex-col justify-between">
                                 <h3 className="text-white text-lg font-medium mb-1 break-words line-clamp-3">{item.title}</h3>
-                                <p className="text-white/80 text-sm break-words line-clamp-2">{item.timestamp}</p>
+                                {item.lastDialog && (
+                                    <div className="mb-2">
+                                        {item.lastDialog.speaker && (
+                                            <p className="text-white text-sm mb-0.5 line-clamp-1">{item.lastDialog.speaker}{": "}</p>
+                                        )}
+                                        <p className="text-white text-sm italic break-words line-clamp-2">{item.lastDialog.sentence}</p>
+                                    </div>
+                                )}
+                                <p className="text-white/80 text-sm break-words line-clamp-1">{item.timestamp}</p>
                             </div>
                         </div>
                     );
