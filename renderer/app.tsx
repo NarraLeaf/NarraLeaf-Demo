@@ -47,6 +47,8 @@ const App = ({children}: {children: React.ReactNode}) => {
                 width: 1280, // set the resolution width
                 height: 720, // set the resolution height
                 aspectRatio: 16 / 9, // set the aspect ratio
+                dialogWidth: 1920,
+                dialogHeight: 1080,
     
                 // Configure the game behavior
                 ratioUpdateInterval: 0, // disable the ratio update interval

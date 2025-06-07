@@ -1,5 +1,5 @@
 import { useRouter } from "narraleaf-react";
-import { PageConfig, useApp } from "narraleaf/client";
+import { PageConfig, SaveType, useApp, useSavedGames } from "narraleaf/client";
 import React from "react";
 import Panel from "../src/components/Panel";
 import clsx from "clsx";
@@ -27,6 +27,25 @@ export const MenuButton: React.FC<MenuButtonProps> = ({ onClick, children, class
 export default function Home() {
     const app = useApp();
     const router = useRouter();
+    
+    const {results} = useSavedGames();
+
+    function handleContinue() {
+        if (!results) {
+            return;
+        }
+
+        const latestSave = results
+            .filter(save => save.type === SaveType.Save)
+            .sort((a, b) => b.updated - a.updated)[0];
+
+        if (!latestSave) {
+            return;
+        }
+
+        console.log("Loading save", latestSave);
+        app.loadGame(latestSave.id);
+    }
 
     return (
         <div className="relative min-h-full overflow-hidden">
@@ -38,6 +57,10 @@ export default function Home() {
             <Panel route={false} className="flex-1 flex flex-col justify-center gap-6">
                 {/* Vertical Stack Container */}
                 <div className="flex-1 flex flex-col justify-center gap-8 m-8 max-w-md mx-auto w-full">
+                    <MenuButton onClick={handleContinue}>
+                        <span className="text-xl font-semibold">继续游戏</span>
+                    </MenuButton>
+
                     <MenuButton onClick={() => app.newGame()}>
                         <span className="text-xl font-semibold">开始游戏</span>
                     </MenuButton>
