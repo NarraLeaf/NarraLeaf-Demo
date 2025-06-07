@@ -58,8 +58,11 @@ export default function SaveGame() {
 
     const handleSelect = async (item: SaveGridItem | SaveGridCoord) => {
         if (!item) return;
-        const result = await confirmSave();
-        if (!result) return;
+
+        if (!('index' in item)) {
+            const result = await confirmSave();
+            if (!result) return;
+        }
 
         router.clear();
         await game.getLiveGame().waitForRouterExit().promise;

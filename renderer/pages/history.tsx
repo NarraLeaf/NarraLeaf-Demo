@@ -77,6 +77,28 @@ export default function Load() {
         router.clear();
     }
 
+    const handleKeyNavigation = (e: React.KeyboardEvent, index: number) => {
+        if (e.key === 'Enter') {
+            handleClick(filteredHistory[index].token);
+        } else if (e.key === 'ArrowUp' && index > 0) {
+            e.preventDefault();
+            const prevElement = document.querySelector(`[data-index="${index - 1}"]`) as HTMLElement;
+            if (prevElement) {
+                prevElement.focus();
+                // Ensure the element is in view
+                prevElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        } else if (e.key === 'ArrowDown' && index < filteredHistory.length - 1) {
+            e.preventDefault();
+            const nextElement = document.querySelector(`[data-index="${index + 1}"]`) as HTMLElement;
+            if (nextElement) {
+                nextElement.focus();
+                // Ensure the element is in view
+                nextElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+    };
+
     return (
         <Panel>
             <div className="flex flex-col h-full">
@@ -97,13 +119,18 @@ export default function Load() {
                     onMouseUp={handleMouseUp}
                 >
                     <div className="space-y-4">
-                        {filteredHistory.map((h) => {
+                        {filteredHistory.map((h, index) => {
+                            const isLast = index === filteredHistory.length - 1;
                             if (h.element.type === "menu") {
                                 return (
                                     <div
+                                        id={isLast ? "last-history" : undefined}
                                         key={h.token}
+                                        data-index={index}
                                         onClick={() => handleClick(h.token)}
-                                        className="p-4 border border-primary rounded-lg cursor-pointer hover:bg-primary/10 transition-colors duration-200 text-white"
+                                        onKeyDown={(e) => handleKeyNavigation(e, index)}
+                                        tabIndex={0}
+                                        className="p-4 border border-primary rounded-lg cursor-pointer hover:bg-primary/10 transition-colors duration-200 text-white focus:outline-2 focus:outline focus:outline-primary focus:outline-offset-[-2px] focus:shadow-[0_0_15px_rgba(var(--color-primary),0.5)] focus:border-primary/80 focus:bg-primary/20"
                                     >
                                         {h.element.text}{h.element.text && ": "}{h.element.selected}
                                     </div>
@@ -111,9 +138,13 @@ export default function Load() {
                             }
                             return (
                                 <div
+                                    id={isLast ? "last-history" : undefined}
                                     key={h.token}
+                                    data-index={index}
                                     onClick={() => handleClick(h.token)}
-                                    className="p-4 border border-primary rounded-lg cursor-pointer hover:bg-primary/10 transition-colors duration-200 text-white"
+                                    onKeyDown={(e) => handleKeyNavigation(e, index)}
+                                    tabIndex={0}
+                                    className="p-4 border border-primary rounded-lg cursor-pointer hover:bg-primary/10 transition-colors duration-200 text-white focus:outline-2 focus:outline focus:outline-primary focus:outline-offset-[-2px] focus:shadow-[0_0_15px_rgba(var(--color-primary),0.5)] focus:border-primary/80 focus:bg-primary/20"
                                 >
                                     {h.element.character ? (
                                         <>

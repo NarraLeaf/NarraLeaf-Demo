@@ -1,5 +1,5 @@
 import { History, FastForward, Save, Settings, Home, Play, FileText, FileUp, ArrowLeft } from 'lucide-react';
-import { NotificationToken, useGame, usePreference, useRouter } from 'narraleaf-react';
+import { LiveGameEventToken, NotificationToken, useGame, usePreference, useRouter } from 'narraleaf-react';
 import { useConfirm } from '../hooks/useConfirm';
 import { useApp, useSaveAction } from 'narraleaf/client';
 import { useBackdrop } from '../hooks/useBackdrop';
@@ -54,6 +54,7 @@ export function QuickMenu() {
     const {quickSave, quickRead} = useSaveAction();
 
     const [autoForward] = usePreference("autoForward");
+    const [showDialog, setShowDialog] = usePreference("showDialog");
     const fastForwardNotification = useRef<NotificationToken | null>(null);
 
     const [confirmExit, ConfirmExitDialog] = useConfirm({
@@ -68,6 +69,7 @@ export function QuickMenu() {
             fastForwardNotification.current.cancel();
             fastForwardNotification.current = null;
         }
+        let token: LiveGameEventToken | null = null;
 
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'ArrowRight') {
@@ -79,6 +81,26 @@ export function QuickMenu() {
                 game.preference.setPreference("autoForward", true);
             } else if (e.key === 'Escape' && router.getCurrentId() !== "settings") {
                 router.push("settings");
+            } else if (e.key === 'ArrowUp' && router.getCurrentId() !== "history") {
+                router.push("history");
+
+                if (token) {
+                    token.cancel();
+                }
+
+                const routerToken = liveGame.waitForPageMount();
+                routerToken.promise.then(() => {
+                    setTimeout(() => {
+                        const element = document.getElementById("last-history");
+                        if (element) {
+                            element.focus();
+                            console.log("last-history element found and focused", element);
+                        } else {
+                            console.warn("last-history element not found");
+                        }
+                    }, 100);
+                });
+                token = routerToken;
             }
         };
 
@@ -99,8 +121,23 @@ export function QuickMenu() {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
             window.removeEventListener('keyup', handleKeyUp);
+            if (token) {
+                token.cancel();
+            }
         };
     }, [router]);
+
+    useEffect(() => {
+        const handleContextMenu = (e: MouseEvent) => {
+            e.preventDefault();
+            setShowDialog(!showDialog);
+        };
+
+        window.addEventListener('contextmenu', handleContextMenu);
+        return () => {
+            window.removeEventListener('contextmenu', handleContextMenu);
+        };
+    }, [showDialog, setShowDialog]);
 
     function handleUndo() {
         liveGame.undo();
@@ -169,7 +206,9 @@ export function QuickMenu() {
 
     return (
         <>
-            <div className={clsx("fixed bottom-4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 px-4 py-1 rounded-full bg-black/10", backdrop)}>
+            <div className={clsx("fixed bottom-4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 px-4 py-1 rounded-full bg-black/10", backdrop, {
+                "hidden": !showDialog
+            })}>
                 <MenuItem icon={ArrowLeft} label="上一步" onClick={handleUndo} />
                 <MenuItem icon={History} label="历史" onClick={handleHistory} />
                 <MenuItem icon={FastForward} label="跳过" onClick={handleSkipDialog} />
