@@ -1,8 +1,9 @@
 import { useRouter } from "narraleaf-react";
 import { PageConfig, SaveType, useApp, useSavedGames } from "narraleaf/client";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Panel from "../src/components/Panel";
 import clsx from "clsx";
+import { useConfirm } from "../src/hooks/useConfirm";
 
 // Menu Button Component
 interface MenuButtonProps {
@@ -28,7 +29,38 @@ export default function Home() {
     const app = useApp();
     const router = useRouter();
     
-    const {results} = useSavedGames();
+    const {results, isLoading} = useSavedGames();
+    const [confirmLoad, ConfirmLoadDialog] = useConfirm({
+        title: "游戏崩溃",
+    });
+    const crashReportConsumed = useRef(false);
+
+    useEffect(() => {
+        console.log("useEffect triggered, results:", results, "isLoading:", isLoading);
+        if (isLoading || crashReportConsumed.current || !results.length) {
+            return;
+        }
+
+        const latestSave = results
+            .filter(save => save.type === SaveType.Recovery)
+            .sort((a, b) => b.updated - a.updated)[0];
+
+        const crashReport = app.getCrashReport();
+        if (crashReport) {
+            console.log("Found crash report, showing dialog");
+            confirmLoad({
+                message: `游戏崩溃，是否加载上次崩溃时的存档？\n${crashReport.reason ? `错误信息：${crashReport.reason}` : "游戏似乎没有提供错误信息。"}`,
+            }).then(result => {
+                console.log("Dialog result:", result, "current results:", results);
+                if (result && results) {  // 再次检查 results
+                    // handleRecover();
+                    console.log("Loading save", latestSave);
+                    app.loadGame(latestSave.id);
+                }
+            });
+            crashReportConsumed.current = true;
+        }
+    }, [isLoading, results]);
 
     function handleContinue() {
         if (!results) {
@@ -77,6 +109,7 @@ export default function Home() {
                         <span className="text-xl font-semibold">关于</span>
                     </MenuButton>
                 </div>
+                {ConfirmLoadDialog}
             </Panel>
 
             {/* Main Title */}

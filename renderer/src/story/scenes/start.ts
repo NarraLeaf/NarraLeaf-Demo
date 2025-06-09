@@ -1,4 +1,4 @@
-import { Dissolve, Menu, Scene } from "narraleaf-react";
+import { Control, Dissolve, Menu, Scene } from "narraleaf-react";
 import { shake } from "../animations";
 import { Backgrounds } from "../assets";
 import { M, N, Nattou } from "../chars";

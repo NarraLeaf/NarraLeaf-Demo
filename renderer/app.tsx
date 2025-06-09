@@ -85,6 +85,19 @@ const App = ({children}: {children: React.ReactNode}) => {
         game.use(plugin);
     }, []);
 
+    // hold F11 for 3 seconds to crash the game
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'F11') {
+                setTimeout(() => {
+                    app.crash("闲着没事长按F11干嘛");
+                }, 3000);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
     return (
         <>
             <DemoConfigProvider>

@@ -11,6 +11,10 @@ html, body {
     background-color: #ffffff;
 }
 
+* {
+    @apply focus:outline-none;
+}
+
 #root {
     width: 100%;
     height: 100%;
