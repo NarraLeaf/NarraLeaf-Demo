@@ -39,6 +39,7 @@ const App = ({children}: {children: React.ReactNode}) => {
     }, []);
 
     useEffect(() => {
+        game.preference.setPreference("skipInterval", 0);
         requestMain<void, GamePreferences>("getGamePreferences").then((preferences) => {
             game.preference.importPreferences(preferences.playerPreferences);
 
@@ -47,12 +48,11 @@ const App = ({children}: {children: React.ReactNode}) => {
                 width: 1280, // set the resolution width
                 height: 720, // set the resolution height
                 aspectRatio: 16 / 9, // set the aspect ratio
-                dialogWidth: 1920,
-                dialogHeight: 1080,
+                dialogWidth: 1280,
+                dialogHeight: 720,
     
                 // Configure the game behavior
                 ratioUpdateInterval: 0, // disable the ratio update interval
-                skipInterval: 10, // set the skip interval to 10ms
                 screenshotQuality: 0.2,
     
                 // Customize the styles

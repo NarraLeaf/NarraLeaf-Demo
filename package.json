@@ -5,14 +5,15 @@
   "description": "A new NarraLeaf project",
   "scripts": {
     "build": "narraleaf build",
-    "dev": "narraleaf dev"
+    "dev": "narraleaf dev",
+    "info": "narraleaf info"
   },
   "dependencies": {
     "clsx": "^2.1.1",
     "framer-motion": "^12.12.1",
     "lucide-react": "^0.503.0",
-    "narraleaf": "0.0.7",
-    "narraleaf-react": "^0.4.4",
+    "narraleaf": "^0.0.8-alpha.4",
+    "narraleaf-react": "^0.6.0",
     "postcss": "^8.5.3",
     "postcss-loader": "^8.1.1",
     "react": ">=19",
