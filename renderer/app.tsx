@@ -93,7 +93,7 @@ const Stage = () => {
 export default App;
 export const metadata: GameMetadata = {
     story,
-    splashScreen,
+    // splashScreen,
     stage: (<Stage />),
     backgroundImage: "/static/img/ui/bg/outside.jpg",
 };
