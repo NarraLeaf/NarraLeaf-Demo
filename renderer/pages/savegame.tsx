@@ -46,6 +46,10 @@ export default function SaveGame() {
                 thumbnail: existingSave.capture ?? "",
                 title: "Save",
                 timestamp: new Date(existingSave.updated).toLocaleString(),
+                lastDialog: {
+                    sentence: existingSave.lastSentence,
+                    speaker: existingSave.lastSpeaker,
+                },
             };
         }
         
@@ -54,8 +58,11 @@ export default function SaveGame() {
 
     const handleSelect = async (item: SaveGridItem | SaveGridCoord) => {
         if (!item) return;
-        const result = await confirmSave();
-        if (!result) return;
+
+        if (!('index' in item)) {
+            const result = await confirmSave();
+            if (!result) return;
+        }
 
         router.clear();
         await game.getLiveGame().waitForRouterExit().promise;

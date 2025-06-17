@@ -20,10 +20,11 @@ const app = new AppConfig({
 app.onReady(async () => {
     // Launch the app with a window
     const window = await app.launchApp({
-        backgroundColor: "white",
-        width: 1280,
-        height: 720,
-        devTools: true,
+        options: {
+            backgroundColor: "white",
+            width: 1280,
+            height: 720,
+        }
     });
     window.setTitle("My NarraLeaf App");
 
@@ -44,18 +45,18 @@ app.onReady(async () => {
         window.exitFullScreen();
     }
 
-    window.onEvent<GamePreferences, void>("setGamePreferences", async (preferences) => {
+    window.handleUserEvent<GamePreferences, void>("setGamePreferences", async (preferences) => {
         await preferenceStore.write(preferences);
     });
-    window.onEvent<void, GamePreferences>("getGamePreferences", async () => {
+    window.handleUserEvent<void, GamePreferences>("getGamePreferences", async () => {
         return await preferenceStore.read();
     });
-    window.onEvent<void, WindowState>("getWindowState", async () => {
+    window.handleUserEvent<void, WindowState>("getWindowState", async () => {
         return {
             mode: (await preferenceStore.read()).windowMode,
         };
     });
-    window.onEvent<WindowState, void>("setWindowState", async (state) => {
+    window.handleUserEvent<WindowState, void>("setWindowState", async (state) => {
         if (state.mode === "fullscreen") {
             window.enterFullScreen();
         } else {

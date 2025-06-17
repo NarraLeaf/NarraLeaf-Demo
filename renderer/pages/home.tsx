@@ -1,8 +1,9 @@
 import { useRouter } from "narraleaf-react";
-import { PageConfig, useApp } from "narraleaf/client";
-import React from "react";
+import { PageConfig, SaveType, useApp, useSavedGames } from "narraleaf/client";
+import React, { useEffect, useRef } from "react";
 import Panel from "../src/components/Panel";
 import clsx from "clsx";
+import { useConfirm } from "../src/hooks/useConfirm";
 
 // Menu Button Component
 interface MenuButtonProps {
@@ -27,6 +28,56 @@ export const MenuButton: React.FC<MenuButtonProps> = ({ onClick, children, class
 export default function Home() {
     const app = useApp();
     const router = useRouter();
+    
+    const {results, isLoading} = useSavedGames();
+    const [confirmLoad, ConfirmLoadDialog] = useConfirm({
+        title: "游戏崩溃",
+    });
+    const crashReportConsumed = useRef(false);
+
+    useEffect(() => {
+        console.log("useEffect triggered, results:", results, "isLoading:", isLoading);
+        if (isLoading || crashReportConsumed.current || !results.length) {
+            return;
+        }
+
+        const latestSave = results
+            .filter(save => save.type === SaveType.Recovery)
+            .sort((a, b) => b.updated - a.updated)[0];
+
+        const crashReport = app.getCrashReport();
+        if (crashReport) {
+            console.log("Found crash report, showing dialog");
+            confirmLoad({
+                message: `游戏崩溃，是否加载上次崩溃时的存档？\n${crashReport.reason ? `错误信息：${crashReport.reason}` : "游戏似乎没有提供错误信息。"}`,
+            }).then(result => {
+                console.log("Dialog result:", result, "current results:", results);
+                if (result && results) {  // 再次检查 results
+                    // handleRecover();
+                    console.log("Loading save", latestSave);
+                    app.loadGame(latestSave.id);
+                }
+            });
+            crashReportConsumed.current = true;
+        }
+    }, [isLoading, results]);
+
+    function handleContinue() {
+        if (!results) {
+            return;
+        }
+
+        const latestSave = results
+            .filter(save => save.type === SaveType.Save)
+            .sort((a, b) => b.updated - a.updated)[0];
+
+        if (!latestSave) {
+            return;
+        }
+
+        console.log("Loading save", latestSave);
+        app.loadGame(latestSave.id);
+    }
 
     return (
         <div className="relative min-h-full overflow-hidden">
@@ -38,6 +89,10 @@ export default function Home() {
             <Panel route={false} className="flex-1 flex flex-col justify-center gap-6">
                 {/* Vertical Stack Container */}
                 <div className="flex-1 flex flex-col justify-center gap-8 m-8 max-w-md mx-auto w-full">
+                    <MenuButton onClick={handleContinue}>
+                        <span className="text-xl font-semibold">继续游戏</span>
+                    </MenuButton>
+
                     <MenuButton onClick={() => app.newGame()}>
                         <span className="text-xl font-semibold">开始游戏</span>
                     </MenuButton>
@@ -54,6 +109,7 @@ export default function Home() {
                         <span className="text-xl font-semibold">关于</span>
                     </MenuButton>
                 </div>
+                {ConfirmLoadDialog}
             </Panel>
 
             {/* Main Title */}

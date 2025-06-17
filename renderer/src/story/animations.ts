@@ -1,5 +1,4 @@
-
-
+import { Transform, TransformDefinitions } from "narraleaf-react";
 
 export function easeOutBack(t: number) {
     const c1 = 1.70158;
@@ -12,3 +11,16 @@ export function multiBounce(t: number) {
     const frequency = 5;
     return 1 - Math.exp(-damping * t) * Math.cos(frequency * t * Math.PI);
 }
+
+export const shake: Transform<TransformDefinitions.ImageTransformProps> = Transform.create()
+    .repeat(3)
+    .position({ xoffset: 10 })
+    .commit({ duration: 75 })
+    .position({ xoffset: 0 })
+    .commit({ duration: 75 });
+
+export const bounce: Transform<TransformDefinitions.ImageTransformProps> = Transform.create()
+    .scale(0.6)
+    .commit({ duration: 500, ease: "easeInOut" })
+    .scale(0.5)
+    .commit({ duration: 500, ease: "easeIn" });

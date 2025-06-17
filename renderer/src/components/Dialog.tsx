@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { useBackdrop } from '../hooks/useBackdrop';
 
 function SentenceContext() {
-    const {done} = useDialog();
+    const { done } = useDialog();
 
     return (
         <>
@@ -24,11 +24,14 @@ function SentenceContext() {
 }
 
 export function GameDialog() {
-    const {isNarrator} = useDialog();
+    const { isNarrator } = useDialog();
     const backdrop = useBackdrop("sm");
-    
+
     return (
-        <Dialog className={clsx("rounded-2xl p-8 shadow-lg w-[90%] h-[90%] mb-4 AlimamaFangYuanTiVF-Thin bg-bottom relative bg-black/50 border-2 border-primary mx-auto", backdrop)}>
+        <Dialog className={clsx(
+            "absolute bottom-4 left-1/2 -translate-x-1/2 rounded-2xl p-8 shadow-lg w-[90%] h-[216px] AlimamaFangYuanTiVF-Thin bg-bottom bg-black/50 border-2 border-primary",
+            backdrop
+        )}>
             <div className={clsx("absolute left-[30px] -top-8", {
                 "hidden": isNarrator
             })}>

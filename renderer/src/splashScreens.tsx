@@ -1,4 +1,5 @@
 import { SplashScreenDefinition } from "narraleaf/client";
+import { NarraLeafLogo } from "./components/NarraLeafLogo";
 
 export const splashScreen: SplashScreenDefinition[] = [{
     initial: {opacity: 0, scale: 0.95},
@@ -6,27 +7,23 @@ export const splashScreen: SplashScreenDefinition[] = [{
         opacity: 1,
         scale: 1,
         transition: {
-            duration: 1.5,
+            duration: 3,
             ease: "easeOut"
         }
     },
     exit: {
         opacity: 0,
-        scale: 0.97,
+        scale: 0.95,
         transition: {
             duration: 0.5,
-            ease: "easeIn"
+            ease: "circInOut"
         }
     },
-    duration: 1.5,
+    duration: 1,
     splashScreen:(
-        <div className="flex justify-center items-center w-full h-full min-w-screen min-h-screen text-white">
+        <div className="flex justify-center items-center w-full h-full min-w-screen min-h-screen text-black overflow-hidden">
             <div className="transform transition-all">
-                <img 
-                    src="/static/img/ui/logo-text-blue.png" 
-                    alt="Logo" 
-                    className="w-auto h-auto max-w-[300px]"
-                />
+                <NarraLeafLogo />
             </div>
         </div>
     )
@@ -53,7 +50,7 @@ export const splashScreen: SplashScreenDefinition[] = [{
                 <img 
                     src="/static/img/ui/mewbaka-logo.png" 
                     alt="Logo" 
-                    className="w-auto h-auto max-w-[400px] invert"
+                    className="w-auto h-auto max-w-[400px]"
                 />
             </div>
         </div>
@@ -76,7 +73,7 @@ export const splashScreen: SplashScreenDefinition[] = [{
     },
     duration: 1.5,
     splashScreen:(
-        <div className="flex justify-center items-center w-full h-full min-w-screen min-h-screen text-black">
+        <div className="flex justify-center items-center w-full h-full min-w-screen min-h-screen text-black AlimamaFangYuanTiVF-Thin">
             <div className="flex flex-col items-center gap-4">
                 <h1 className="text-4xl font-bold">NarraLeaf Demo</h1>
                 <p className="text-xl text-gray-500">
