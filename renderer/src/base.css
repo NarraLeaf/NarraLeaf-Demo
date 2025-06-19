@@ -43,3 +43,40 @@ img {
     user-drag: none;
     pointer-events: none;
 }
+
+.error-container {
+    /* Use flexbox to center the card */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+    background-color: #f6f8fa;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #24292e;
+}
+
+.error-card {
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+}
+
+.error-icon {
+    width: 64px;
+    height: 64px;
+    color: #d32f2f;
+    margin: 0 auto 1rem;
+}
+
+.error-title {
+    margin: 0.5rem 0;
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+.error-message {
+    margin-bottom: 1.5rem;
+    color: #57606a;
+}

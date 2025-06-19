@@ -51,6 +51,7 @@ app.onReady(async () => {
     window.handleUserEvent<void, GamePreferences>("getGamePreferences", async () => {
         return await preferenceStore.read();
     });
+    
     window.handleUserEvent<void, WindowState>("getWindowState", async () => {
         return {
             mode: (await preferenceStore.read()).windowMode,
