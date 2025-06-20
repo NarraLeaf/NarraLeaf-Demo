@@ -31,6 +31,17 @@ html, body {
     font-family: 'AlimamaFangYuanTiVF-Thin';
 }
 
+@font-face {
+    font-family: 'ZhanKu';
+    src: url('../public/static/font/站酷快乐体.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.ZhanKu {
+    font-family: 'ZhanKu';
+}
+
 *, *::before, *::after {
     user-select: none;
 }
