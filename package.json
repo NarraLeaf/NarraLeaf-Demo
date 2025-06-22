@@ -6,11 +6,12 @@
   "scripts": {
     "build": "narraleaf build",
     "dev": "narraleaf dev",
-    "info": "narraleaf info"
+    "info": "narraleaf info",
+    "setup-react-devtools": "node scripts/setup-react-devtools.js"
   },
   "dependencies": {
     "clsx": "^2.1.1",
-    "framer-motion": "^12.12.1",
+    "framer-motion": "12.18.1",
     "lucide-react": "^0.503.0",
     "narraleaf": "^0.0.8-alpha.4",
     "narraleaf-react": "^0.6.0",

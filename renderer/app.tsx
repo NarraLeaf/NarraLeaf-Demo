@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {useGame, usePreference, useRouter} from 'narraleaf-react';
-// import {GameMetadata, requestMain, useApp, useGamePlayback} from 'narraleaf/client';
+// import {GameMetadata, requestMain, useGamePlayback} from 'narraleaf/client';
 import {GameMetadata, useApp} from 'narraleaf/client';
 
 // Import your assets
@@ -11,21 +11,13 @@ import { GameDialog } from './src/components/Dialog';
 import { DefaultMenu } from './src/components/Menu';
 // import { createPreloadEntryPlugin } from './src/plugins';
 // import {splashScreen} from './src/splashScreens';
-// import { DemoConfigProvider } from './src/components/DemoConfig';
+import { DemoConfigProvider } from './src/components/DemoConfig';
 // import { useRouter } from 'narraleaf-react';
 import GameNotification from './src/components/Notifications';
 // import { GamePreferences } from './pages/settings';
 
-// // Add font preload function
-// const preloadFont = (fontUrl: string) => {
-//     const font = new FontFace('AlimamaFangYuanTiVF-Thin', `url(${fontUrl})`);
-//     return font.load().then(() => {
-//         document.fonts.add(font);
-//         console.log('Font loaded successfully');
-//     }).catch(err => {
-//         console.error('Font loading failed:', err);
-//     });
-// };
+// Import test panel components
+import { TestPanelProvider, GlobalTestPanel } from './src/components/testPanel';
 
 const App = ({children}: {children: React.ReactNode}) => {
     // Access the game instance by using the useGame hook
@@ -64,7 +56,9 @@ const App = ({children}: {children: React.ReactNode}) => {
                     trace: true,
                     verbose: true,
                 },
-            }
+            },
+
+            animationPropagate: true,
         });
 
         console.log(game, router, app);
@@ -136,15 +130,16 @@ const App = ({children}: {children: React.ReactNode}) => {
     // }, []);
 
     return (
-        <>
-            {/* <DemoConfigProvider> */}
+        <TestPanelProvider>
+            <DemoConfigProvider>
                 {children}
-            {/* </DemoConfigProvider> */}
-        </>
+                
+                {/* Global Test Panel - Rendered at app level to avoid transform scaling issues */}
+                <GlobalTestPanel />
+            </DemoConfigProvider>
+        </TestPanelProvider>
     );
 };
-
-
 
 // const Stage = () => {
 //     const {isPlaying} = useGamePlayback();
