@@ -70,12 +70,6 @@ export default function Settings() {
             <div className="flex flex-col h-full">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-bold text-white">设置</h1>
-                    <button
-                        onClick={handleBack}
-                        className="px-4 py-2 text-white border border-primary rounded-lg hover:bg-primary/10 transition-colors duration-200"
-                    >
-                        返回
-                    </button>
                 </div>
 
                 <div className="space-y-2">

@@ -19,10 +19,10 @@ interface MenuButtonProps {
     parallaxEnabled?: boolean;
 }
 
-function MenuButtonComponent({ 
-    children, 
-    active = false, 
-    onClick, 
+function MenuButtonComponent({
+    children,
+    active = false,
+    onClick,
     mousePosition = { x: 0.5, y: 0.5 },
     isMouseInView = false,
     parallaxEnabled = false
@@ -30,18 +30,18 @@ function MenuButtonComponent({
     // Calculate 3D rotation for button text
     const getButtonRotation = () => {
         if (!isMouseInView || !parallaxEnabled) return { rotateX: 0, rotateY: 0 };
-        
+
         // Calculate direction from center
         const directionX = mousePosition.x - 0.5;
         const directionY = mousePosition.y - 0.5;
-        
+
         // Convert to rotation angles (in degrees) - subtle for text
         const maxRotationX = 3; // Subtle X rotation for text
         const maxRotationY = 4; // Subtle Y rotation for text
-        
+
         const rotateX = -directionY * maxRotationX; // Negative for natural tilt
         const rotateY = directionX * maxRotationY;
-        
+
         return { rotateX, rotateY };
     };
 
@@ -87,7 +87,7 @@ function MenuButtonComponent({
         <motion.button
             onClick={onClick}
             className={`text-3xl font-medium cursor-pointer text-center transition-colors duration-200 hover:text-white relative ${active ? 'text-white' : 'text-white/80'}`}
-            style={{ 
+            style={{
                 fontFamily: 'ZhanKu, sans-serif',
                 transformStyle: 'preserve-3d',
                 perspective: '1000px'
@@ -109,7 +109,7 @@ function MenuButtonComponent({
                     duration: 0.3
                 }}
             ></motion.div>
-            
+
             {/* Text with 3D rotation */}
             <motion.span
                 style={{
@@ -314,7 +314,7 @@ export function HomePanel({
         const rect = event.currentTarget.getBoundingClientRect();
         const x = (event.clientX - rect.left) / rect.width;
         const y = (event.clientY - rect.top) / rect.height;
-        
+
         setMousePosition({ x, y });
         setIsMouseInView(true);
         handleMouseMove(event);
@@ -329,7 +329,7 @@ export function HomePanel({
     // Different background images for left and right panels
     const leftPanelBgImage = "url('/static/img/ui/main-menu/main_menu_left.png')";
     const rightPanelBgImage = "url('/static/img/ui/main-menu/main_menu_right.png')";
-    
+
     // Secondary background images
     const leftPanelSecondaryBgImage = "url('/static/img/ui/main-menu/main_menu_left_layer.png')";
     const rightPanelSecondaryBgImage = "url('/static/img/ui/main-menu/main_menu_right_layer.png')";
@@ -374,7 +374,7 @@ export function HomePanel({
     const rightSecondaryOffset = getLayerOffsets('secondary'); // Secondary background with different parallax
     const contentOffset = getLayerOffsets('content');
     const buttonsOffset = getLayerOffsets('buttons');
-    
+
     // Get 3D rotation angles
     const leftPanelRotation = get3DRotation('background');
     const rightPanelRotation = get3DRotation('background');
@@ -425,7 +425,7 @@ export function HomePanel({
                         }
                     } : "visible"}
                 />
-                
+
                 {/* Left Panel - Primary Background Layer */}
                 <motion.div
                     className="flex flex-col justify-center items-center relative"
@@ -617,7 +617,7 @@ export function HomePanel({
                                     rotateY: -2 // 从-4减到-2
                                 }}
                             >
-                            {children}
+                                {children}
                             </motion.div>
                         </div>
                     </motion.div>
