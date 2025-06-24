@@ -2,19 +2,22 @@ import { useRouter } from "narraleaf-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useContext, useEffect, useState } from "react";
 import { PresenceContext } from "motion/react";
+import { PresenceContext as PresenceContext2 } from "narraleaf-react";
 
 export default function About() {
     const router = useRouter();
-    const r = useContext(PresenceContext)
-    console.log(r)
-
+    const r = useContext(PresenceContext);
+    const r2 = useContext(PresenceContext2);
+    console.log(r);
+    console.log("Is Equal", PresenceContext === PresenceContext2);
+    console.log("r2", r2);
     return (
         <motion.div
             className="h-full w-full absolute"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1, ease: "easeInOut" }}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
         >
             <h1 className="text-2xl font-bold text-white mb-6">关于</h1>
 

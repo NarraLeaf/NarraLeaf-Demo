@@ -50,7 +50,7 @@ export default function  Test() {
 
     return (<motion.div
         key="test-element"
-        className="bg-blue-500/20 border border-blue-400/40 rounded-lg p-6 min-w-[300px]"
+        className="bg-blue-500/20 border border-blue-400/40 rounded-lg p-6 min-w-[300px] absolute"
         initial={{ 
             opacity: 0, 
             scale: 0.8, 

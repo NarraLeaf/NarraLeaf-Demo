@@ -278,6 +278,19 @@ function useSmoothParallax() {
         return { rotateX, rotateY };
     }, [mousePosition, isMouseInView, parallaxEnabled]);
 
+    // Calculate 3D rotation angles for content (reduced by 50%)
+    const getContent3DRotation = useCallback(() => {
+        if (!isMouseInView || !parallaxEnabled) return { rotateX: 0, rotateY: 0 };
+        const directionX = mousePosition.x - 0.5;
+        const directionY = mousePosition.y - 0.5;
+        // Reduce content rotation by 50%
+        const maxRotationX = 3; // Reduced from 6
+        const maxRotationY = 4.5; // Reduced from 9
+        const rotateX = -directionY * maxRotationX;
+        const rotateY = directionX * maxRotationY;
+        return { rotateX, rotateY };
+    }, [mousePosition, isMouseInView, parallaxEnabled]);
+
     return {
         handleMouseMove,
         handleMouseLeave,
@@ -285,7 +298,8 @@ function useSmoothParallax() {
         parallaxEnabled,
         currentOffset: currentOffset.current,
         getLayerOffsets,
-        get3DRotation
+        get3DRotation,
+        getContent3DRotation
     };
 }
 
@@ -302,7 +316,8 @@ export function HomePanel({
         isInitialAnimationComplete,
         parallaxEnabled,
         getLayerOffsets,
-        get3DRotation
+        get3DRotation,
+        getContent3DRotation
     } = useSmoothParallax();
 
     // Get mouse position from the hook
@@ -378,6 +393,7 @@ export function HomePanel({
     // Get 3D rotation angles
     const leftPanelRotation = get3DRotation('background');
     const rightPanelRotation = get3DRotation('background');
+    const rightContentRotation = getContent3DRotation(); // Use reduced rotation for content
 
     useEffect(() => {
         console.warn("HomePanel render");
@@ -574,16 +590,20 @@ export function HomePanel({
                             transform: 'translateZ(0)',
                             backfaceVisibility: 'hidden',
                             transformStyle: 'preserve-3d',
-                            perspective: '1000px'
+                            perspective: '1000px',
+                            imageRendering: 'crisp-edges',
+                            textRendering: 'optimizeLegibility',
+                            WebkitFontSmoothing: 'antialiased',
+                            MozOsxFontSmoothing: 'grayscale'
                         }}
                         initial={{
-                            rotateY: -1.5 // 从-2.5减到-1.5
+                            rotateY: -2 // Initial leftward rotation
                         }}
                         animate={parallaxEnabled ? {
                             x: contentOffset.x,
                             y: contentOffset.y,
-                            rotateX: rightPanelRotation.rotateX * 0.3,
-                            rotateY: rightPanelRotation.rotateY * 0.3 - 1.5, // 从-2.5减到-1.5
+                            rotateX: rightContentRotation.rotateX,
+                            rotateY: rightContentRotation.rotateY - 2, // Maintain initial rotation
                             transition: {
                                 type: "spring" as const,
                                 stiffness: 100,
@@ -591,7 +611,7 @@ export function HomePanel({
                                 mass: 0.6
                             }
                         } : {
-                            rotateY: -1.5 // 从-2.5减到-1.5
+                            rotateY: -2 // Keep initial rotation when parallax is disabled
                         }}
                     >
                         <div className="relative w-full h-full">
@@ -599,14 +619,18 @@ export function HomePanel({
                             <motion.div
                                 style={{
                                     transformStyle: 'preserve-3d',
-                                    backfaceVisibility: 'hidden'
+                                    backfaceVisibility: 'hidden',
+                                    imageRendering: 'crisp-edges',
+                                    textRendering: 'optimizeLegibility',
+                                    WebkitFontSmoothing: 'antialiased',
+                                    MozOsxFontSmoothing: 'grayscale'
                                 }}
                                 initial={{
-                                    rotateY: -2 // 从-4减到-2
+                                    rotateY: -1.5 // Additional leftward rotation for text
                                 }}
                                 animate={parallaxEnabled ? {
-                                    rotateX: rightPanelRotation.rotateX * 0.2,
-                                    rotateY: rightPanelRotation.rotateY * 0.2 - 2, // 从-4减到-2
+                                    rotateX: rightContentRotation.rotateX * 0.2,
+                                    rotateY: rightContentRotation.rotateY * 0.2 - 1.5, // Maintain initial rotation
                                     transition: {
                                         type: "spring" as const,
                                         stiffness: 150,
@@ -614,7 +638,7 @@ export function HomePanel({
                                         mass: 0.4
                                     }
                                 } : {
-                                    rotateY: -2 // 从-4减到-2
+                                    rotateY: -1.5 // Keep initial rotation when parallax is disabled
                                 }}
                             >
                                 {children}

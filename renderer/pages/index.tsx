@@ -6,14 +6,8 @@ export default function Index() {
     const router = useRouter();
 
     useEffect(() => {
-        setTimeout(() => {
-            router.navigate("/home");
-        }, 1000);
+        router.navigate("/home");
     }, []);
 
-    return (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1, ease: "easeInOut" }}>
-            <h1>Index</h1>
-        </motion.div>
-    );
+    return null;
 }

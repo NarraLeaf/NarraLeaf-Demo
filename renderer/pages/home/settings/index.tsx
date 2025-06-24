@@ -59,10 +59,10 @@ export default function Settings() {
         <motion.div
             key="settings-page"
             className="h-full w-full absolute"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1, ease: "easeInOut" }}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
         >
             <div className="flex flex-col h-full">
                 <div className="flex justify-between items-center mb-6">
