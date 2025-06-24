@@ -1,9 +1,12 @@
 import { useRouter } from "narraleaf-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { PresenceContext } from "motion/react";
 
 export default function About() {
     const router = useRouter();
+    const r = useContext(PresenceContext)
+    console.log(r)
 
     return (
         <motion.div
@@ -11,7 +14,7 @@ export default function About() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            transition={{ duration: 1, ease: "easeInOut" }}
         >
             <h1 className="text-2xl font-bold text-white mb-6">关于</h1>
 

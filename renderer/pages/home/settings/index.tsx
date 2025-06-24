@@ -39,8 +39,6 @@ export default function Settings() {
     const [skipDelay, setSkipDelay] = usePreference("skipDelay");
     const [skipInterval, setSkipInterval] = usePreference("skipInterval");
 
-    const [, safeToRemove] = usePresence();
-
     useEffect(() => {
         window.NarraLeaf.app.requestMain<void, WindowState>("getWindowState").then((response) => {
             if (response.success) {
@@ -58,14 +56,13 @@ export default function Settings() {
     };
 
     return (
-        <motion.div 
+        <motion.div
             key="settings-page"
             className="h-full w-full absolute"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            onAnimationComplete={() => safeToRemove?.()}
+            transition={{ duration: 1, ease: "easeInOut" }}
         >
             <div className="flex flex-col h-full">
                 <div className="flex justify-between items-center mb-6">

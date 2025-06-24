@@ -104,7 +104,7 @@ export default function Load() {
     }
 
     return (
-        <motion.div 
+        <motion.div
             className="h-full w-full absolute"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
