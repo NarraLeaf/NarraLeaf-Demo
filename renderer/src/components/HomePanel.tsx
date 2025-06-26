@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { useDemoConfig } from './DemoConfig';
 
 // Button interface with active property
 export interface MenuButton {
@@ -17,6 +18,7 @@ interface MenuButtonProps {
     mousePosition?: { x: number; y: number };
     isMouseInView?: boolean;
     parallaxEnabled?: boolean;
+    visualEffect?: boolean;
 }
 
 function MenuButtonComponent({
@@ -25,11 +27,12 @@ function MenuButtonComponent({
     onClick,
     mousePosition = { x: 0.5, y: 0.5 },
     isMouseInView = false,
-    parallaxEnabled = false
+    parallaxEnabled = false,
+    visualEffect = true
 }: MenuButtonProps) {
     // Calculate 3D rotation for button text
     const getButtonRotation = () => {
-        if (!isMouseInView || !parallaxEnabled) return { rotateX: 0, rotateY: 0 };
+        if (!isMouseInView || !parallaxEnabled || !visualEffect) return { rotateX: 0, rotateY: 0 };
 
         // Calculate direction from center
         const directionX = mousePosition.x - 0.5;
@@ -86,7 +89,7 @@ function MenuButtonComponent({
     return (
         <motion.button
             onClick={onClick}
-            className={`text-3xl font-medium cursor-pointer text-center transition-colors duration-200 hover:text-white relative ${active ? 'text-white' : 'text-white/80'}`}
+            className={`text-3xl font-medium cursor-pointer text-center transition-colors duration-200 hover:text-white relative drop-shadow-[0_1px_2px_rgba(255,255,255,0.2)] ${active ? 'text-white' : 'text-white/90'}`}
             style={{
                 fontFamily: 'ZhanKu, sans-serif',
                 transformStyle: 'preserve-3d',
@@ -99,7 +102,7 @@ function MenuButtonComponent({
         >
             {/* White vertical bar for selected state - always render but animate visibility */}
             <motion.div
-                className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 bg-white rounded-full -ml-2"
+                className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 bg-white rounded-full -ml-2 drop-shadow-[0_1px_2px_rgba(255,255,255,0.3)]"
                 initial={{ height: 0, opacity: 0 }}
                 animate={active ? { height: 24, opacity: 1 } : { height: 0, opacity: 0 }}
                 transition={{
@@ -118,11 +121,11 @@ function MenuButtonComponent({
                     backfaceVisibility: 'hidden'
                 }}
                 initial={{
-                    rotateY: 2 // 从4减到2
+                    rotateY: visualEffect ? 2 : 0 // 根据visualEffect决定是否应用初始旋转
                 }}
                 animate={{
                     rotateX: buttonRotation.rotateX,
-                    rotateY: buttonRotation.rotateY + 2, // 从+4减到+2
+                    rotateY: buttonRotation.rotateY + (visualEffect ? 2 : 0), // 根据visualEffect决定是否应用旋转
                     transition: {
                         type: "spring" as const,
                         stiffness: 200,
@@ -154,8 +157,8 @@ function useSmoothParallax() {
     };
 
     // Calculate target offset with improved easing
-    const calculateTargetOffset = useCallback((mouseX: number, mouseY: number, sensitivity: number, maxOffset: number) => {
-        if (!isMouseInView || !parallaxEnabled) return { x: 0, y: 0 };
+    const calculateTargetOffset = useCallback((mouseX: number, mouseY: number, sensitivity: number, maxOffset: number, visualEffect: boolean = true) => {
+        if (!isMouseInView || !parallaxEnabled || !visualEffect) return { x: 0, y: 0 };
 
         // Calculate direction from center
         const directionX = mouseX - 0.5;
@@ -193,6 +196,16 @@ function useSmoothParallax() {
 
     // Mouse move handler - only updates target values
     const handleMouseMove = useCallback((event: React.MouseEvent) => {
+        // Check if the event is coming from an interactive element that needs mouse events
+        const target = event.target as Element;
+        const isInteractiveElement = target.closest('input, button, select, textarea, [contenteditable="true"], [role="slider"]') ||
+            target.matches('input, button, select, textarea, [contenteditable="true"], [role="slider"]');
+        
+        // If it's an interactive element, don't interfere with its events
+        if (isInteractiveElement) {
+            return;
+        }
+        
         const rect = event.currentTarget.getBoundingClientRect();
         const x = (event.clientX - rect.left) / rect.width;
         const y = (event.clientY - rect.top) / rect.height;
@@ -234,7 +247,7 @@ function useSmoothParallax() {
     }, []);
 
     // Calculate offsets for different layers with z-depth
-    const getLayerOffsets = useCallback((layer: 'background' | 'secondary' | 'content' | 'buttons') => {
+    const getLayerOffsets = useCallback((layer: 'background' | 'secondary' | 'content' | 'buttons', visualEffect: boolean = true) => {
         const baseSensitivity = 0.2;
         const baseMaxOffset = 30;
         let sensitivity: number;
@@ -260,12 +273,12 @@ function useSmoothParallax() {
                 sensitivity = baseSensitivity;
                 maxOffset = baseMaxOffset;
         }
-        return calculateTargetOffset(mousePosition.x, mousePosition.y, sensitivity, maxOffset);
+        return calculateTargetOffset(mousePosition.x, mousePosition.y, sensitivity, maxOffset, visualEffect);
     }, [mousePosition, calculateTargetOffset]);
 
     // Calculate 3D rotation angles for tilt effect
-    const get3DRotation = useCallback((type: 'background' | 'content' = 'content') => {
-        if (!isMouseInView || !parallaxEnabled) return { rotateX: 0, rotateY: 0 };
+    const get3DRotation = useCallback((type: 'background' | 'content' = 'content', visualEffect: boolean = true) => {
+        if (!isMouseInView || !parallaxEnabled || !visualEffect) return { rotateX: 0, rotateY: 0 };
         const directionX = mousePosition.x - 0.5;
         const directionY = mousePosition.y - 0.5;
         let maxRotationX = 6, maxRotationY = 9;
@@ -279,8 +292,8 @@ function useSmoothParallax() {
     }, [mousePosition, isMouseInView, parallaxEnabled]);
 
     // Calculate 3D rotation angles for content (reduced by 50%)
-    const getContent3DRotation = useCallback(() => {
-        if (!isMouseInView || !parallaxEnabled) return { rotateX: 0, rotateY: 0 };
+    const getContent3DRotation = useCallback((visualEffect: boolean = true) => {
+        if (!isMouseInView || !parallaxEnabled || !visualEffect) return { rotateX: 0, rotateY: 0 };
         const directionX = mousePosition.x - 0.5;
         const directionY = mousePosition.y - 0.5;
         // Reduce content rotation by 50%
@@ -305,10 +318,14 @@ function useSmoothParallax() {
 
 export function HomePanel({
     children,
-    buttons
+    buttons,
+    raw = false,
+    isHomePage = true
 }: {
     children: React.ReactNode;
     buttons: MenuButton[];
+    raw?: boolean;
+    isHomePage?: boolean;
 }) {
     const {
         handleMouseMove,
@@ -320,12 +337,24 @@ export function HomePanel({
         getContent3DRotation
     } = useSmoothParallax();
 
+    const [visualEffect] = useDemoConfig("useVisualEffect");
+
     // Get mouse position from the hook
     const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 });
     const [isMouseInView, setIsMouseInView] = useState(false);
 
     // Enhanced mouse handlers that also update local state
     const enhancedMouseMove = useCallback((event: React.MouseEvent) => {
+        // Check if the event is coming from an interactive element that needs mouse events
+        const target = event.target as Element;
+        const isInteractiveElement = target.closest('input, button, select, textarea, [contenteditable="true"], [role="slider"]') ||
+            target.matches('input, button, select, textarea, [contenteditable="true"], [role="slider"]');
+        
+        // If it's an interactive element, don't interfere with its events
+        if (isInteractiveElement) {
+            return;
+        }
+        
         const rect = event.currentTarget.getBoundingClientRect();
         const x = (event.clientX - rect.left) / rect.width;
         const y = (event.clientY - rect.top) / rect.height;
@@ -375,25 +404,25 @@ export function HomePanel({
             x: 0,
             transition: {
                 type: "spring" as const,
-                stiffness: 100,
-                damping: 20,
-                duration: 0.8,
+                stiffness: isHomePage ? 100 : 200,
+                damping: isHomePage ? 20 : 25,
+                duration: isHomePage ? 0.8 : 0
             }
         }
     };
 
     // Get offsets for different layers
-    const leftPanelOffset = getLayerOffsets('background');
-    const rightPanelOffset = getLayerOffsets('background');
-    const leftSecondaryOffset = getLayerOffsets('secondary'); // Secondary background with different parallax
-    const rightSecondaryOffset = getLayerOffsets('secondary'); // Secondary background with different parallax
-    const contentOffset = getLayerOffsets('content');
-    const buttonsOffset = getLayerOffsets('buttons');
+    const leftPanelOffset = getLayerOffsets('background', visualEffect);
+    const rightPanelOffset = getLayerOffsets('background', visualEffect);
+    const leftSecondaryOffset = getLayerOffsets('secondary', visualEffect); // Secondary background with different parallax
+    const rightSecondaryOffset = getLayerOffsets('secondary', visualEffect); // Secondary background with different parallax
+    const contentOffset = getLayerOffsets('content', visualEffect);
+    const buttonsOffset = getLayerOffsets('buttons', visualEffect);
 
     // Get 3D rotation angles
-    const leftPanelRotation = get3DRotation('background');
-    const rightPanelRotation = get3DRotation('background');
-    const rightContentRotation = getContent3DRotation(); // Use reduced rotation for content
+    const leftPanelRotation = get3DRotation('background', visualEffect);
+    const rightPanelRotation = get3DRotation('background', visualEffect);
+    const rightContentRotation = getContent3DRotation(visualEffect); // Use reduced rotation for content
 
     useEffect(() => {
         console.warn("HomePanel render");
@@ -427,8 +456,8 @@ export function HomePanel({
                         perspective: '1000px'
                     }}
                     variants={leftPanelVariants}
-                    initial="hidden"
-                    animate={isInitialAnimationComplete ? {
+                    initial={isHomePage ? "hidden" : "visible"}
+                    animate={isHomePage && isInitialAnimationComplete ? {
                         x: leftSecondaryOffset.x,
                         y: leftSecondaryOffset.y,
                         rotateX: leftPanelRotation.rotateX * 0.7, // Slightly less rotation for depth
@@ -439,7 +468,18 @@ export function HomePanel({
                             damping: 25,
                             mass: 0.8
                         }
-                    } : "visible"}
+                    } : {
+                        x: leftSecondaryOffset.x,
+                        y: leftSecondaryOffset.y,
+                        rotateX: leftPanelRotation.rotateX * 0.7,
+                        rotateY: leftPanelRotation.rotateY * 0.7,
+                        transition: {
+                            type: "spring" as const,
+                            stiffness: 200,
+                            damping: 25,
+                            mass: 0.8
+                        }
+                    }}
                 />
 
                 {/* Left Panel - Primary Background Layer */}
@@ -459,8 +499,8 @@ export function HomePanel({
                         perspective: '1000px'
                     }}
                     variants={leftPanelVariants}
-                    initial="hidden"
-                    animate={isInitialAnimationComplete ? {
+                    initial={isHomePage ? "hidden" : "visible"}
+                    animate={isHomePage && isInitialAnimationComplete ? {
                         x: leftPanelOffset.x,
                         y: leftPanelOffset.y,
                         rotateX: leftPanelRotation.rotateX,
@@ -471,7 +511,18 @@ export function HomePanel({
                             damping: 20,
                             mass: 0.6
                         }
-                    } : "visible"}
+                    } : {
+                        x: leftPanelOffset.x,
+                        y: leftPanelOffset.y,
+                        rotateX: leftPanelRotation.rotateX,
+                        rotateY: leftPanelRotation.rotateY,
+                        transition: {
+                            type: "spring" as const,
+                            stiffness: 200,
+                            damping: 25,
+                            mass: 0.6
+                        }
+                    }}
                 >
                     {/* Content Layer - Buttons with opposite movement for 3D effect */}
                     <motion.div
@@ -485,13 +536,13 @@ export function HomePanel({
                             perspective: '1000px'
                         }}
                         initial={{
-                            rotateY: 1.5 // 从2.5减到1.5
+                            rotateY: visualEffect ? 1.5 : 0 // 根据visualEffect决定是否应用初始旋转
                         }}
                         animate={parallaxEnabled ? {
                             x: buttonsOffset.x,
                             y: buttonsOffset.y,
                             rotateX: leftPanelRotation.rotateX * 0.3,
-                            rotateY: leftPanelRotation.rotateY * 0.3 + 1.5, // 从+2.5减到+1.5
+                            rotateY: leftPanelRotation.rotateY * 0.3 + (visualEffect ? 1.5 : 0), // 根据visualEffect决定是否应用旋转
                             transition: {
                                 type: "spring" as const,
                                 stiffness: 100,
@@ -499,7 +550,7 @@ export function HomePanel({
                                 mass: 0.6
                             }
                         } : {
-                            rotateY: 1.5 // 从2.5减到1.5
+                            rotateY: visualEffect ? 1.5 : 0 // 根据visualEffect决定是否应用旋转
                         }}
                     >
                         {buttons.map((button) => (
@@ -510,6 +561,7 @@ export function HomePanel({
                                 mousePosition={mousePosition}
                                 isMouseInView={isMouseInView}
                                 parallaxEnabled={parallaxEnabled}
+                                visualEffect={visualEffect}
                             >
                                 {button.label}
                             </MenuButtonComponent>
@@ -520,44 +572,57 @@ export function HomePanel({
 
             {/* Right Panel Container */}
             <div className="relative" style={{ width: `${rightPanelWidth}%` }}>
-                {/* Right Panel Secondary Background Layer */}
-                <motion.div
-                    className="absolute inset-0 z-0"
-                    style={{
-                        backgroundImage: rightPanelSecondaryBgImage,
-                        backgroundSize: 'contain',
-                        backgroundPosition: 'center',
-                        backgroundRepeat: 'no-repeat',
-                        willChange: 'transform',
-                        transform: 'translateZ(0)',
-                        backfaceVisibility: 'hidden',
-                        opacity: 0.7, // Slightly transparent for layering effect
-                        transformStyle: 'preserve-3d',
-                        perspective: '1000px'
-                    }}
-                    variants={rightPanelVariants}
-                    initial="hidden"
-                    animate={isInitialAnimationComplete ? {
-                        x: rightSecondaryOffset.x,
-                        y: rightSecondaryOffset.y,
-                        rotateX: rightPanelRotation.rotateX * 0.7, // Slightly less rotation for depth
-                        rotateY: rightPanelRotation.rotateY * 0.7,
-                        transition: {
-                            type: "spring" as const,
-                            stiffness: 80,
-                            damping: 25,
-                            mass: 0.8
-                        }
-                    } : "visible"}
-                />
+                {/* Right Panel Secondary Background Layer - Hidden in raw mode */}
+                {!raw && (
+                    <motion.div
+                        className="absolute inset-0 z-0"
+                        style={{
+                            backgroundImage: rightPanelSecondaryBgImage,
+                            backgroundSize: 'contain',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                            willChange: 'transform',
+                            transform: 'translateZ(0)',
+                            backfaceVisibility: 'hidden',
+                            opacity: 0.7, // Slightly transparent for layering effect
+                            transformStyle: 'preserve-3d',
+                            perspective: '1000px'
+                        }}
+                        variants={rightPanelVariants}
+                        initial={isHomePage ? "hidden" : "visible"}
+                        animate={isHomePage && isInitialAnimationComplete ? {
+                            x: rightSecondaryOffset.x,
+                            y: rightSecondaryOffset.y,
+                            rotateX: rightPanelRotation.rotateX * 0.7, // Slightly less rotation for depth
+                            rotateY: rightPanelRotation.rotateY * 0.7,
+                            transition: {
+                                type: "spring" as const,
+                                stiffness: 80,
+                                damping: 25,
+                                mass: 0.8
+                            }
+                        } : {
+                            x: rightSecondaryOffset.x,
+                            y: rightSecondaryOffset.y,
+                            rotateX: rightPanelRotation.rotateX * 0.7,
+                            rotateY: rightPanelRotation.rotateY * 0.7,
+                            transition: {
+                                type: "spring" as const,
+                                stiffness: 200,
+                                damping: 25,
+                                mass: 0.8
+                            }
+                        }}
+                    />
+                )}
 
-                {/* Right Panel - Primary Background Layer */}
+                {/* Right Panel - Primary Background Layer - Hidden in raw mode */}
                 <motion.div
                     className="relative flex items-center justify-center"
                     style={{
                         width: '100%',
                         height: '100%',
-                        backgroundImage: rightPanelBgImage,
+                        backgroundImage: raw ? 'none' : rightPanelBgImage,
                         backgroundSize: 'contain',
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat',
@@ -568,8 +633,8 @@ export function HomePanel({
                         perspective: '1000px'
                     }}
                     variants={rightPanelVariants}
-                    initial="hidden"
-                    animate={isInitialAnimationComplete ? {
+                    initial={isHomePage ? "hidden" : "visible"}
+                    animate={isHomePage && isInitialAnimationComplete ? {
                         x: rightPanelOffset.x,
                         y: rightPanelOffset.y,
                         rotateX: rightPanelRotation.rotateX,
@@ -580,7 +645,18 @@ export function HomePanel({
                             damping: 20,
                             mass: 0.6
                         }
-                    } : "visible"}
+                    } : {
+                        x: rightPanelOffset.x,
+                        y: rightPanelOffset.y,
+                        rotateX: rightPanelRotation.rotateX,
+                        rotateY: rightPanelRotation.rotateY,
+                        transition: {
+                            type: "spring" as const,
+                            stiffness: 200,
+                            damping: 25,
+                            mass: 0.6
+                        }
+                    }}
                 >
                     {/* Content Layer - Main content with independent movement */}
                     <motion.div
@@ -597,13 +673,13 @@ export function HomePanel({
                             MozOsxFontSmoothing: 'grayscale'
                         }}
                         initial={{
-                            rotateY: -2 // Initial leftward rotation
+                            rotateY: visualEffect ? -2 : 0 // 根据visualEffect决定是否应用初始旋转
                         }}
                         animate={parallaxEnabled ? {
                             x: contentOffset.x,
                             y: contentOffset.y,
                             rotateX: rightContentRotation.rotateX,
-                            rotateY: rightContentRotation.rotateY - 2, // Maintain initial rotation
+                            rotateY: rightContentRotation.rotateY + (visualEffect ? -2 : 0), // 根据visualEffect决定是否保持初始旋转
                             transition: {
                                 type: "spring" as const,
                                 stiffness: 100,
@@ -611,7 +687,7 @@ export function HomePanel({
                                 mass: 0.6
                             }
                         } : {
-                            rotateY: -2 // Keep initial rotation when parallax is disabled
+                            rotateY: visualEffect ? -2 : 0 // 根据visualEffect决定是否保持初始旋转
                         }}
                     >
                         <div className="relative w-full h-full">
@@ -626,11 +702,11 @@ export function HomePanel({
                                     MozOsxFontSmoothing: 'grayscale'
                                 }}
                                 initial={{
-                                    rotateY: -1.5 // Additional leftward rotation for text
+                                    rotateY: visualEffect ? -1.5 : 0 // 根据visualEffect决定是否应用文本额外旋转
                                 }}
                                 animate={parallaxEnabled ? {
                                     rotateX: rightContentRotation.rotateX * 0.2,
-                                    rotateY: rightContentRotation.rotateY * 0.2 - 1.5, // Maintain initial rotation
+                                    rotateY: rightContentRotation.rotateY * 0.2 + (visualEffect ? -1.5 : 0), // 根据visualEffect决定是否保持初始旋转
                                     transition: {
                                         type: "spring" as const,
                                         stiffness: 150,
@@ -638,7 +714,7 @@ export function HomePanel({
                                         mass: 0.4
                                     }
                                 } : {
-                                    rotateY: -1.5 // Keep initial rotation when parallax is disabled
+                                    rotateY: visualEffect ? -1.5 : 0 // 根据visualEffect决定是否保持初始旋转
                                 }}
                             >
                                 {children}

@@ -1,17 +1,13 @@
 import { useGame, useRouter } from "narraleaf-react";
 import { useEffect, useMemo, useRef } from "react";
 import Panel from "../src/components/Panel";
-import { PageConfig } from "narraleaf/client";
+import ScrollableContainer from "../src/components/lib/ScrollableContainer";
 
 export default function Load() {
     const router = useRouter();
     const game = useGame();
     const liveGame = game.getLiveGame();
-    const scrollRef = useRef<HTMLDivElement>(null);
-    const isDragging = useRef(false);
     const hasDragged = useRef(false);
-    const startY = useRef(0);
-    const scrollTop = useRef(0);
 
     const history = liveGame.getHistory();
 
@@ -19,12 +15,6 @@ export default function Load() {
     const filteredHistory = useMemo(() => {
         return history.filter(h => h.element.text || (h.element.type === "menu" && h.element.selected));
     }, [history]);
-
-    useEffect(() => {
-        if (scrollRef.current) {
-            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-        }
-    }, [filteredHistory]);
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -35,41 +25,6 @@ export default function Load() {
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [router]);
-
-    const handleMouseDown = (e: React.MouseEvent) => {
-        if (!scrollRef.current) return;
-        isDragging.current = true;
-        hasDragged.current = false;
-        startY.current = e.pageY - scrollRef.current.offsetTop;
-        scrollTop.current = scrollRef.current.scrollTop;
-        scrollRef.current.style.cursor = 'grabbing';
-    };
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-        if (!isDragging.current || !scrollRef.current) return;
-        e.preventDefault();
-        const y = e.pageY - scrollRef.current.offsetTop;
-        const walk = (y - startY.current) * 1;
-        scrollRef.current.scrollTop = scrollTop.current - walk;
-        hasDragged.current = true;
-    };
-
-    const handleMouseUp = () => {
-        if (!scrollRef.current) return;
-        isDragging.current = false;
-        scrollRef.current.style.cursor = 'grab';
-    };
-
-    useEffect(() => {
-        const handleMouseUp = () => {
-            if (!scrollRef.current) return;
-            isDragging.current = false;
-            scrollRef.current.style.cursor = 'grab';
-        };
-
-        window.addEventListener('mouseup', handleMouseUp);
-        return () => window.removeEventListener('mouseup', handleMouseUp);
-    }, []);
 
     function handleClick(token: string) {
         if (hasDragged.current) return;
@@ -99,6 +54,15 @@ export default function Load() {
         }
     };
 
+    // Handle scroll events to track dragging state
+    const handleScroll = () => {
+        hasDragged.current = true;
+        // Reset hasDragged after a short delay when scrolling stops
+        setTimeout(() => {
+            hasDragged.current = false;
+        }, 100);
+    };
+
     return (
         <Panel>
             <div className="flex flex-col h-full">
@@ -111,12 +75,10 @@ export default function Load() {
                         返回
                     </button>
                 </div>
-                <div
-                    ref={scrollRef}
-                    className="flex-1 overflow-y-auto select-none cursor-grab pr-4 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-primary/60 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-primary/80"
-                    onMouseDown={handleMouseDown}
-                    onMouseMove={handleMouseMove}
-                    onMouseUp={handleMouseUp}
+                <ScrollableContainer 
+                    className="flex-1 pr-4"
+                    autoScrollToBottom={true}
+                    onScroll={handleScroll}
                 >
                     <div className="space-y-4">
                         {filteredHistory.map((h, index) => {
@@ -157,13 +119,13 @@ export default function Load() {
                             );
                         })}
                     </div>
-                </div>
+                </ScrollableContainer>
             </div>
         </Panel>
     );
 }
 
-export const config: PageConfig = {
+export const config = {
     initial: {
         opacity: 0,
     },

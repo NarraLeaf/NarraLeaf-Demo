@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useContext, useEffect, useState } from "react";
 import { PresenceContext } from "motion/react";
 import { PresenceContext as PresenceContext2 } from "narraleaf-react";
+import { HomePagesAnimation } from "../index";
 
 export default function About() {
     const router = useRouter();
@@ -14,17 +15,14 @@ export default function About() {
     return (
         <motion.div
             className="h-full w-full absolute"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            {...HomePagesAnimation}
         >
             <h1 className="text-2xl font-bold text-white mb-6">关于</h1>
 
             <div className="space-y-6 text-white">
                 <div>
                     <h2 className="text-xl font-semibold mb-2">NarraLeaf Demo</h2>
-                    <p className="text-white/80">版本 0.1.0</p>
+                    <p className="text-white/80">版本 0.2.0</p>
                 </div>
 
                 <div>

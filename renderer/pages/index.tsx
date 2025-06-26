@@ -9,5 +9,9 @@ export default function Index() {
         router.navigate("/home");
     }, []);
 
-    return null;
+    return (
+        <div className="absolute inset-0 flex items-center justify-center">
+            Index
+        </div>
+    );
 }

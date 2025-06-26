@@ -1,89 +1,54 @@
-import { HomePanel } from "../../src/components/HomePanel";
-import { useRouter } from "narraleaf-react";
-import { motion, AnimatePresence } from "motion/react";
-import { useState, useEffect, createContext } from "react";
+import { motion, Variants } from "motion/react";
+import { SaveType, useApp, useSavedGames } from "narraleaf/client";
+import React from "react";
+import clsx from "clsx";
 
-export function Home() {
-    const router = useRouter();
-    const [isVisible, setIsVisible] = useState(true);
-
-    // 每隔一秒切换元素的可见性
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setIsVisible(prev => !prev);
-        }, 1000000);
-
-        return () => clearInterval(interval);
-    }, []);
-
-    return (
-        <motion.div 
-            key="settings-page"
-            className="flex flex-col items-center justify-center space-y-6 w-full h-full"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1, ease: "easeInOut" }}
-        >
-            <h1 className="text-4xl font-bold text-white mb-8">AnimatePresence 测试</h1>
-
-            {/* AnimatePresence 测试区域 */}
-            <div className="text-white/60 text-center">
-                <p className="mb-4">测试元素每秒钟会卸载和挂载一次</p>
-                
-                <AnimatePresence mode="wait">
-                    {isVisible && (
-                        <Test />
-                    )}
-                </AnimatePresence>
-
-                <div className="mt-6 text-sm text-white/40">
-                    <p>💡 提示: 在键盘上输入 "dev" 来显示测试面板</p>
-                    <p>⏱️ 观察退场动画效果</p>
-                </div>
-            </div>
-        </motion.div>
-    );
+// Menu Button Component
+interface MenuButtonProps {
+    onClick: () => void;
+    children: React.ReactNode;
+    className?: string;
 }
 
-export default function  Test() {
-
-    return (<motion.div
-        key="test-element"
-        className="bg-blue-500/20 border border-blue-400/40 rounded-lg p-6 min-w-[300px] absolute"
-        initial={{ 
-            opacity: 0, 
-            scale: 0.8, 
-            y: 20,
-            rotateX: -15
-        }}
-        animate={{ 
-            opacity: 1, 
-            scale: 1, 
-            y: 0,
-            rotateX: 0
-        }}
-        exit={{ 
-            opacity: 0, 
-            scale: 0.8, 
-            y: -20,
-            rotateX: 15
-        }}
-        transition={{ 
-            duration: 0.5, 
-            ease: "easeInOut",
-            type: "spring",
-            stiffness: 200,
-            damping: 20
-        }}
+export const MenuButton: React.FC<MenuButtonProps> = ({ onClick, children, className }) => (
+    <button
+        onClick={onClick}
+        className={clsx(`w-full px-8 py-5 bg-gradient-to-r from-primary/90 to-primary/80 
+                 hover:from-primary hover:to-primary/90 text-white rounded-xl shadow-lg 
+                 transform hover:-translate-y-1 transition-all duration-300 ease-in-out
+                 hover:shadow-xl active:translate-y-0 border border-white/10
+                 backdrop-blur-sm`, className)}
     >
-        <div className="text-blue-300 font-semibold mb-2">
-            🎭 动画测试元素
-        </div>
-        <div className="text-blue-200/80 text-sm">
-            <p>时间: {new Date().toLocaleTimeString()}</p>
-        </div>
-    </motion.div>);
+        {children}
+    </button>
+);
+
+export default function HomePage() {
+    const app = useApp();
+    const { results } = useSavedGames();
+
+    function handleContinue() {
+        if (!results) {
+            return;
+        }
+
+        const latestSave = results
+            .filter(save => save.type === SaveType.Save)
+            .sort((a, b) => b.updated - a.updated)[0];
+
+        if (!latestSave) {
+            return;
+        }
+
+        console.log("Loading save", latestSave);
+        app.loadGame(latestSave.id);
+    }
+
+    return null;
 }
 
-const TestContext = createContext<void>(void 0);
+export const HomePagesAnimation: Variants = {
+    initial: { opacity: 0, y: -20 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.2, ease: "easeOut" } },
+    exit: { opacity: 0, y: 20, transition: { duration: 0.2, ease: "easeIn" } }
+};

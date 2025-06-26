@@ -9,7 +9,7 @@ function useSmoothBackgroundParallax() {
     const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 });
     const [isMouseInView, setIsMouseInView] = useState(false);
     const [parallaxEnabled, setParallaxEnabled] = useState(false);
-    
+
     const currentOffset = useRef({ x: 0, y: 0 });
     const targetOffset = useRef({ x: 0, y: 0 });
     const rafId = useRef<number>(0);
@@ -22,41 +22,41 @@ function useSmoothBackgroundParallax() {
     // Calculate target offset with very subtle movement
     const calculateTargetOffset = useCallback((mouseX: number, mouseY: number) => {
         if (!isMouseInView || !parallaxEnabled) return { x: 0, y: 0 };
-        
+
         // Calculate direction from center
         const directionX = mouseX - 0.5;
         const directionY = mouseY - 0.5;
-        
+
         // Use smooth easing for very subtle movement
         const distanceFromCenter = Math.sqrt(directionX * directionX + directionY * directionY);
         const easedDistance = easeInOutSine(Math.min(distanceFromCenter * 2, 1));
-        
+
         // Very low sensitivity for subtle background movement
         const sensitivity = 0.05; // Reduced from 0.15 to 0.05
         const maxOffset = 20; // Reduced from 60 to 20 for more subtle effect
-        
+
         // Apply sensitivity and easing with forward direction (removed negative sign)
         const offsetX = directionX * sensitivity * maxOffset * easedDistance;
         const offsetY = directionY * sensitivity * maxOffset * easedDistance;
-        
+
         return { x: offsetX, y: offsetY };
     }, [isMouseInView, parallaxEnabled]);
 
     // Calculate 3D rotation for background
     const calculate3DRotation = useCallback(() => {
         if (!isMouseInView || !parallaxEnabled) return { rotateX: 0, rotateY: 0 };
-        
+
         // Calculate direction from center
         const directionX = mousePosition.x - 0.5;
         const directionY = mousePosition.y - 0.5;
-        
+
         // Convert to rotation angles (in degrees) - very subtle for background
         const maxRotationX = 2; // Very subtle X rotation
         const maxRotationY = 3; // Very subtle Y rotation
-        
+
         const rotateX = -directionY * maxRotationX; // Negative for natural tilt
         const rotateY = directionX * maxRotationY;
-        
+
         return { rotateX, rotateY };
     }, [mousePosition, isMouseInView, parallaxEnabled]);
 
@@ -65,17 +65,17 @@ function useSmoothBackgroundParallax() {
         // Spring-damper interpolation for smooth movement
         const spring = 0.08; // Reduced spring stiffness for smoother movement
         const damper = 0.85; // Increased damping for more stability
-        
+
         const dx = targetOffset.current.x - currentOffset.current.x;
         const dy = targetOffset.current.y - currentOffset.current.y;
-        
+
         currentOffset.current.x += dx * spring;
         currentOffset.current.y += dy * spring;
-        
+
         // Apply damping
         currentOffset.current.x *= damper;
         currentOffset.current.y *= damper;
-        
+
         rafId.current = requestAnimationFrame(animateParallax);
     }, []);
 
@@ -84,7 +84,7 @@ function useSmoothBackgroundParallax() {
         const rect = event.currentTarget.getBoundingClientRect();
         const x = (event.clientX - rect.left) / rect.width;
         const y = (event.clientY - rect.top) / rect.height;
-        
+
         setMousePosition({ x, y });
         setIsMouseInView(true);
     }, []);
@@ -100,7 +100,7 @@ function useSmoothBackgroundParallax() {
         if (parallaxEnabled) {
             rafId.current = requestAnimationFrame(animateParallax);
         }
-        
+
         return () => {
             if (rafId.current) {
                 cancelAnimationFrame(rafId.current);
@@ -141,6 +141,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const currentPathname = usePathname();
     const bgImage = "url('/static/img/ui/bg/outside.jpg')";
+
+    const isHomePage = currentPathname === "/home";
 
     const {
         handleMouseMove,
@@ -205,14 +207,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     const bgVariants = {
         hidden: { opacity: 0 },
-        visible: { 
+        visible: {
             opacity: 1,
             transition: {
                 duration: 0.5
             }
         }
     };
-    
+
 
     const backgroundOffset = getBackgroundOffset();
     const backgroundRotation = getBackgroundRotation();
@@ -248,11 +250,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             >
                 {/* Conditional blur overlay */}
                 <motion.div
-                    className="absolute inset-0 bg-black/20 backdrop-blur-md"
+                    className="absolute inset-0 bg-black/30 backdrop-blur-md"
                     initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
                     animate={{
-                        opacity: currentPathname === "/home" ? 0 : 1,
-                        backdropFilter: currentPathname === "/home" ? 'blur(0px)' : 'blur(8px)',
+                        opacity: isHomePage ? 0.4 : 1,
+                        backdropFilter: isHomePage ? 'blur(3px)' : 'blur(8px)',
                         transition: {
                             duration: 0.3,
                             ease: "easeInOut"
@@ -264,9 +266,34 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         backfaceVisibility: 'hidden'
                     }}
                 />
-                
-                <HomePanel buttons={menuButtons}>
-                    {children}
+
+                <HomePanel buttons={menuButtons} raw={isHomePage} isHomePage={isHomePage}>
+                    {isHomePage ? (
+                        <>
+                            <div className="absolute w-full h-full min-h-[500px]">
+                                {/* Main Title */}
+                                <div className="absolute top-12 right-12 text-right">
+                                    <h1 className="text-6xl font-bold bg-gradient-to-r text-white bg-clip-text text-transparent drop-shadow-[0_1px_2px_rgba(255,255,255,0.3)]">
+                                        NarraLeaf Demo
+                                    </h1>
+                                    <div className="h-1 w-32 bg-white/90 ml-auto mt-4 rounded-full drop-shadow-[0_1px_2px_rgba(255,255,255,0.2)]"></div>
+                                </div>
+
+                                {/* Copyright Information */}
+                                <div className="absolute bottom-8 right-12 text-right text-white drop-shadow-[0_1px_2px_rgba(255,255,255,0.2)]">
+                                    <img
+                                        src="/static/img/ui/logo-text-blue.png"
+                                        alt="Logo"
+                                        className="w-auto h-auto max-w-[180px] ml-auto drop-shadow-[0_1px_2px_rgba(255,255,255,0.1)]"
+                                    />
+                                    <p className="text-sm font-medium">© 2025 NarraLeaf Project.</p>
+                                    <p className="text-xs mt-2 text-gray-100 max-w-md ml-auto font-medium">
+                                        这是NarraLeaf引擎的演示项目，仅用于展示引擎基础特性，无法代表最终成品
+                                    </p>
+                                </div>
+                            </div>
+                        </>
+                    ) : children}
                 </HomePanel>
             </motion.div>
         </>
