@@ -271,7 +271,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 className="absolute inset-0 bg-black/30 backdrop-blur-md"
                 initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
                 animate={{
-                    opacity: !blur ? 0.4 : 1,
+                    // opacity: !blur ? 0.4 : 1,
                     backdropFilter: !blur ? 'blur(3px)' : 'blur(8px)',
                     transition: {
                         duration: 0.3,
