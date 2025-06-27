@@ -5,7 +5,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     return (
         <motion.div
-            className="w-full h-full absolute"
+            className="w-full h-full absolute pointer-events-none"
             initial="hidden"
             animate="visible"
         >

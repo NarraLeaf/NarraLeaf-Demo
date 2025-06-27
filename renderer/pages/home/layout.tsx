@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useApp } from "narraleaf/client";
-import { motion } from "motion/react";
+import { motion, AnimatePresence, usePresence } from "motion/react";
 import { HomePanel, MenuButton } from "../../src/components/HomePanel";
 import { usePathname, useRouter } from "narraleaf-react";
 
@@ -143,6 +143,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const bgImage = "url('/static/img/ui/bg/outside.jpg')";
 
     const isHomePage = currentPathname === "/home";
+    const blur = currentPathname.startsWith("/home") && !isHomePage;
+
+    // 使用 usePresence 钩子来控制退场动画
+    const [isPresent, safeToRemove] = usePresence();
+
+    // 处理退场动画完成的回调
+    const handleExitComplete = useCallback(() => {
+        // 当退场动画完成后，调用 safeToRemove 告知可以安全移除组件
+        if (!isPresent) {
+            safeToRemove();
+            console.warn("safeToRemove");
+        }
+    }, [isPresent, safeToRemove]);
 
     const {
         handleMouseMove,
@@ -212,6 +225,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             transition: {
                 duration: 0.5
             }
+        },
+        exit: {
+            opacity: 0,
+            transition: {
+                duration: 0.5
+            }
         }
     };
 
@@ -220,83 +239,87 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const backgroundRotation = getBackgroundRotation();
 
     return (
-        <>
+        <motion.div
+            className="w-full h-full absolute"
+            style={{
+                backgroundImage: bgImage,
+                backgroundSize: '160%', // Increased from 140% to 160% for larger image
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                willChange: 'transform',
+                transform: 'translateZ(0)',
+                backfaceVisibility: 'hidden'
+            }}
+            variants={bgVariants}
+            initial="hidden"
+            animate={isPresent ? {
+                opacity: 1,
+                x: backgroundOffset.x,
+                y: backgroundOffset.y,
+                transition: {
+                    type: "spring" as const,
+                    stiffness: 60, // Reduced from 80 for smoother movement
+                    damping: 20, // Increased from 18 for more stability
+                    mass: 0.8 // Increased from 0.7 for more inertia
+                }
+            } : "exit"}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+        >
+            {/* Conditional blur overlay */}
             <motion.div
-                className="w-full h-full absolute"
+                className="absolute inset-0 bg-black/30 backdrop-blur-md"
+                initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+                animate={{
+                    opacity: !blur ? 0.4 : 1,
+                    backdropFilter: !blur ? 'blur(3px)' : 'blur(8px)',
+                    transition: {
+                        duration: 0.3,
+                        ease: "easeInOut"
+                    }
+                }}
                 style={{
-                    backgroundImage: bgImage,
-                    backgroundSize: '160%', // Increased from 140% to 160% for larger image
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                    willChange: 'transform',
+                    willChange: 'opacity, backdrop-filter',
                     transform: 'translateZ(0)',
                     backfaceVisibility: 'hidden'
                 }}
-                variants={bgVariants}
-                initial="hidden"
-                animate={{
-                    opacity: 1,
-                    x: backgroundOffset.x,
-                    y: backgroundOffset.y,
-                    transition: {
-                        type: "spring" as const,
-                        stiffness: 60, // Reduced from 80 for smoother movement
-                        damping: 20, // Increased from 18 for more stability
-                        mass: 0.8 // Increased from 0.7 for more inertia
-                    }
-                }}
-                onMouseMove={handleMouseMove}
-                onMouseLeave={handleMouseLeave}
+            />
+            <HomePanel
+                key="home-panel"
+                buttons={menuButtons}
+                raw={isHomePage}
+                isHomePage={isHomePage}
+                onExitComplete={handleExitComplete}
+                presence={isPresent}
             >
-                {/* Conditional blur overlay */}
-                <motion.div
-                    className="absolute inset-0 bg-black/30 backdrop-blur-md"
-                    initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-                    animate={{
-                        opacity: isHomePage ? 0.4 : 1,
-                        backdropFilter: isHomePage ? 'blur(3px)' : 'blur(8px)',
-                        transition: {
-                            duration: 0.3,
-                            ease: "easeInOut"
-                        }
-                    }}
-                    style={{
-                        willChange: 'opacity, backdrop-filter',
-                        transform: 'translateZ(0)',
-                        backfaceVisibility: 'hidden'
-                    }}
-                />
-
-                <HomePanel buttons={menuButtons} raw={isHomePage} isHomePage={isHomePage}>
-                    {isHomePage ? (
-                        <>
-                            <div className="absolute w-full h-full min-h-[500px]">
-                                {/* Main Title */}
-                                <div className="absolute top-12 right-12 text-right">
-                                    <h1 className="text-6xl font-bold bg-gradient-to-r text-white bg-clip-text text-transparent drop-shadow-[0_1px_2px_rgba(255,255,255,0.3)]">
-                                        NarraLeaf Demo
-                                    </h1>
-                                    <div className="h-1 w-32 bg-white/90 ml-auto mt-4 rounded-full drop-shadow-[0_1px_2px_rgba(255,255,255,0.2)]"></div>
-                                </div>
-
-                                {/* Copyright Information */}
-                                <div className="absolute bottom-8 right-12 text-right text-white drop-shadow-[0_1px_2px_rgba(255,255,255,0.2)]">
-                                    <img
-                                        src="/static/img/ui/logo-text-blue.png"
-                                        alt="Logo"
-                                        className="w-auto h-auto max-w-[180px] ml-auto drop-shadow-[0_1px_2px_rgba(255,255,255,0.1)]"
-                                    />
-                                    <p className="text-sm font-medium">© 2025 NarraLeaf Project.</p>
-                                    <p className="text-xs mt-2 text-gray-100 max-w-md ml-auto font-medium">
-                                        这是NarraLeaf引擎的演示项目，仅用于展示引擎基础特性，无法代表最终成品
-                                    </p>
-                                </div>
+                {isHomePage ? (
+                    <>
+                        <div className="absolute w-full h-full min-h-[500px]">
+                            {/* Main Title */}
+                            <div className="absolute top-12 right-12 text-right">
+                                <h1 className="text-6xl font-bold bg-gradient-to-r text-white bg-clip-text text-transparent drop-shadow-[0_1px_2px_rgba(255,255,255,0.3)]">
+                                    NarraLeaf Demo
+                                </h1>
+                                <div className="h-1 w-32 bg-white/90 ml-auto mt-4 rounded-full drop-shadow-[0_1px_2px_rgba(255,255,255,0.2)]"></div>
                             </div>
-                        </>
-                    ) : children}
-                </HomePanel>
-            </motion.div>
-        </>
+
+                            {/* Copyright Information */}
+                            <div className="absolute bottom-8 right-12 text-right text-white drop-shadow-[0_1px_2px_rgba(255,255,255,0.2)]">
+                                <img
+                                    src="/static/img/ui/logo-text-blue.png"
+                                    alt="Logo"
+                                    className="w-auto h-auto max-w-[180px] ml-auto drop-shadow-[0_1px_2px_rgba(255,255,255,0.1)]"
+                                />
+                                <p className="text-sm font-medium">© 2025 NarraLeaf Project.</p>
+                                <p className="text-xs mt-2 text-gray-100 max-w-md ml-auto font-medium">
+                                    这是NarraLeaf引擎的演示项目，仅用于展示引擎基础特性，无法代表最终成品
+                                </p>
+                            </div>
+                        </div>
+                    </>
+                ) : children}
+            </HomePanel>
+        </motion.div>
     );
 }
 

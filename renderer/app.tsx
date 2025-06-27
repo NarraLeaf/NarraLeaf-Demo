@@ -58,7 +58,7 @@ const App = ({children}: {children: React.ReactNode}) => {
                 },
             },
 
-            animationPropagate: true,
+            // animationPropagate: true,
         });
 
         console.log(game, router, app);

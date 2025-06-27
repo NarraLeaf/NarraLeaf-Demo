@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useDemoConfig } from './DemoConfig';
 
 // Button interface with active property
@@ -200,12 +200,12 @@ function useSmoothParallax() {
         const target = event.target as Element;
         const isInteractiveElement = target.closest('input, button, select, textarea, [contenteditable="true"], [role="slider"]') ||
             target.matches('input, button, select, textarea, [contenteditable="true"], [role="slider"]');
-        
+
         // If it's an interactive element, don't interfere with its events
         if (isInteractiveElement) {
             return;
         }
-        
+
         const rect = event.currentTarget.getBoundingClientRect();
         const x = (event.clientX - rect.left) / rect.width;
         const y = (event.clientY - rect.top) / rect.height;
@@ -320,12 +320,16 @@ export function HomePanel({
     children,
     buttons,
     raw = false,
-    isHomePage = true
+    isHomePage = true,
+    onExitComplete,
+    presence = true
 }: {
     children: React.ReactNode;
     buttons: MenuButton[];
     raw?: boolean;
     isHomePage?: boolean;
+    onExitComplete?: () => void;
+    presence?: boolean;
 }) {
     const {
         handleMouseMove,
@@ -349,12 +353,12 @@ export function HomePanel({
         const target = event.target as Element;
         const isInteractiveElement = target.closest('input, button, select, textarea, [contenteditable="true"], [role="slider"]') ||
             target.matches('input, button, select, textarea, [contenteditable="true"], [role="slider"]');
-        
+
         // If it's an interactive element, don't interfere with its events
         if (isInteractiveElement) {
             return;
         }
-        
+
         const rect = event.currentTarget.getBoundingClientRect();
         const x = (event.clientX - rect.left) / rect.width;
         const y = (event.clientY - rect.top) / rect.height;
@@ -383,7 +387,7 @@ export function HomePanel({
     const leftPanelWidth = (374 / 1270) * 100; // ~29.45%
     const rightPanelWidth = (896 / 1270) * 100; // ~70.55%
 
-    // Animation variants for left panel (slides in from left)
+    // Animation variants for left panel (slides in from left, exits to left)
     const leftPanelVariants = {
         hidden: { x: '-100%' },
         visible: {
@@ -394,10 +398,19 @@ export function HomePanel({
                 damping: 20,
                 duration: 0.8
             }
+        },
+        exit: {
+            x: '-100%',
+            transition: {
+                type: "spring" as const,
+                stiffness: 120,
+                damping: 25,
+                duration: 0.6
+            }
         }
     };
 
-    // Animation variants for right panel (slides in from right)
+    // Animation variants for right panel (slides in from right, exits to right)
     const rightPanelVariants = {
         hidden: { x: '100%' },
         visible: {
@@ -407,6 +420,15 @@ export function HomePanel({
                 stiffness: isHomePage ? 100 : 200,
                 damping: isHomePage ? 20 : 25,
                 duration: isHomePage ? 0.8 : 0
+            }
+        },
+        exit: {
+            x: '100%',
+            transition: {
+                type: "spring" as const,
+                stiffness: 120,
+                damping: 25,
+                duration: 0.6
             }
         }
     };
@@ -441,287 +463,307 @@ export function HomePanel({
             {/* Left Panel Container */}
             <div className="relative" style={{ width: `${leftPanelWidth}%` }}>
                 {/* Left Panel Secondary Background Layer */}
-                <motion.div
-                    className="absolute inset-0 z-0"
-                    style={{
-                        backgroundImage: leftPanelSecondaryBgImage,
-                        backgroundSize: 'contain',
-                        backgroundPosition: 'center',
-                        backgroundRepeat: 'no-repeat',
-                        willChange: 'transform',
-                        transform: 'translateZ(0)',
-                        backfaceVisibility: 'hidden',
-                        opacity: 0.7, // Slightly transparent for layering effect
-                        transformStyle: 'preserve-3d',
-                        perspective: '1000px'
-                    }}
-                    variants={leftPanelVariants}
-                    initial={isHomePage ? "hidden" : "visible"}
-                    animate={isHomePage && isInitialAnimationComplete ? {
-                        x: leftSecondaryOffset.x,
-                        y: leftSecondaryOffset.y,
-                        rotateX: leftPanelRotation.rotateX * 0.7, // Slightly less rotation for depth
-                        rotateY: leftPanelRotation.rotateY * 0.7,
-                        transition: {
-                            type: "spring" as const,
-                            stiffness: 80,
-                            damping: 25,
-                            mass: 0.8
-                        }
-                    } : {
-                        x: leftSecondaryOffset.x,
-                        y: leftSecondaryOffset.y,
-                        rotateX: leftPanelRotation.rotateX * 0.7,
-                        rotateY: leftPanelRotation.rotateY * 0.7,
-                        transition: {
-                            type: "spring" as const,
-                            stiffness: 200,
-                            damping: 25,
-                            mass: 0.8
-                        }
-                    }}
-                />
+                <AnimatePresence>
+                    {presence && (
+                        <motion.div
+                            className="absolute inset-0 z-0"
+                            style={{
+                                backgroundImage: leftPanelSecondaryBgImage,
+                                backgroundSize: 'contain',
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
+                                willChange: 'transform',
+                                transform: 'translateZ(0)',
+                                backfaceVisibility: 'hidden',
+                                opacity: 0.7, // Slightly transparent for layering effect
+                                transformStyle: 'preserve-3d',
+                                perspective: '1000px'
+                            }}
+                            variants={leftPanelVariants}
+                            initial={isHomePage ? "hidden" : "visible"}
+                            exit="exit"
+                            animate={isHomePage && isInitialAnimationComplete ? {
+                                x: leftSecondaryOffset.x,
+                                y: leftSecondaryOffset.y,
+                                rotateX: leftPanelRotation.rotateX * 0.7, // Slightly less rotation for depth
+                                rotateY: leftPanelRotation.rotateY * 0.7,
+                                transition: {
+                                    type: "spring" as const,
+                                    stiffness: 80,
+                                    damping: 25,
+                                    mass: 0.8
+                                }
+                            } : {
+                                x: leftSecondaryOffset.x,
+                                y: leftSecondaryOffset.y,
+                                rotateX: leftPanelRotation.rotateX * 0.7,
+                                rotateY: leftPanelRotation.rotateY * 0.7,
+                                transition: {
+                                    type: "spring" as const,
+                                    stiffness: 200,
+                                    damping: 25,
+                                    mass: 0.8
+                                }
+                            }}
+                        />
+                    )}
+                </AnimatePresence>
 
                 {/* Left Panel - Primary Background Layer */}
-                <motion.div
-                    className="flex flex-col justify-center items-center relative"
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        backgroundImage: leftPanelBgImage,
-                        backgroundSize: 'contain',
-                        backgroundPosition: 'center',
-                        backgroundRepeat: 'no-repeat',
-                        willChange: 'transform',
-                        transform: 'translateZ(0)',
-                        backfaceVisibility: 'hidden',
-                        transformStyle: 'preserve-3d',
-                        perspective: '1000px'
-                    }}
-                    variants={leftPanelVariants}
-                    initial={isHomePage ? "hidden" : "visible"}
-                    animate={isHomePage && isInitialAnimationComplete ? {
-                        x: leftPanelOffset.x,
-                        y: leftPanelOffset.y,
-                        rotateX: leftPanelRotation.rotateX,
-                        rotateY: leftPanelRotation.rotateY,
-                        transition: {
-                            type: "spring" as const,
-                            stiffness: 100,
-                            damping: 20,
-                            mass: 0.6
-                        }
-                    } : {
-                        x: leftPanelOffset.x,
-                        y: leftPanelOffset.y,
-                        rotateX: leftPanelRotation.rotateX,
-                        rotateY: leftPanelRotation.rotateY,
-                        transition: {
-                            type: "spring" as const,
-                            stiffness: 200,
-                            damping: 25,
-                            mass: 0.6
-                        }
-                    }}
-                >
-                    {/* Content Layer - Buttons with opposite movement for 3D effect */}
-                    <motion.div
-                        className="w-full max-w-xs flex flex-col space-y-6 relative z-20 items-center p-6"
-                        style={{
-                            marginLeft: '10px',
-                            willChange: 'transform',
-                            transform: 'translateZ(0)',
-                            backfaceVisibility: 'hidden',
-                            transformStyle: 'preserve-3d',
-                            perspective: '1000px'
-                        }}
-                        initial={{
-                            rotateY: visualEffect ? 1.5 : 0 // 根据visualEffect决定是否应用初始旋转
-                        }}
-                        animate={parallaxEnabled ? {
-                            x: buttonsOffset.x,
-                            y: buttonsOffset.y,
-                            rotateX: leftPanelRotation.rotateX * 0.3,
-                            rotateY: leftPanelRotation.rotateY * 0.3 + (visualEffect ? 1.5 : 0), // 根据visualEffect决定是否应用旋转
-                            transition: {
-                                type: "spring" as const,
-                                stiffness: 100,
-                                damping: 20,
-                                mass: 0.6
-                            }
-                        } : {
-                            rotateY: visualEffect ? 1.5 : 0 // 根据visualEffect决定是否应用旋转
-                        }}
-                    >
-                        {buttons.map((button) => (
-                            <MenuButtonComponent
-                                key={button.id}
-                                active={button.active}
-                                onClick={button.onClick}
-                                mousePosition={mousePosition}
-                                isMouseInView={isMouseInView}
-                                parallaxEnabled={parallaxEnabled}
-                                visualEffect={visualEffect}
+                <AnimatePresence onExitComplete={onExitComplete}>
+                    {presence && (
+                        <motion.div
+                            className="flex flex-col justify-center items-center relative"
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                backgroundImage: leftPanelBgImage,
+                                backgroundSize: 'contain',
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
+                                willChange: 'transform',
+                                transform: 'translateZ(0)',
+                                backfaceVisibility: 'hidden',
+                                transformStyle: 'preserve-3d',
+                                perspective: '1000px'
+                            }}
+                            variants={leftPanelVariants}
+                            initial={isHomePage ? "hidden" : "visible"}
+                            exit="exit"
+                            animate={isHomePage && isInitialAnimationComplete ? {
+                                x: leftPanelOffset.x,
+                                y: leftPanelOffset.y,
+                                rotateX: leftPanelRotation.rotateX,
+                                rotateY: leftPanelRotation.rotateY,
+                                transition: {
+                                    type: "spring" as const,
+                                    stiffness: 100,
+                                    damping: 20,
+                                    mass: 0.6
+                                }
+                            } : {
+                                x: leftPanelOffset.x,
+                                y: leftPanelOffset.y,
+                                rotateX: leftPanelRotation.rotateX,
+                                rotateY: leftPanelRotation.rotateY,
+                                transition: {
+                                    type: "spring" as const,
+                                    stiffness: 200,
+                                    damping: 25,
+                                    mass: 0.6
+                                }
+                            }}
+                        >
+                            {/* Content Layer - Buttons with opposite movement for 3D effect */}
+                            <motion.div
+                                className="w-full max-w-xs flex flex-col space-y-6 relative z-20 items-center p-6"
+                                style={{
+                                    marginLeft: '10px',
+                                    willChange: 'transform',
+                                    transform: 'translateZ(0)',
+                                    backfaceVisibility: 'hidden',
+                                    transformStyle: 'preserve-3d',
+                                    perspective: '1000px'
+                                }}
+                                initial={{
+                                    rotateY: visualEffect ? 1.5 : 0 // 根据visualEffect决定是否应用初始旋转
+                                }}
+                                animate={parallaxEnabled ? {
+                                    x: buttonsOffset.x,
+                                    y: buttonsOffset.y,
+                                    rotateX: leftPanelRotation.rotateX * 0.3,
+                                    rotateY: leftPanelRotation.rotateY * 0.3 + (visualEffect ? 1.5 : 0), // 根据visualEffect决定是否应用旋转
+                                    transition: {
+                                        type: "spring" as const,
+                                        stiffness: 100,
+                                        damping: 20,
+                                        mass: 0.6
+                                    }
+                                } : {
+                                    rotateY: visualEffect ? 1.5 : 0 // 根据visualEffect决定是否应用旋转
+                                }}
                             >
-                                {button.label}
-                            </MenuButtonComponent>
-                        ))}
-                    </motion.div>
-                </motion.div>
+                                {buttons.map((button) => (
+                                    <MenuButtonComponent
+                                        key={button.id}
+                                        active={button.active}
+                                        onClick={button.onClick}
+                                        mousePosition={mousePosition}
+                                        isMouseInView={isMouseInView}
+                                        parallaxEnabled={parallaxEnabled}
+                                        visualEffect={visualEffect}
+                                    >
+                                        {button.label}
+                                    </MenuButtonComponent>
+                                ))}
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
 
             {/* Right Panel Container */}
             <div className="relative" style={{ width: `${rightPanelWidth}%` }}>
                 {/* Right Panel Secondary Background Layer - Hidden in raw mode */}
                 {!raw && (
-                    <motion.div
-                        className="absolute inset-0 z-0"
-                        style={{
-                            backgroundImage: rightPanelSecondaryBgImage,
-                            backgroundSize: 'contain',
-                            backgroundPosition: 'center',
-                            backgroundRepeat: 'no-repeat',
-                            willChange: 'transform',
-                            transform: 'translateZ(0)',
-                            backfaceVisibility: 'hidden',
-                            opacity: 0.7, // Slightly transparent for layering effect
-                            transformStyle: 'preserve-3d',
-                            perspective: '1000px'
-                        }}
-                        variants={rightPanelVariants}
-                        initial={isHomePage ? "hidden" : "visible"}
-                        animate={isHomePage && isInitialAnimationComplete ? {
-                            x: rightSecondaryOffset.x,
-                            y: rightSecondaryOffset.y,
-                            rotateX: rightPanelRotation.rotateX * 0.7, // Slightly less rotation for depth
-                            rotateY: rightPanelRotation.rotateY * 0.7,
-                            transition: {
-                                type: "spring" as const,
-                                stiffness: 80,
-                                damping: 25,
-                                mass: 0.8
-                            }
-                        } : {
-                            x: rightSecondaryOffset.x,
-                            y: rightSecondaryOffset.y,
-                            rotateX: rightPanelRotation.rotateX * 0.7,
-                            rotateY: rightPanelRotation.rotateY * 0.7,
-                            transition: {
-                                type: "spring" as const,
-                                stiffness: 200,
-                                damping: 25,
-                                mass: 0.8
-                            }
-                        }}
-                    />
+                    <AnimatePresence>
+                        {presence && (
+                            <motion.div
+                                className="absolute inset-0 z-0"
+                                style={{
+                                    backgroundImage: rightPanelSecondaryBgImage,
+                                    backgroundSize: 'contain',
+                                    backgroundPosition: 'center',
+                                    backgroundRepeat: 'no-repeat',
+                                    willChange: 'transform',
+                                    transform: 'translateZ(0)',
+                                    backfaceVisibility: 'hidden',
+                                    opacity: 0.7, // Slightly transparent for layering effect
+                                    transformStyle: 'preserve-3d',
+                                    perspective: '1000px'
+                                }}
+                                variants={rightPanelVariants}
+                                initial={isHomePage ? "hidden" : "visible"}
+                                exit="exit"
+                                animate={isHomePage && isInitialAnimationComplete ? {
+                                    x: rightSecondaryOffset.x,
+                                    y: rightSecondaryOffset.y,
+                                    rotateX: rightPanelRotation.rotateX * 0.7, // Slightly less rotation for depth
+                                    rotateY: rightPanelRotation.rotateY * 0.7,
+                                    transition: {
+                                        type: "spring" as const,
+                                        stiffness: 80,
+                                        damping: 25,
+                                        mass: 0.8
+                                    }
+                                } : {
+                                    x: rightSecondaryOffset.x,
+                                    y: rightSecondaryOffset.y,
+                                    rotateX: rightPanelRotation.rotateX * 0.7,
+                                    rotateY: rightPanelRotation.rotateY * 0.7,
+                                    transition: {
+                                        type: "spring" as const,
+                                        stiffness: 200,
+                                        damping: 25,
+                                        mass: 0.8
+                                    }
+                                }}
+                            />
+                        )}
+                    </AnimatePresence>
                 )}
 
                 {/* Right Panel - Primary Background Layer - Hidden in raw mode */}
-                <motion.div
-                    className="relative flex items-center justify-center"
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        backgroundImage: raw ? 'none' : rightPanelBgImage,
-                        backgroundSize: 'contain',
-                        backgroundPosition: 'center',
-                        backgroundRepeat: 'no-repeat',
-                        willChange: 'transform',
-                        transform: 'translateZ(0)',
-                        backfaceVisibility: 'hidden',
-                        transformStyle: 'preserve-3d',
-                        perspective: '1000px'
-                    }}
-                    variants={rightPanelVariants}
-                    initial={isHomePage ? "hidden" : "visible"}
-                    animate={isHomePage && isInitialAnimationComplete ? {
-                        x: rightPanelOffset.x,
-                        y: rightPanelOffset.y,
-                        rotateX: rightPanelRotation.rotateX,
-                        rotateY: rightPanelRotation.rotateY,
-                        transition: {
-                            type: "spring" as const,
-                            stiffness: 100,
-                            damping: 20,
-                            mass: 0.6
-                        }
-                    } : {
-                        x: rightPanelOffset.x,
-                        y: rightPanelOffset.y,
-                        rotateX: rightPanelRotation.rotateX,
-                        rotateY: rightPanelRotation.rotateY,
-                        transition: {
-                            type: "spring" as const,
-                            stiffness: 200,
-                            damping: 25,
-                            mass: 0.6
-                        }
-                    }}
-                >
-                    {/* Content Layer - Main content with independent movement */}
-                    <motion.div
-                        className="w-full h-full p-[7rem] pl-[6rem] pr-[10rem] relative z-20"
-                        style={{
-                            willChange: 'transform',
-                            transform: 'translateZ(0)',
-                            backfaceVisibility: 'hidden',
-                            transformStyle: 'preserve-3d',
-                            perspective: '1000px',
-                            imageRendering: 'crisp-edges',
-                            textRendering: 'optimizeLegibility',
-                            WebkitFontSmoothing: 'antialiased',
-                            MozOsxFontSmoothing: 'grayscale'
-                        }}
-                        initial={{
-                            rotateY: visualEffect ? -2 : 0 // 根据visualEffect决定是否应用初始旋转
-                        }}
-                        animate={parallaxEnabled ? {
-                            x: contentOffset.x,
-                            y: contentOffset.y,
-                            rotateX: rightContentRotation.rotateX,
-                            rotateY: rightContentRotation.rotateY + (visualEffect ? -2 : 0), // 根据visualEffect决定是否保持初始旋转
-                            transition: {
-                                type: "spring" as const,
-                                stiffness: 100,
-                                damping: 20,
-                                mass: 0.6
-                            }
-                        } : {
-                            rotateY: visualEffect ? -2 : 0 // 根据visualEffect决定是否保持初始旋转
-                        }}
-                    >
-                        <div className="relative w-full h-full">
-                            {/* 3D Text Content Wrapper */}
+                <AnimatePresence>
+                    {presence && (
+                        <motion.div
+                            className="relative flex items-center justify-center"
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                backgroundImage: raw ? 'none' : rightPanelBgImage,
+                                backgroundSize: 'contain',
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
+                                willChange: 'transform',
+                                transform: 'translateZ(0)',
+                                backfaceVisibility: 'hidden',
+                                transformStyle: 'preserve-3d',
+                                perspective: '1000px'
+                            }}
+                            variants={rightPanelVariants}
+                            initial={isHomePage ? "hidden" : "visible"}
+                            exit="exit"
+                            animate={isHomePage && isInitialAnimationComplete ? {
+                                x: rightPanelOffset.x,
+                                y: rightPanelOffset.y,
+                                rotateX: rightPanelRotation.rotateX,
+                                rotateY: rightPanelRotation.rotateY,
+                                transition: {
+                                    type: "spring" as const,
+                                    stiffness: 100,
+                                    damping: 20,
+                                    mass: 0.6
+                                }
+                            } : {
+                                x: rightPanelOffset.x,
+                                y: rightPanelOffset.y,
+                                rotateX: rightPanelRotation.rotateX,
+                                rotateY: rightPanelRotation.rotateY,
+                                transition: {
+                                    type: "spring" as const,
+                                    stiffness: 200,
+                                    damping: 25,
+                                    mass: 0.6
+                                }
+                            }}
+                        >
+                            {/* Content Layer - Main content with independent movement */}
                             <motion.div
+                                className="w-full h-full p-[7rem] pl-[6rem] pr-[10rem] relative z-20"
                                 style={{
-                                    transformStyle: 'preserve-3d',
+                                    willChange: 'transform',
+                                    transform: 'translateZ(0)',
                                     backfaceVisibility: 'hidden',
+                                    transformStyle: 'preserve-3d',
+                                    perspective: '1000px',
                                     imageRendering: 'crisp-edges',
                                     textRendering: 'optimizeLegibility',
                                     WebkitFontSmoothing: 'antialiased',
                                     MozOsxFontSmoothing: 'grayscale'
                                 }}
                                 initial={{
-                                    rotateY: visualEffect ? -1.5 : 0 // 根据visualEffect决定是否应用文本额外旋转
+                                    rotateY: visualEffect ? -2 : 0 // 根据visualEffect决定是否应用初始旋转
                                 }}
                                 animate={parallaxEnabled ? {
-                                    rotateX: rightContentRotation.rotateX * 0.2,
-                                    rotateY: rightContentRotation.rotateY * 0.2 + (visualEffect ? -1.5 : 0), // 根据visualEffect决定是否保持初始旋转
+                                    x: contentOffset.x,
+                                    y: contentOffset.y,
+                                    rotateX: rightContentRotation.rotateX,
+                                    rotateY: rightContentRotation.rotateY + (visualEffect ? -2 : 0), // 根据visualEffect决定是否保持初始旋转
                                     transition: {
                                         type: "spring" as const,
-                                        stiffness: 150,
-                                        damping: 12,
-                                        mass: 0.4
+                                        stiffness: 100,
+                                        damping: 20,
+                                        mass: 0.6
                                     }
                                 } : {
-                                    rotateY: visualEffect ? -1.5 : 0 // 根据visualEffect决定是否保持初始旋转
+                                    rotateY: visualEffect ? -2 : 0 // 根据visualEffect决定是否保持初始旋转
                                 }}
                             >
-                                {children}
+                                <div className="relative w-full h-full">
+                                    {/* 3D Text Content Wrapper */}
+                                    <motion.div
+                                        style={{
+                                            transformStyle: 'preserve-3d',
+                                            backfaceVisibility: 'hidden',
+                                            imageRendering: 'crisp-edges',
+                                            textRendering: 'optimizeLegibility',
+                                            WebkitFontSmoothing: 'antialiased',
+                                            MozOsxFontSmoothing: 'grayscale'
+                                        }}
+                                        initial={{
+                                            rotateY: visualEffect ? -1.5 : 0 // 根据visualEffect决定是否应用文本额外旋转
+                                        }}
+                                        animate={parallaxEnabled ? {
+                                            rotateX: rightContentRotation.rotateX * 0.2,
+                                            rotateY: rightContentRotation.rotateY * 0.2 + (visualEffect ? -1.5 : 0), // 根据visualEffect决定是否保持初始旋转
+                                            transition: {
+                                                type: "spring" as const,
+                                                stiffness: 150,
+                                                damping: 12,
+                                                mass: 0.4
+                                            }
+                                        } : {
+                                            rotateY: visualEffect ? -1.5 : 0 // 根据visualEffect决定是否保持初始旋转
+                                        }}
+                                    >
+                                        {children}
+                                    </motion.div>
+                                </div>
                             </motion.div>
-                        </div>
-                    </motion.div>
-                </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </div>
     );

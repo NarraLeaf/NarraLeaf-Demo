@@ -1,17 +1,7 @@
-import { useRouter } from "narraleaf-react";
-import { AnimatePresence, motion } from "motion/react";
-import { useContext, useEffect, useState } from "react";
-import { PresenceContext } from "motion/react";
-import { PresenceContext as PresenceContext2 } from "narraleaf-react";
+import { motion } from "motion/react";
 import { HomePagesAnimation } from "../index";
 
 export default function About() {
-    const router = useRouter();
-    const r = useContext(PresenceContext);
-    const r2 = useContext(PresenceContext2);
-    console.log(r);
-    console.log("Is Equal", PresenceContext === PresenceContext2);
-    console.log("r2", r2);
     return (
         <motion.div
             className="h-full w-full absolute"
