@@ -405,7 +405,7 @@ export function HomePanel({
                 type: "spring" as const,
                 stiffness: 120,
                 damping: 25,
-                duration: 0.6
+                duration: 0.3
             }
         }
     };
@@ -466,7 +466,7 @@ export function HomePanel({
                 <AnimatePresence>
                     {presence && (
                         <motion.div
-                            className="absolute inset-0 z-0"
+                            className="absolute inset-0 z-0 pointer-events-none"
                             style={{
                                 backgroundImage: leftPanelSecondaryBgImage,
                                 backgroundSize: 'contain',
@@ -513,7 +513,7 @@ export function HomePanel({
                 <AnimatePresence onExitComplete={onExitComplete}>
                     {presence && (
                         <motion.div
-                            className="flex flex-col justify-center items-center relative"
+                            className="flex flex-col justify-center items-center relative pointer-events-none"
                             style={{
                                 width: '100%',
                                 height: '100%',
@@ -609,7 +609,7 @@ export function HomePanel({
                     <AnimatePresence>
                         {presence && (
                             <motion.div
-                                className="absolute inset-0 z-0"
+                                className="absolute inset-0 z-0 pointer-events-none"
                                 style={{
                                     backgroundImage: rightPanelSecondaryBgImage,
                                     backgroundSize: 'contain',
@@ -677,8 +677,8 @@ export function HomePanel({
                             animate={isHomePage && isInitialAnimationComplete ? {
                                 x: rightPanelOffset.x,
                                 y: rightPanelOffset.y,
-                                rotateX: rightPanelRotation.rotateX,
-                                rotateY: rightPanelRotation.rotateY,
+                                rotateX: 0,
+                                rotateY: 0,
                                 transition: {
                                     type: "spring" as const,
                                     stiffness: 100,
@@ -688,8 +688,8 @@ export function HomePanel({
                             } : {
                                 x: rightPanelOffset.x,
                                 y: rightPanelOffset.y,
-                                rotateX: rightPanelRotation.rotateX,
-                                rotateY: rightPanelRotation.rotateY,
+                                rotateX: 0,
+                                rotateY: 0,
                                 transition: {
                                     type: "spring" as const,
                                     stiffness: 200,
@@ -718,8 +718,9 @@ export function HomePanel({
                                 animate={parallaxEnabled ? {
                                     x: contentOffset.x,
                                     y: contentOffset.y,
-                                    rotateX: rightContentRotation.rotateX,
-                                    rotateY: rightContentRotation.rotateY + (visualEffect ? -2 : 0), // 根据visualEffect决定是否保持初始旋转
+                                    rotateX: 0,
+                                    rotateY: 0,
+                                    scale: 0.985,
                                     transition: {
                                         type: "spring" as const,
                                         stiffness: 100,
@@ -727,7 +728,8 @@ export function HomePanel({
                                         mass: 0.6
                                     }
                                 } : {
-                                    rotateY: visualEffect ? -2 : 0 // 根据visualEffect决定是否保持初始旋转
+                                    rotateY: 0,
+                                    scale: 0.985
                                 }}
                             >
                                 <div className="relative w-full h-full">
@@ -745,8 +747,9 @@ export function HomePanel({
                                             rotateY: visualEffect ? -1.5 : 0 // 根据visualEffect决定是否应用文本额外旋转
                                         }}
                                         animate={parallaxEnabled ? {
-                                            rotateX: rightContentRotation.rotateX * 0.2,
-                                            rotateY: rightContentRotation.rotateY * 0.2 + (visualEffect ? -1.5 : 0), // 根据visualEffect决定是否保持初始旋转
+                                            rotateX: 0,
+                                            rotateY: 0,
+                                            scale: 1.015,
                                             transition: {
                                                 type: "spring" as const,
                                                 stiffness: 150,
@@ -754,7 +757,8 @@ export function HomePanel({
                                                 mass: 0.4
                                             }
                                         } : {
-                                            rotateY: visualEffect ? -1.5 : 0 // 根据visualEffect决定是否保持初始旋转
+                                            rotateY: 0,
+                                            scale: 1.015
                                         }}
                                     >
                                         {children}

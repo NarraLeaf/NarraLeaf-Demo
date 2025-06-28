@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Confirm } from '../components/lib/Confirm';
 
 interface UseConfirmOptions {
@@ -44,7 +44,7 @@ export function useConfirm(defaultOptions: Partial<UseConfirmOptions> = {}): Use
         });
     }, []);
 
-    const ConfirmDialog = (
+    const ConfirmDialog = useMemo(() => (
         <Confirm
             isOpen={isOpen}
             title={options.title}
@@ -54,7 +54,7 @@ export function useConfirm(defaultOptions: Partial<UseConfirmOptions> = {}): Use
             onConfirm={options.onConfirm}
             onCancel={options.onCancel}
         />
-    );
+    ), [isOpen, options.title, options.message, options.confirmText, options.cancelText, options.onConfirm, options.onCancel]);
 
     return [confirm, ConfirmDialog];
 } 

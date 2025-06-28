@@ -37,6 +37,7 @@ const App = ({children}: {children: React.ReactNode}) => {
             // Configure the game behavior
             ratioUpdateInterval: 0, // disable the ratio update interval
             screenshotQuality: 0.2,
+            skipKey: ["Control"],
 
             // Customize the styles
             dialog: GameDialog,

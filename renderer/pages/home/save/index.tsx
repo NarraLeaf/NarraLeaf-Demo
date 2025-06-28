@@ -1,45 +1,51 @@
 import { useGame, useRouter } from "narraleaf-react";
 import type { SavedGameMeta } from "narraleaf/client";
-import { SaveType, useApp, useSavedGames, readGame } from "narraleaf/client";
-import React, { useState, useEffect } from "react";
+import { SaveType, useSavedGames, useSaveAction } from "narraleaf/client";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { HomePagesAnimation } from "../index";
 import ScrollableContainer from "../../../src/components/lib/ScrollableContainer";
 import { useAppConfirm } from "../layout";
 
-type LoadSlotData = {
+type SaveSlotData = {
     id: string;
     isEmpty: boolean;
     existingSave?: SavedGameMeta;
 };
 
-export default function Load() {
+export default function Save() {
     const router = useRouter();
-    const app = useApp();
     const game = useGame();
     const savedGames = useSavedGames();
     const liveGame = game.getLiveGame();
+    const saveAction = useSaveAction();
     const { showConfirm } = useAppConfirm();
 
-    const handleLoad = async (slotData: LoadSlotData) => {
-        if (slotData.isEmpty) {
-            liveGame.notify("此存档槽位为空");
-            return;
+
+
+    const handleSave = async (slotData: SaveSlotData) => {
+        // If slot has existing save, confirm overwrite
+        if (!slotData.isEmpty) {
+            const confirmed = await showConfirm({ message: "确定要覆盖当前存档吗？" });
+            if (!confirmed) return;
         }
 
-        const confirmed = await showConfirm({ message: "确定要加载这个存档吗？" });
-        if (confirmed) {
+        router.clear();
+        await liveGame.waitForRouterExit().promise;
+
+        setTimeout(async () => {
             try {
-                app.loadGame(slotData.id);
+                await saveAction.save(slotData.id);
+                liveGame.notify("保存成功");
             } catch (error) {
-                console.error("Failed to load game:", error);
-                liveGame.notify("加载游戏失败");
+                console.error("Failed to save game:", error);
+                liveGame.notify("保存游戏失败");
             }
-        }
+        }, 1);
     };
 
-    // Create load slots (9 slots in 2 columns)
-    const createLoadSlots = (): LoadSlotData[] => {
+    // Create save slots (9 slots in 2 columns, so some slots will be on the right)
+    const createSaveSlots = (): SaveSlotData[] => {
         const results = savedGames?.results || [];
         return Array.from({ length: 9 }, (_, index) => {
             const slotId = index.toString();
@@ -97,9 +103,9 @@ export default function Load() {
         </motion.div>
     );
 
-    // Load slot card component
-    const LoadSlotCard = ({ slotData, index, onClick }: {
-        slotData: LoadSlotData;
+    // Save slot card component
+    const SaveSlotCard = ({ slotData, index, onClick }: {
+        slotData: SaveSlotData;
         index: number;
         onClick: () => void;
     }) => (
@@ -108,15 +114,12 @@ export default function Load() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05, duration: 0.3 }}
             onClick={onClick}
-            className={`aspect-[4/3] rounded-lg cursor-pointer transition-all duration-200 backdrop-blur-sm relative overflow-hidden border-2 ${
-                slotData.isEmpty 
-                    ? 'bg-white/10 border-white/10 hover:bg-white/15 hover:border-white/20' 
-                    : 'bg-white/20 border-transparent hover:bg-white/30 hover:border-white/20 hover:shadow-md'
-            }`}
+            className="aspect-[4/3] rounded-lg cursor-pointer transition-all duration-200 backdrop-blur-sm relative overflow-hidden border-2 bg-white/20 border-transparent hover:bg-white/30 hover:border-white/20 hover:shadow-md"
         >
             {/* Background image or empty state */}
             {slotData.isEmpty ? (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="text-white/40 text-4xl">+</div>
                 </div>
             ) : slotData.existingSave?.capture ? (
                 <div className="absolute inset-0 pointer-events-none">
@@ -143,7 +146,7 @@ export default function Load() {
                         </p>
                     )}
                     {slotData.isEmpty && (
-                        <p className="text-white/50 text-xs">
+                        <p className="text-white/70 text-xs">
                             EMPTY
                         </p>
                     )}
@@ -162,10 +165,12 @@ export default function Load() {
                 )}
             </div>
 
-            {/* Empty slot indicator */}
-            {/* {slotData.isEmpty && (
-                <div className="absolute top-2 right-2 w-6 h-6 bg-white/20 rounded-full flex items-center justify-center z-20">
-                    <div className="w-2 h-2 bg-white/40 rounded-full"></div>
+            {/* Overwrite indicator */}
+            {/* {!slotData.isEmpty && (
+                <div className="absolute top-2 right-2 w-6 h-6 bg-yellow-500/80 rounded-full flex items-center justify-center z-20">
+                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
                 </div>
             )} */}
         </motion.div>
@@ -192,7 +197,7 @@ export default function Load() {
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.1, duration: 0.3 }}
                     >
-                        <h1 className="text-2xl font-bold text-white">读取存档</h1>
+                        <h1 className="text-2xl font-bold text-white">保存游戏</h1>
                     </motion.div>
 
                     <div className="flex-1 min-h-0">
@@ -206,7 +211,7 @@ export default function Load() {
                                     transition={{ duration: 0.2 }}
                                     className="h-full"
                                 >
-                                    <ScrollableContainer className="h-full pr-4 min-h-[450px]">
+                                    <ScrollableContainer className="h-full pr-4">
                                         <LoadingSkeleton />
                                     </ScrollableContainer>
                                 </motion.div>
@@ -237,12 +242,12 @@ export default function Load() {
                                             animate={{ opacity: 1 }}
                                             transition={{ delay: 0.1, duration: 0.3 }}
                                         >
-                                            {createLoadSlots().map((slotData, index) => (
-                                                <LoadSlotCard
+                                            {createSaveSlots().map((slotData, index) => (
+                                                <SaveSlotCard
                                                     key={slotData.id}
                                                     slotData={slotData}
                                                     index={index}
-                                                    onClick={() => handleLoad(slotData)}
+                                                    onClick={() => handleSave(slotData)}
                                                 />
                                             ))}
                                         </motion.div>
@@ -255,4 +260,4 @@ export default function Load() {
             </motion.div>
         </>
     );
-} 
+}

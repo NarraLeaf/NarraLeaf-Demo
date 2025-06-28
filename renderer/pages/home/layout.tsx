@@ -1,8 +1,161 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import { useApp } from "narraleaf/client";
-import { motion, AnimatePresence, usePresence } from "motion/react";
+import React, { useEffect, useState, useRef, useCallback, createContext, useContext, useMemo } from "react";
+import { useApp, useGamePlayback } from "narraleaf/client";
+import { motion, AnimatePresence, usePresence, useAnimate } from "motion/react";
 import { HomePanel, MenuButton } from "../../src/components/HomePanel";
 import { usePathname, useRouter } from "narraleaf-react";
+import { GameExitListener } from "../../src/components/GameExitListener";
+import { useConfirm } from "../../src/hooks/useConfirm";
+
+// Confirm Context Types
+interface ConfirmConfig {
+    message: string;
+    onConfirm?: () => void;
+    onCancel?: () => void;
+}
+
+interface ConfirmContextType {
+    showConfirm: (config: ConfirmConfig) => Promise<boolean>;
+}
+
+const ConfirmContext = createContext<ConfirmContextType | null>(null);
+
+// Hook to use confirm context
+export const useAppConfirm = () => {
+    const context = useContext(ConfirmContext);
+    if (!context) {
+        throw new Error('useAppConfirm must be used within a ConfirmProvider');
+    }
+    return context;
+};
+
+// ConfirmProvider component
+function ConfirmProvider({ children }: { children: React.ReactNode }) {
+    const [confirmExit, ConfirmExitDialog] = useConfirm({
+        message: "确定要退出游戏吗？",
+    });
+    const [confirmQuit, ConfirmQuitDialog] = useConfirm({
+        message: "确定要结束游戏吗？",
+    });
+    const [confirmLoad, ConfirmLoadDialog] = useConfirm({
+        message: "确定要加载这个存档吗？",
+    });
+    const [confirmSave, ConfirmSaveDialog] = useConfirm({
+        message: "确定要覆盖当前存档吗？",
+    });
+    const [confirmGeneric, ConfirmGenericDialog] = useConfirm({
+        message: "确定要执行此操作吗？",
+    });
+
+    const showConfirm = useCallback(async (config: ConfirmConfig): Promise<boolean> => {
+        switch (config.message) {
+            case "确定要退出游戏吗？":
+                return await confirmExit();
+            case "确定要结束游戏吗？":
+                return await confirmQuit();
+            case "确定要加载这个存档吗？":
+                return await confirmLoad();
+            case "确定要覆盖当前存档吗？":
+                return await confirmSave();
+            default:
+                // For generic messages, update the confirm message and use generic dialog
+                return await confirmGeneric();
+        }
+    }, [confirmExit, confirmQuit, confirmLoad, confirmSave, confirmGeneric]);
+
+    const contextValue: ConfirmContextType = useMemo(() => ({
+        showConfirm
+    }), [showConfirm]);
+
+    return (
+        <ConfirmContext.Provider value={contextValue}>
+            {children}
+            {ConfirmExitDialog}
+            {ConfirmQuitDialog}
+            {ConfirmLoadDialog}
+            {ConfirmSaveDialog}
+            {ConfirmGenericDialog}
+        </ConfirmContext.Provider>
+    );
+}
+
+// Independent BlurOverlay component using useAnimate and usePresence
+interface BlurOverlayProps {
+    blur: boolean;
+    isPlaying: boolean;
+    homePanelAnimationReady: boolean;
+}
+
+function BlurOverlay({ blur, isPlaying, homePanelAnimationReady }: BlurOverlayProps) {
+    const [scope, animate] = useAnimate();
+    const [isPresent, safeToRemove] = usePresence();
+
+    // Initialize animation state
+    useEffect(() => {
+        if (!scope.current) return;
+        
+        // Set initial state
+        animate(scope.current, {
+            opacity: 0,
+            backdropFilter: 'blur(0px)'
+        }, { duration: 0 });
+    }, [animate, scope]);
+
+    // Handle animation based on state changes
+    useEffect(() => {
+        if (!scope.current) return;
+
+        const animateBlur = async () => {
+            if (homePanelAnimationReady) {
+                // Normal smooth animation after HomePanel is ready
+                await animate(scope.current, {
+                    opacity: !blur ? 0.4 : 1,
+                    backdropFilter: !blur ? 'blur(3px)' : (isPlaying ? 'blur(5px)' : 'blur(8px)')
+                }, {
+                    duration: 0.3,
+                    ease: "easeInOut"
+                });
+            } else {
+                // During HomePanel animation, keep blur overlay static
+                await animate(scope.current, {
+                    opacity: 0.4,
+                    backdropFilter: isPlaying ? 'blur(3px)' : 'blur(3px)'
+                }, {
+                    duration: 0.1,
+                    ease: "easeOut"
+                });
+            }
+        };
+
+        animateBlur();
+    }, [animate, scope, blur, isPlaying, homePanelAnimationReady]);
+
+    // Handle exit animation
+    useEffect(() => {
+        if (!isPresent && scope.current) {
+            animate(scope.current, {
+                opacity: 0,
+                backdropFilter: 'blur(0px)'
+            }, {
+                duration: 0.3,
+                ease: "easeInOut"
+            }).then(() => {
+                safeToRemove();
+            });
+        }
+    }, [isPresent, animate, scope, safeToRemove]);
+
+    return (
+        <motion.div
+            ref={scope}
+            className={isPlaying ? "absolute inset-0 bg-black/70 backdrop-blur-md pointer-events-none" : "absolute inset-0 bg-black/30 backdrop-blur-md pointer-events-none"}
+            style={{
+                willChange: 'opacity, backdrop-filter',
+                transform: 'translate3d(0, 0, 0)',
+                backfaceVisibility: 'hidden'
+            }}
+        />
+    );
+}
 
 // Smooth parallax hook for background
 function useSmoothBackgroundParallax() {
@@ -137,13 +290,33 @@ function useSmoothBackgroundParallax() {
     };
 }
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+function LayoutContent({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const currentPathname = usePathname();
     const bgImage = "url('/static/img/ui/bg/outside.jpg')";
+    const app = useApp();
+    const { isPlaying } = useGamePlayback();
+    const { showConfirm } = useAppConfirm();
 
     const isHomePage = currentPathname === "/home";
-    const blur = currentPathname.startsWith("/home") && !isHomePage;
+    const blur = (currentPathname.startsWith("/home") && !isHomePage) || isPlaying;
+    
+    // Track HomePanel animation state to sync blur overlay
+    const [homePanelAnimationReady, setHomePanelAnimationReady] = useState(false);
+
+    // Sync blur overlay with HomePanel animation timing
+    useEffect(() => {
+        if (isHomePage) {
+            // For home page, wait for HomePanel initial animation to complete
+            const timer = setTimeout(() => {
+                setHomePanelAnimationReady(true);
+            }, 1200); // Slightly after HomePanel's 1000ms completion
+            return () => clearTimeout(timer);
+        } else {
+            // For non-home pages or when playing, start immediately
+            setHomePanelAnimationReady(true);
+        }
+    }, [isHomePage, isPlaying]);
 
     // 使用 usePresence 钩子来控制退场动画
     const [isPresent, safeToRemove] = usePresence();
@@ -153,9 +326,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         // 当退场动画完成后，调用 safeToRemove 告知可以安全移除组件
         if (!isPresent) {
             safeToRemove();
-            console.warn("safeToRemove");
         }
     }, [isPresent, safeToRemove]);
+
+    const onlyInHome = (v: MenuButton): MenuButton[] => {
+        if (!isPlaying) {
+            return [v];
+        }
+        return [];
+    };
+
+    const onlyInPlaying = (v: MenuButton): MenuButton[] => {
+        if (isPlaying) {
+            return [v];
+        }
+        return [];
+    };
 
     const {
         handleMouseMove,
@@ -166,15 +352,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     // Define menu buttons with active states
     const menuButtons: MenuButton[] = [
-        {
+        ...onlyInHome({
             id: "start-game",
             label: "开始游戏",
             active: false,
             onClick: () => {
-                router.navigate("/home");
+                app.newGame();
             }
-        },
-        {
+        }),
+        ...onlyInHome({
             id: "continue-game",
             label: "继续游戏",
             active: false,
@@ -182,7 +368,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 console.log("Clicked: 继续游戏");
                 // Add specific button logic here
             }
-        },
+        }),
+        ...onlyInPlaying({
+            id: "continue-game",
+            label: "继续游戏",
+            onClick: () => {
+                router.navigate("/");
+            }
+        }),
         {
             id: "load-game",
             label: "读取存档",
@@ -191,6 +384,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 router.navigate("/home/load");
             }
         },
+        ...onlyInPlaying({
+            id: "save-game",
+            label: "保存游戏",
+            active: false,
+            onClick: () => {
+                router.navigate("/home/save");
+            }
+        }),
         {
             id: "settings",
             label: "游戏设置",
@@ -207,13 +408,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 router.navigate("/home/about");
             }
         },
-        {
+        ...onlyInPlaying({
             id: "exit-game",
-            label: "退出游戏",
+            label: "返回主页",
             active: false,
             onClick: () => {
-                console.log("Clicked: 退出游戏");
-                // Add specific button logic here
+                handleExit();
+            }
+        }),
+        {
+            id: "exit-app",
+            label: "退出",
+            active: false,
+            onClick: async () => {
+                const result = await showConfirm({ message: "确定要结束游戏吗？" });
+                if (result) {
+                    app.quit();
+                }
             }
         }
     ];
@@ -238,11 +449,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const backgroundOffset = getBackgroundOffset();
     const backgroundRotation = getBackgroundRotation();
 
+    async function handleExit() {
+        const result = await showConfirm({ message: "确定要退出游戏吗？" });
+        if (result) {
+            app.exitGame();
+        }
+    }
+
     return (
         <motion.div
             className="w-full h-full absolute"
             style={{
-                backgroundImage: bgImage,
+                backgroundImage: isPlaying ? 'none' : bgImage,
                 backgroundSize: '160%', // Increased from 140% to 160% for larger image
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
@@ -266,23 +484,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
         >
-            {/* Conditional blur overlay */}
-            <motion.div
-                className="absolute inset-0 bg-black/30 backdrop-blur-md"
-                initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-                animate={{
-                    // opacity: !blur ? 0.4 : 1,
-                    backdropFilter: !blur ? 'blur(3px)' : 'blur(8px)',
-                    transition: {
-                        duration: 0.3,
-                        ease: "easeInOut"
-                    }
-                }}
-                style={{
-                    willChange: 'opacity, backdrop-filter',
-                    transform: 'translateZ(0)',
-                    backfaceVisibility: 'hidden'
-                }}
+            <GameExitListener />
+            
+            {/* Independent blur overlay */}
+            <BlurOverlay 
+                blur={blur}
+                isPlaying={isPlaying}
+                homePanelAnimationReady={homePanelAnimationReady}
             />
             <HomePanel
                 key="home-panel"
@@ -320,6 +528,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 ) : children}
             </HomePanel>
         </motion.div>
+    );
+}
+
+// Main Layout component with ConfirmProvider
+export default function Layout({ children }: { children: React.ReactNode }) {
+    return (
+        <ConfirmProvider>
+            <LayoutContent>{children}</LayoutContent>
+        </ConfirmProvider>
     );
 }
 

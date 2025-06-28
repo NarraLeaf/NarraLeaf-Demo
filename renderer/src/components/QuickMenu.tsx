@@ -5,6 +5,7 @@ import { useApp, useSaveAction } from 'narraleaf/client';
 import { useBackdrop } from '../hooks/useBackdrop';
 import clsx from 'clsx';
 import { useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface MenuItemProps {
     icon: React.ElementType;
@@ -79,10 +80,10 @@ export function QuickMenu() {
                 fastForwardNotification.current = game.getLiveGame().notify("快进中...", null);
                 game.preference.setPreference("gameSpeed", 10);
                 game.preference.setPreference("autoForward", true);
-            } else if (e.key === 'Escape' && router.getCurrentId() !== "settings") {
-                router.push("settings");
-            } else if (e.key === 'ArrowUp' && router.getCurrentId() !== "history") {
-                router.push("history");
+            } else if (e.key === 'Escape' && router.getPathname() !== "settings") {
+                router.navigate("/home/settings");
+            } else if (e.key === 'ArrowUp' && router.getPathname() !== "history") {
+                router.navigate("/history");
 
                 if (token) {
                     token.cancel();
@@ -127,17 +128,17 @@ export function QuickMenu() {
         };
     }, [router]);
 
-    useEffect(() => {
-        const handleContextMenu = (e: MouseEvent) => {
-            e.preventDefault();
-            setShowDialog(!showDialog);
-        };
+    // useEffect(() => {
+    //     const handleContextMenu = (e: MouseEvent) => {
+    //         e.preventDefault();
+    //         setShowDialog(!showDialog);
+    //     };
 
-        window.addEventListener('contextmenu', handleContextMenu);
-        return () => {
-            window.removeEventListener('contextmenu', handleContextMenu);
-        };
-    }, [showDialog, setShowDialog]);
+    //     window.addEventListener('contextmenu', handleContextMenu);
+    //     return () => {
+    //         window.removeEventListener('contextmenu', handleContextMenu);
+    //     };
+    // }, [showDialog, setShowDialog]);
 
     function handleUndo() {
         liveGame.undo();
@@ -145,7 +146,7 @@ export function QuickMenu() {
 
     function handleHistory() {
         console.log("push history");
-        router.push("history");
+        router.navigate("/home/history");
     }
 
     function handleAutoForward() {
@@ -170,15 +171,15 @@ export function QuickMenu() {
     }
 
     function handleLoad() {
-        router.push("loadgame");
+        router.navigate("/home/load");
     }
 
     function handleSave() {
-        router.push("savegame");
+        router.navigate("/home/save");
     }
 
     function handleSettings() {
-        router.push("settings");
+        router.navigate("/home/settings");
     }
 
     function handleQuickSave() {
@@ -206,21 +207,36 @@ export function QuickMenu() {
 
     return (
         <>
-            <div className={clsx("fixed bottom-4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 px-4 py-1 rounded-full bg-black/10", backdrop, {
-                "hidden": !showDialog
-            })}>
-                <MenuItem icon={ArrowLeft} label="上一步" onClick={handleUndo} />
-                <MenuItem icon={History} label="历史" onClick={handleHistory} />
-                <MenuItem icon={FastForward} label="跳过" onClick={handleSkipDialog} />
-                {/* <MenuItem icon={FastForward} label="快进" onClick={handleGameSpeed} active={gameSpeed > 1}/> */}
-                <MenuItem icon={Play} label="自动" onClick={handleAutoForward} active={autoForward}/>
-                <MenuItem icon={Save} label="保存" onClick={handleSave} />
-                <MenuItem icon={Save} label="快速保存" onClick={handleQuickSave} />
-                <MenuItem icon={FileText} label="读取" onClick={handleLoad} />
-                <MenuItem icon={FileUp} label="快速读取" onClick={handleQuickRead} />
-                <MenuItem icon={Settings} label="设置" onClick={handleSettings} />
-                <MenuItem icon={Home} label="主页" onClick={handleExit} />
-            </div>
+            <AnimatePresence>
+                {showDialog && (
+                    <div className="fixed bottom-5 left-0 right-0 flex justify-center">
+                        <motion.div 
+                            className={clsx("flex items-center gap-2 px-4 py-1 rounded-full bg-black/10", backdrop)}
+                            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+                            transition={{ 
+                                type: "spring", 
+                                stiffness: 300, 
+                                damping: 25,
+                                duration: 0.3
+                            }}
+                        >
+                            <MenuItem icon={ArrowLeft} label="上一步" onClick={handleUndo} />
+                            <MenuItem icon={History} label="历史" onClick={handleHistory} />
+                            <MenuItem icon={FastForward} label="跳过" onClick={handleSkipDialog} />
+                            {/* <MenuItem icon={FastForward} label="快进" onClick={handleGameSpeed} active={gameSpeed > 1}/> */}
+                            <MenuItem icon={Play} label="自动" onClick={handleAutoForward} active={autoForward}/>
+                            <MenuItem icon={Save} label="保存" onClick={handleSave} />
+                            <MenuItem icon={Save} label="快速保存" onClick={handleQuickSave} />
+                            <MenuItem icon={FileText} label="读取" onClick={handleLoad} />
+                            <MenuItem icon={FileUp} label="快速读取" onClick={handleQuickRead} />
+                            <MenuItem icon={Settings} label="设置" onClick={handleSettings} />
+                            <MenuItem icon={Home} label="主页" onClick={handleExit} />
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
             {ConfirmExitDialog}
             {ConfirmQuickReadDialog}
         </>

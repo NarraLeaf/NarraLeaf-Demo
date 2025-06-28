@@ -134,20 +134,10 @@ export function TestPanelTrigger({
             }
         };
 
-        // Add escape key to hide test panel
-        const handleEscape = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                onTrigger();
-                setTypedKeys("");
-            }
-        };
-
         window.addEventListener('keydown', handleKeyDown);
-        window.addEventListener('keydown', handleEscape);
         
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
-            window.removeEventListener('keydown', handleEscape);
         };
     }, [typedKeys, triggerKeys, onTrigger]);
 
