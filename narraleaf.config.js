@@ -4,7 +4,7 @@ const {BuildTarget, WindowsBuildTarget} = require("narraleaf");
 module.exports = {
   build: {
     appId: "com.example.narraleaf-demo",
-    copyright: "Copyright © 2024",
+    copyright: "Copyright © 2025",
     dev: true,
     dist: "dist",
     productName: "NarraLeaf Demo",
@@ -25,5 +25,5 @@ module.exports = {
   dev: {
     port: 5050,
   },
-  resources: "renderer/public",
+  resources: "main/assets",
 };

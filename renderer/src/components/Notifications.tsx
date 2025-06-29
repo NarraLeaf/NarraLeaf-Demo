@@ -9,13 +9,18 @@ function GameNotification({ notifications }: INotificationsProps) {
 
     return (
         <Notifications
-            className="absolute top-0 left-0 w-full h-full"
+            className="absolute top-5 left-0 w-full h-full z-[100]"
         >
             <AnimatePresence>
                 {notifications.map(({id, message}, index) =>
                     <motion.div
                         key={id}
-                        className={clsx("absolute top-0 left-0 min-w-[400px] h-[40px] bg-black/50 text-white p-4 border-b-2 border-primary flex items-center rounded-r-lg", backdrop)}
+                        className={clsx("absolute top-0 left-0 h-[40px] w-[400px] flex items-center pl-4 text-white", backdrop)}
+                        style={{
+                            backgroundImage: "url(/static/img/ui/popup/notification.png)",
+                            backgroundRepeat: "no-repeat",
+                            backgroundSize: "100% 100%"
+                        }}
                         initial={{ 
                             x: "-100%", 
                             opacity: 0,

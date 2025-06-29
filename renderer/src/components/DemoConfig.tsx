@@ -7,6 +7,7 @@ const event = new EventEmitter<{
 
 interface DemoConfig {
     useVisualEffect: boolean;
+    isSplashScreen: boolean;
 }
 
 interface DemoConfigContextType {
@@ -24,6 +25,7 @@ export const DemoConfigContext = createContext<DemoConfigContextType | null>(nul
 export function DemoConfigProvider({ children }: { children: React.ReactNode }) {
     const [demoConfig, setDemoConfig] = useState<DemoConfig>({
         useVisualEffect: true,
+        isSplashScreen: true,
     });
 
     return (

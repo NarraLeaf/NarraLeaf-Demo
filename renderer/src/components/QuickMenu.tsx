@@ -128,17 +128,17 @@ export function QuickMenu() {
         };
     }, [router]);
 
-    // useEffect(() => {
-    //     const handleContextMenu = (e: MouseEvent) => {
-    //         e.preventDefault();
-    //         setShowDialog(!showDialog);
-    //     };
+    useEffect(() => {
+        const handleContextMenu = (e: MouseEvent) => {
+            e.preventDefault();
+            setShowDialog(!showDialog);
+        };
 
-    //     window.addEventListener('contextmenu', handleContextMenu);
-    //     return () => {
-    //         window.removeEventListener('contextmenu', handleContextMenu);
-    //     };
-    // }, [showDialog, setShowDialog]);
+        window.addEventListener('contextmenu', handleContextMenu);
+        return () => {
+            window.removeEventListener('contextmenu', handleContextMenu);
+        };
+    }, [showDialog, setShowDialog]);
 
     function handleUndo() {
         liveGame.undo();
@@ -211,7 +211,7 @@ export function QuickMenu() {
                 {showDialog && (
                     <div className="fixed bottom-5 left-0 right-0 flex justify-center">
                         <motion.div 
-                            className={clsx("flex items-center gap-2 px-4 py-1 rounded-full bg-black/10", backdrop)}
+                            className={clsx("flex items-center gap-2 px-4 py-1 rounded-full")}
                             initial={{ opacity: 0, scale: 0.8, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.8, y: 20 }}

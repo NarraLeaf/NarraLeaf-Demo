@@ -15,9 +15,9 @@ export function multiBounce(t: number) {
 export const shake: Transform<TransformDefinitions.ImageTransformProps> = Transform.create()
     .repeat(3)
     .position({ xoffset: 10 })
-    .commit({ duration: 75 })
+    .commit({ duration: 75, ease: "easeInOut" })
     .position({ xoffset: 0 })
-    .commit({ duration: 75 });
+    .commit({ duration: 75, ease: "easeInOut" });
 
 export const bounce: Transform<TransformDefinitions.ImageTransformProps> = Transform.create()
     .scale(0.6)

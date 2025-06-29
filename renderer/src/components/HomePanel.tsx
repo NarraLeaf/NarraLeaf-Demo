@@ -233,17 +233,12 @@ function useSmoothParallax() {
         };
     }, [parallaxEnabled, animateParallax]);
 
-    // Enable parallax after entrance animation
+    // Enable parallax immediately so that 3D and position animation start during panel entrance
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsInitialAnimationComplete(true);
-            // Progressive enable parallax with fade-in
-            setTimeout(() => {
-                setParallaxEnabled(true);
-            }, 500);
-        }, 1000);
-
-        return () => clearTimeout(timer);
+        // Directly mark initial animation as complete
+        setIsInitialAnimationComplete(true);
+        // Activate parallax right away
+        setParallaxEnabled(true);
     }, []);
 
     // Calculate offsets for different layers with z-depth
@@ -394,18 +389,20 @@ export function HomePanel({
             x: 0,
             transition: {
                 type: "spring" as const,
-                stiffness: 100,
-                damping: 20,
-                duration: 0.8
+                stiffness: 250,      // Higher stiffness for quicker settle
+                damping: 35,         // Higher damping to reduce overshoot
+                mass: 0.6,
+                duration: 0.5        // Shorter overall time
             }
         },
         exit: {
             x: '-100%',
             transition: {
                 type: "spring" as const,
-                stiffness: 120,
-                damping: 25,
-                duration: 0.3
+                stiffness: 300,
+                damping: 40,
+                mass: 0.6,
+                duration: 0.25       // Faster exit
             }
         }
     };
@@ -417,18 +414,20 @@ export function HomePanel({
             x: 0,
             transition: {
                 type: "spring" as const,
-                stiffness: isHomePage ? 100 : 200,
-                damping: isHomePage ? 20 : 25,
-                duration: isHomePage ? 0.8 : 0
+                stiffness: isHomePage ? 250 : 300,
+                damping: isHomePage ? 35 : 40,
+                mass: 0.6,
+                duration: isHomePage ? 0.45 : 0
             }
         },
         exit: {
             x: '100%',
             transition: {
                 type: "spring" as const,
-                stiffness: 120,
-                damping: 25,
-                duration: 0.6
+                stiffness: 300,
+                damping: 40,
+                mass: 0.6,
+                duration: 0.35
             }
         }
     };

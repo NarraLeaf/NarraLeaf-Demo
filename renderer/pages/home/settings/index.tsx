@@ -215,6 +215,39 @@ export default function Settings() {
         });
     }, []);
 
+    // Persist preferences whenever related values change.
+    // This effect runs *after* React has committed the state update, ensuring we write the latest values.
+    useEffect(() => {
+        const preferences: GamePreferences = {
+            windowMode: fullscreen ? "fullscreen" : "windowed",
+            playerPreferences: {
+                cps,
+                skipDelay,
+                skipInterval,
+                globalVolume,
+                soundVolume,
+                voiceVolume,
+                bgmVolume,
+            },
+        };
+
+        // Debounce writes to avoid persisting on every small change.
+        const debounceTimer = setTimeout(() => {
+            window.NarraLeaf.app.requestMain<GamePreferences, void>("setGamePreferences", preferences);
+        }, 300);
+
+        return () => clearTimeout(debounceTimer);
+    }, [
+        fullscreen,
+        globalVolume,
+        soundVolume,
+        voiceVolume,
+        bgmVolume,
+        cps,
+        skipDelay,
+        skipInterval,
+    ]);
+
     // 指示器位置状态
     const [indicatorLeft, setIndicatorLeft] = useState(0);
     const [isInitialized, setIsInitialized] = useState(false);

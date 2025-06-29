@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback, createContext, useContext, useMemo } from "react";
-import { useApp, useGamePlayback } from "narraleaf/client";
-import { motion, AnimatePresence, usePresence, useAnimate } from "motion/react";
+import { SaveType, useApp, useGamePlayback, useSavedGames } from "narraleaf/client";
+import { motion, usePresence } from "motion/react";
 import { HomePanel, MenuButton } from "../../src/components/HomePanel";
 import { usePathname, useRouter } from "narraleaf-react";
 import { GameExitListener } from "../../src/components/GameExitListener";
@@ -82,72 +82,21 @@ function ConfirmProvider({ children }: { children: React.ReactNode }) {
 interface BlurOverlayProps {
     blur: boolean;
     isPlaying: boolean;
-    homePanelAnimationReady: boolean;
 }
 
-function BlurOverlay({ blur, isPlaying, homePanelAnimationReady }: BlurOverlayProps) {
-    const [scope, animate] = useAnimate();
-    const [isPresent, safeToRemove] = usePresence();
-
-    // Initialize animation state
-    useEffect(() => {
-        if (!scope.current) return;
-        
-        // Set initial state
-        animate(scope.current, {
-            opacity: 0,
-            backdropFilter: 'blur(0px)'
-        }, { duration: 0 });
-    }, [animate, scope]);
-
-    // Handle animation based on state changes
-    useEffect(() => {
-        if (!scope.current) return;
-
-        const animateBlur = async () => {
-            if (homePanelAnimationReady) {
-                // Normal smooth animation after HomePanel is ready
-                await animate(scope.current, {
-                    opacity: !blur ? 0.4 : 1,
-                    backdropFilter: !blur ? 'blur(3px)' : (isPlaying ? 'blur(5px)' : 'blur(8px)')
-                }, {
-                    duration: 0.3,
-                    ease: "easeInOut"
-                });
-            } else {
-                // During HomePanel animation, keep blur overlay static
-                await animate(scope.current, {
-                    opacity: 0.4,
-                    backdropFilter: isPlaying ? 'blur(3px)' : 'blur(3px)'
-                }, {
-                    duration: 0.1,
-                    ease: "easeOut"
-                });
-            }
-        };
-
-        animateBlur();
-    }, [animate, scope, blur, isPlaying, homePanelAnimationReady]);
-
-    // Handle exit animation
-    useEffect(() => {
-        if (!isPresent && scope.current) {
-            animate(scope.current, {
-                opacity: 0,
-                backdropFilter: 'blur(0px)'
-            }, {
-                duration: 0.3,
-                ease: "easeInOut"
-            }).then(() => {
-                safeToRemove();
-            });
-        }
-    }, [isPresent, animate, scope, safeToRemove]);
-
+function BlurOverlay({ blur, isPlaying }: BlurOverlayProps) {
     return (
         <motion.div
-            ref={scope}
             className={isPlaying ? "absolute inset-0 bg-black/70 backdrop-blur-md pointer-events-none" : "absolute inset-0 bg-black/30 backdrop-blur-md pointer-events-none"}
+            initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            animate={{
+                opacity: blur ? 1 : 0.4,
+                backdropFilter: blur
+                    ? (isPlaying ? 'blur(5px)' : 'blur(8px)')
+                    : 'blur(3px)'
+            }}
+            exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            transition={{ duration: 0.1, ease: "easeInOut" }}
             style={{
                 willChange: 'opacity, backdrop-filter',
                 transform: 'translate3d(0, 0, 0)',
@@ -300,23 +249,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
     const isHomePage = currentPathname === "/home";
     const blur = (currentPathname.startsWith("/home") && !isHomePage) || isPlaying;
-    
-    // Track HomePanel animation state to sync blur overlay
-    const [homePanelAnimationReady, setHomePanelAnimationReady] = useState(false);
-
-    // Sync blur overlay with HomePanel animation timing
-    useEffect(() => {
-        if (isHomePage) {
-            // For home page, wait for HomePanel initial animation to complete
-            const timer = setTimeout(() => {
-                setHomePanelAnimationReady(true);
-            }, 1200); // Slightly after HomePanel's 1000ms completion
-            return () => clearTimeout(timer);
-        } else {
-            // For non-home pages or when playing, start immediately
-            setHomePanelAnimationReady(true);
-        }
-    }, [isHomePage, isPlaying]);
 
     // 使用 usePresence 钩子来控制退场动画
     const [isPresent, safeToRemove] = usePresence();
@@ -365,8 +297,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             label: "继续游戏",
             active: false,
             onClick: () => {
-                console.log("Clicked: 继续游戏");
-                // Add specific button logic here
+                app.continueGame();
             }
         }),
         ...onlyInPlaying({
@@ -387,7 +318,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         ...onlyInPlaying({
             id: "save-game",
             label: "保存游戏",
-            active: false,
+            active: router.getPathname() === "/home/save",
             onClick: () => {
                 router.navigate("/home/save");
             }
@@ -485,12 +416,11 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             onMouseLeave={handleMouseLeave}
         >
             <GameExitListener />
-            
+
             {/* Independent blur overlay */}
-            <BlurOverlay 
+            <BlurOverlay
                 blur={blur}
                 isPlaying={isPlaying}
-                homePanelAnimationReady={homePanelAnimationReady}
             />
             <HomePanel
                 key="home-panel"

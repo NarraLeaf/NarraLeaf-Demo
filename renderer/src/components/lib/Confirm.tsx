@@ -1,6 +1,7 @@
 import { useBackdrop } from '../../hooks/useBackdrop';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect } from 'react';
+import clsx from 'clsx';
 
 interface ConfirmProps {
     isOpen: boolean;
@@ -58,24 +59,44 @@ export function Confirm({
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className={`relative rounded-lg p-8 shadow-lg w-[500px] AlimamaFangYuanTiVF-Thin bg-black/50 ${backdrop} border-2 border-primary`}
+                        className={clsx(
+                            "relative p-16 w-[500px] ZhanKu",
+                        )}
+                        style={{
+                            backgroundImage: "url('/static/img/ui/popup/popup-dialog.png')",
+                            backgroundSize: 'contain',
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'center'
+                        }}
                     >
                         {title && (
-                            <h3 className="text-xl text-white mb-4">{title}</h3>
+                            <h3 className="text-2xl text-white mb-4">{title}</h3>
                         )}
-                        <p className="text-white text-lg mb-12">{message}</p>
+                        <p className="text-white text-2xl mb-12 pr-8">{message}</p>
                         
                         {/* Buttons */}
-                        <div className="flex justify-end gap-4">
+                        <div className="absolute bottom-4 right-[52px] flex">
                             <button
                                 onClick={onCancel}
-                                className="px-4 py-2 rounded-md border-2 border-primary text-white hover:bg-primary/20 transition-colors"
+                                className="relative w-[82px] h-[43px] flex items-center justify-center text-white transition-all duration-200 hover:-translate-y-1 active:translate-y-0 hover:drop-shadow-[0_0_1px_#ffffff] hover:opacity-90 outline-none"
+                                style={{
+                                    backgroundImage: "url('/static/img/ui/popup/dialog-btn-secondary.png')",
+                                    backgroundSize: 'contain',
+                                    backgroundRepeat: 'no-repeat',
+                                    backgroundPosition: 'center'
+                                }}
                             >
                                 {cancelText}
                             </button>
                             <button
                                 onClick={onConfirm}
-                                className="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary/80 transition-colors"
+                                className="relative w-[82px] h-[43px] flex items-center justify-center text-[#40a8c5] transition-all duration-200 hover:-translate-y-1 active:translate-y-0 hover:drop-shadow-[0_0_3px_#ffffff] hover:opacity-90 outline-none"
+                                style={{
+                                    backgroundImage: "url('/static/img/ui/popup/dialog-btn-primary.png')",
+                                    backgroundSize: 'contain',
+                                    backgroundRepeat: 'no-repeat',
+                                    backgroundPosition: 'center'
+                                }}
                             >
                                 {confirmText}
                             </button>

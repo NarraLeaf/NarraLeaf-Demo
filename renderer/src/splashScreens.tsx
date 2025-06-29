@@ -1,7 +1,6 @@
-import { SplashScreenDefinition } from "narraleaf/client";
 import { NarraLeafLogo } from "./components/NarraLeafLogo";
 
-export const splashScreen: SplashScreenDefinition[] = [{
+export const splashScreen = [{
     initial: {opacity: 0, scale: 0.95},
     animate: {
         opacity: 1,
@@ -19,7 +18,7 @@ export const splashScreen: SplashScreenDefinition[] = [{
             ease: "circInOut"
         }
     },
-    duration: 1,
+    duration: 3,
     splashScreen:(
         <div className="flex justify-center items-center w-full h-full min-w-screen min-h-screen text-black overflow-hidden">
             <div className="transform transition-all">
@@ -43,7 +42,7 @@ export const splashScreen: SplashScreenDefinition[] = [{
             ease: "easeIn"
         }
     },
-    duration: 1.5,
+    duration: 1,
     splashScreen:(
         <div className="flex justify-center items-center w-full h-full min-w-screen min-h-screen text-black">
             <div className="transform transition-all">
@@ -67,20 +66,20 @@ export const splashScreen: SplashScreenDefinition[] = [{
     exit: {
         opacity: 0,
         transition: {
-            duration: 0.5,
+            duration: 1,
             ease: "easeIn"
         }
     },
-    duration: 1.5,
+    duration: 2,
     splashScreen:(
         <div className="flex justify-center items-center w-full h-full min-w-screen min-h-screen text-black AlimamaFangYuanTiVF-Thin">
             <div className="flex flex-col items-center gap-4">
-                <h1 className="text-4xl font-bold">NarraLeaf Demo</h1>
-                <p className="text-xl text-gray-500">
+                <h1 className="text-4xl font-bold ZhanKu">NarraLeaf Demo</h1>
+                <p className="text-xl text-gray-500 ZhanKu">
                     该项目仅用于展示NarraLeaf引擎基础特性，无法代表最终成品
                 </p>
                 <div className="mt-4 text-sm text-gray-500 text-center">
-                    <p>NarraLeaf v0.0.8</p>
+                    <p>NarraLeaf v0.2.0</p>
                     <p>© 2025 NarraLeaf Project</p>
                 </div>
             </div>
