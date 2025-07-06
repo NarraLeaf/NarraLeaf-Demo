@@ -1,9 +1,10 @@
-import { usePreference, useRouter, useGame } from "narraleaf-react";
+import { usePreference, useRouter, useGame, useKeyBinding, KeyBindingType, KeyBindingValue } from "narraleaf-react";
 import React, { useEffect, useState, useRef } from "react";
 import { motion, Variants, AnimatePresence } from "motion/react";
 import { useDemoConfig } from "../../../src/components/DemoConfig";
 import { Checkbox } from "../../../src/components/lib/Checkbox";
 import { Slider } from "../../../src/components/lib/Slider";
+import { KeyBindingInput } from "../../../src/components/lib/KeyBindingInput";
 import ScrollableContainer from "../../../src/components/lib/ScrollableContainer";
 import { HomePagesAnimation } from "../index";
 
@@ -151,7 +152,9 @@ const DisplaySettings: React.FC<{
     setFullscreen: (value: boolean) => void;
     visualEffect: boolean;
     setVisualEffect: (value: boolean) => void;
-}> = ({ fullscreen, setFullscreen, visualEffect, setVisualEffect }) => (
+    skipKeyBinding: KeyBindingValue;
+    setSkipKeyBinding: (value: KeyBindingValue) => void;
+}> = ({ fullscreen, setFullscreen, visualEffect, setVisualEffect, skipKeyBinding, setSkipKeyBinding }) => (
     <div className="space-y-4" style={{ minHeight: '200px' }}>
         <SettingItem label="全屏">
             <Checkbox
@@ -169,6 +172,13 @@ const DisplaySettings: React.FC<{
             <Checkbox
                 checked={visualEffect}
                 onChange={(e) => setVisualEffect(e.target.checked)}
+            />
+        </SettingItem>
+
+        <SettingItem label="跳过键">
+            <KeyBindingInput
+                value={skipKeyBinding}
+                onChange={setSkipKeyBinding}
             />
         </SettingItem>
     </div>
@@ -192,6 +202,7 @@ export default function Settings() {
     // 显示设置
     const [fullscreen, setFullscreen] = useState(false);
     const [visualEffect, setVisualEffect] = useDemoConfig("useVisualEffect");
+    const [skipKeyBinding, setSkipKeyBinding] = useKeyBinding(KeyBindingType.skipAction);
 
     // Tab状态 - 使用数组中的第一个tab作为默认值
     const [activeTab, setActiveTab] = useState<TabId>(tabs[0].id);
@@ -398,6 +409,8 @@ export default function Settings() {
                         setFullscreen={setFullscreen}
                         visualEffect={visualEffect}
                         setVisualEffect={setVisualEffect}
+                        skipKeyBinding={skipKeyBinding}
+                        setSkipKeyBinding={setSkipKeyBinding}
                     />
                 );
             default:
