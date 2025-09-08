@@ -1,13 +1,5 @@
-import {Story, Scene, Character, c} from "narraleaf-react";
+import { Story} from "narraleaf-react";
+import { start } from "./story/scenes/start";
 
-const character1 = new Character("Character 1");
-
-const scene1 = new Scene("Scene 1");
-scene1.action([
-    character1
-        .say`Hello, World!`
-        .say`This is a ${c("NarraLeaf", "blue")} story!`,
-]);
-
-const story = new Story("My Story").entry(scene1);
-export {story};
+const story = new Story("My Story").entry(start);
+export { story, start };

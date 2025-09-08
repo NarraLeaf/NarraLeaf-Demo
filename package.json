@@ -5,11 +5,18 @@
   "description": "A new NarraLeaf project",
   "scripts": {
     "build": "narraleaf build",
-    "dev": "narraleaf dev"
+    "dev": "narraleaf dev",
+    "info": "narraleaf info",
+    "setup-react-devtools": "node scripts/setup-react-devtools.js"
   },
   "dependencies": {
-    "narraleaf": "latest",
-    "narraleaf-react": "0.4.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "12.18.1",
+    "lucide-react": "^0.503.0",
+    "narraleaf": "^0.0.8-alpha.4",
+    "narraleaf-react": "^0.6.0",
+    "postcss": "^8.5.3",
+    "postcss-loader": "^8.1.1",
     "react": ">=19",
     "react-dom": ">=19"
   },
@@ -17,5 +24,6 @@
     "@types/react": "19",
     "@types/react-dom": "19",
     "typescript": "latest"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

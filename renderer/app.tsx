@@ -1,49 +1,143 @@
-import React, {useEffect} from 'react';
-import {useGame} from 'narraleaf-react';
-import {Meta, SplashScreenDefinition} from 'narraleaf/client';
+import React, { useEffect } from 'react';
+import { useGame, usePreference, useRouter } from 'narraleaf-react';
+// import {GameMetadata, requestMain, useGamePlayback} from 'narraleaf/client';
+import { GameMetadata, requestMain, useApp } from 'narraleaf/client';
 
 // Import your assets
 import "./src/base.css";
-import {story} from "./src/story";
+import { start, story } from "./src/story";
+// import { QuickMenu } from './src/components/QuickMenu';
+import { GameDialog } from './src/components/Dialog';
+import { DefaultMenu } from './src/components/Menu';
+// import { createPreloadEntryPlugin } from './src/plugins';
+// import {splashScreen} from './src/splashScreens';
+import { DemoConfigProvider } from './src/components/DemoConfig';
+// import { useRouter } from 'narraleaf-react';
+import GameNotification from './src/components/Notifications';
+// import { GamePreferences } from './pages/settings';
 
-const App = ({children}: {children: React.ReactNode}) => {
+// Import test panel components
+import { TestPanelProvider, GlobalTestPanel } from './src/components/testPanel';
+import { createPreloadEntryPlugin } from './src/plugins';
+import { GamePreferences } from './pages/home/settings';
+
+const App = ({ children }: { children: React.ReactNode }) => {
     // Access the game instance by using the useGame hook
     const game = useGame();
+    const router = useRouter();
+    const app = useApp();
+    // const [, setCps] = usePreference("cps");
+    useEffect(() => {
+        requestMain<void, GamePreferences>("getGamePreferences").then((preferences) => {
+            game.preference.importPreferences(preferences.playerPreferences);
+            game.configure({
+                // Set the resolution
+                width: 1280, // set the resolution width
+                height: 720, // set the resolution height
+                aspectRatio: 16 / 9, // set the aspect ratio
+                dialogWidth: 1280,
+                dialogHeight: 720,
+
+                // Configure the game behavior
+                ratioUpdateInterval: 0, // disable the ratio update interval
+                screenshotQuality: 0.2,
+                skipKey: ["Control"],
+
+                // Customize the styles
+                dialog: GameDialog,
+                notification: GameNotification,
+                menu: DefaultMenu,
+                defaultTextColor: "white",
+                defaultNametagColor: "#40a8c5",
+                fontFamily: "ZhanKu",
+                fontSize: 20,
+                fontWeight: 500,
+
+                // Debug mode
+                app: {
+                    logger: {
+                        log: true,
+                        warn: true,
+                        error: true,
+                        debug: true,
+                        info: true,
+                        trace: true,
+                        verbose: true,
+                    },
+                },
+
+                // animationPropagate: true,
+            });
+        });
+
+        console.log(game, router, app);
+    }, []);
+
+    // useEffect(() => {
+    //     // Preload font
+    //     preloadFont('/static/font/AlimamaFangYuanTiVF-Thin.ttf');
+    // }, []);
+
+    // useEffect(() => {
+    //     game.preference.setPreference("skipInterval", 0);
+    //     requestMain<void, GamePreferences>("getGamePreferences").then((preferences) => {
+    //         game.preference.importPreferences(preferences.playerPreferences);
+
+    //         game.configure({
+    //             // Set the resolution
+    //             width: 1280, // set the resolution width
+    //             height: 720, // set the resolution height
+    //             aspectRatio: 16 / 9, // set the aspect ratio
+    //             dialogWidth: 1280,
+    //             dialogHeight: 720,
+
+    //             // Configure the game behavior
+    //             ratioUpdateInterval: 0, // disable the ratio update interval
+    //             screenshotQuality: 0.2,
+
+    //             // Customize the styles
+    //             dialog: GameDialog,
+    //             notification: GameNotification,
+    //             menu: DefaultMenu,
+    //             defaultTextColor: "white",
+    //             defaultNametagColor: "white",
+
+    //             // Debug mode
+    //             app: {
+    //                 logger: {
+    //                     log: true,
+    //                     warn: true,
+    //                     error: true,
+    //                     debug: true,
+    //                     info: true,
+    //                     trace: true,
+    //                     verbose: true,
+    //                 },
+    //             }
+    //         });
+
+    //         console.log(game, router, app);
+    //     });
+    // }, []);
 
     useEffect(() => {
-        game.configure({
-            width: 1920, // set the resolution width
-            height: 1080, // set the resolution height
-            aspectRatio: 16 / 9, // set the aspect ratio
-
-            ratioUpdateInterval: 0, // disable the ratio update interval
-            cps: 10, // set the dialog characters per second to 10
-            /* Add your custom configurations here */
-        });
+        const plugin = createPreloadEntryPlugin(start);
+        game.use(plugin);
     }, []);
 
     return (
-        <>
-            {children}
-        </>
+        <TestPanelProvider>
+            <DemoConfigProvider>
+                {children}
+
+                <GlobalTestPanel />
+            </DemoConfigProvider>
+        </TestPanelProvider>
     );
 };
 
-const splashScreen: SplashScreenDefinition[] = [{
-    initial: {opacity: 0},
-    animate: {opacity: 1, transition: {duration: 2}}, // enter in 2 seconds
-    exit: {opacity: 0, transition: {duration: 1}}, // exit in 1 second
-    duration: 3, // stay for 3 seconds
-    splashScreen:(
-        <div className={"splash-screen"}>
-            <div><p className={"splash-text"}>Created with NarraLeaf</p></div>
-        </div>
-    )
-}];
-
 export default App;
-export const meta: Meta = {
+export const metadata: GameMetadata = {
     story,
-    splashScreen
 };
 
