@@ -1,5 +1,5 @@
 import { useGame, useRouter } from "narraleaf-react";
-import { useSavedGames, readGame, SaveType } from "narraleaf/client";
+import { useSavedGames, readGame, SaveType } from "narraleaf/renderer";
 import Panel from "../src/components/Panel";
 import { SaveGrid, SaveGridItem, SaveGridCoord } from "../src/components/lib/SaveGrid";
 import { useEffect } from "react";

@@ -1,5 +1,5 @@
 import { motion, Variants } from "motion/react";
-import { SaveType, useApp, useSavedGames } from "narraleaf/client";
+import { SaveType, useApp, useSavedGames } from "narraleaf/renderer";
 import React from "react";
 import clsx from "clsx";
 

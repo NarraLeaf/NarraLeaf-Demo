@@ -2,8 +2,8 @@ import React, { useState, useRef } from "react";
 import { useRouter, useGame } from "narraleaf-react";
 import Panel from "../src/components/Panel";
 import { MenuButton } from "./home";
-import { SaveType, useApp, useSavedGames } from "narraleaf/client";
-import type { SavedGameMetadata } from "narraleaf/client";
+import { SaveType, useApp, useSavedGames } from "narraleaf/renderer";
+import type { SavedGameMetadata } from "narraleaf/renderer";
 
 export default function Load() {
     const router = useRouter();

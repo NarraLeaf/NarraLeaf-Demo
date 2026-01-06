@@ -1,6 +1,6 @@
 import { useGame, useRouter } from "narraleaf-react";
-import type { SavedGameMeta } from "narraleaf/client";
-import { SaveType, useSavedGames, useSaveAction } from "narraleaf/client";
+import type { SavedGameMeta } from "narraleaf/renderer";
+import { SaveType, useSavedGames, useSaveAction } from "narraleaf/renderer";
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { HomePagesAnimation } from "../index";

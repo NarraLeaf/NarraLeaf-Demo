@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useGame, usePreference, useRouter } from 'narraleaf-react';
-// import {GameMetadata, requestMain, useGamePlayback} from 'narraleaf/client';
-import { GameMetadata, requestMain, useApp } from 'narraleaf/client';
+// import {GameMetadata, requestMain, useGamePlayback} from 'narraleaf/renderer';
+import { GameMetadata, requestMain, useApp } from 'narraleaf/renderer';
 
 // Import your assets
 import "./src/base.css";

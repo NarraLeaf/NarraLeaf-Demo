@@ -1,5 +1,5 @@
 import { useRouter } from "narraleaf-react";
-import { PageConfig, SaveType, useApp, useSavedGames } from "narraleaf/client";
+import { PageConfig, SaveType, useApp, useSavedGames } from "narraleaf/renderer";
 import React, { useEffect, useRef } from "react";
 import Panel from "../src/components/Panel";
 import clsx from "clsx";

@@ -1,5 +1,5 @@
 import { usePreference, useRouter, useGame } from "narraleaf-react";
-import { requestMain } from "narraleaf/client";
+import { requestMain } from "narraleaf/renderer";
 import React, { useEffect, useState } from "react";
 import { useDemoConfig } from "../src/components/DemoConfig";
 import Panel from "../src/components/Panel";
