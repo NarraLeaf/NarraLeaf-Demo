@@ -113,13 +113,13 @@ export function MouseDebugger({ isVisible, onClose }: MouseDebuggerProps) {
         <EnhancedTestPanel
             isVisible={isVisible}
             onClose={onClose}
-            title="鼠标事件调试器"
+            title="Mouse Event Debugger"
             initialPosition={{ x: 100, y: 100 }}
             initialSize={{ width: 600, height: 700 }}
         >
             <div className="text-white space-y-4">
                 <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">鼠标事件调试器</h3>
+                    <h3 className="text-lg font-semibold">Mouse Event Debugger</h3>
                     <button
                         onClick={toggleTracking}
                         className={`px-4 py-2 rounded transition-colors ${
@@ -128,7 +128,7 @@ export function MouseDebugger({ isVisible, onClose }: MouseDebuggerProps) {
                                 : 'bg-green-600 hover:bg-green-700'
                         }`}
                     >
-                        {isTracking ? '停止跟踪' : '开始跟踪'}
+                        {isTracking ? 'Stop Tracking' : 'Start Tracking'}
                     </button>
                 </div>
 
@@ -136,7 +136,7 @@ export function MouseDebugger({ isVisible, onClose }: MouseDebuggerProps) {
                     <div className="bg-green-800/30 border border-green-600 rounded p-3">
                         <div className="flex items-center gap-2">
                             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                            <span className="text-green-300">正在跟踪鼠标移动和右键点击</span>
+                            <span className="text-green-300">Tracking mouse movement and right-clicks</span>
                         </div>
                     </div>
                 )}
@@ -144,16 +144,16 @@ export function MouseDebugger({ isVisible, onClose }: MouseDebuggerProps) {
                 {/* 当前鼠标下的元素信息 */}
                 {isTracking && elementInfo && (
                     <div className="bg-gray-800 rounded p-4">
-                        <h4 className="text-md font-semibold mb-3 text-blue-300">当前元素信息</h4>
+                        <h4 className="text-md font-semibold mb-3 text-blue-300">Current Element Info</h4>
                         <div className="grid grid-cols-2 gap-2 text-sm">
-                            <div><span className="text-gray-400">元素:</span> {elementInfo.tagName}</div>
-                            <div><span className="text-gray-400">位置:</span> ({elementInfo.position.x}, {elementInfo.position.y})</div>
-                            <div className="col-span-2"><span className="text-gray-400">类名:</span> {elementInfo.className}</div>
+                            <div><span className="text-gray-400">Element:</span> {elementInfo.tagName}</div>
+                            <div><span className="text-gray-400">Position:</span> ({elementInfo.position.x}, {elementInfo.position.y})</div>
+                            <div className="col-span-2"><span className="text-gray-400">Class:</span> {elementInfo.className}</div>
                             <div className="col-span-2"><span className="text-gray-400">ID:</span> {elementInfo.id}</div>
                         </div>
                         
                         <div className="mt-3 p-3 bg-gray-700 rounded">
-                            <h5 className="text-sm font-semibold mb-2 text-yellow-300">CSS 属性</h5>
+                            <h5 className="text-sm font-semibold mb-2 text-yellow-300">CSS Properties</h5>
                             <div className="grid grid-cols-2 gap-2 text-xs">
                                 <div>
                                     <span className="text-gray-400">pointer-events:</span>{' '}
@@ -177,20 +177,20 @@ export function MouseDebugger({ isVisible, onClose }: MouseDebuggerProps) {
                 {/* 右键点击历史 */}
                 <div className="bg-gray-800 rounded p-4">
                     <div className="flex items-center justify-between mb-3">
-                        <h4 className="text-md font-semibold text-purple-300">右键点击历史</h4>
+                        <h4 className="text-md font-semibold text-purple-300">Right-Click History</h4>
                         {clickHistory.length > 0 && (
                             <button
                                 onClick={clearHistory}
                                 className="text-xs bg-gray-600 hover:bg-gray-500 px-2 py-1 rounded"
                             >
-                                清除
+                                Clear
                             </button>
                         )}
                     </div>
                     
                     {clickHistory.length === 0 ? (
                         <div className="text-gray-400 text-sm">
-                            {isTracking ? '开始右键点击来查看调试信息...' : '启动跟踪后右键点击来查看调试信息'}
+                            {isTracking ? 'Right-click to view debug information...' : 'Start tracking, then right-click to view debug information'}
                         </div>
                     ) : (
                         <div className="space-y-2 max-h-64 overflow-y-auto">
@@ -203,10 +203,10 @@ export function MouseDebugger({ isVisible, onClose }: MouseDebuggerProps) {
                                         </span>
                                     </div>
                                     <div className="text-sm mb-2">
-                                        <span className="text-gray-400">目标:</span> {click.target}
+                                        <span className="text-gray-400">Target:</span> {click.target}
                                     </div>
                                     <div className="text-xs">
-                                        <span className="text-gray-400">元素层级 ({click.elements.length}):</span>
+                                        <span className="text-gray-400">Element Stack ({click.elements.length}):</span>
                                         <div className="mt-1 space-y-1">
                                             {click.elements.slice(0, 3).map((el: any, elIndex: number) => (
                                                 <div key={elIndex} className="bg-gray-600 rounded px-2 py-1">
@@ -225,7 +225,7 @@ export function MouseDebugger({ isVisible, onClose }: MouseDebuggerProps) {
                                             ))}
                                             {click.elements.length > 3 && (
                                                 <div className="text-xs text-gray-400">
-                                                    ...还有 {click.elements.length - 3} 个元素
+                                                    ...and {click.elements.length - 3} more elements
                                                 </div>
                                             )}
                                         </div>
@@ -237,13 +237,13 @@ export function MouseDebugger({ isVisible, onClose }: MouseDebuggerProps) {
                 </div>
 
                 <div className="text-xs text-gray-400 bg-gray-800 rounded p-3">
-                    <h5 className="font-semibold mb-2">使用说明:</h5>
+                    <h5 className="font-semibold mb-2">Instructions:</h5>
                     <ul className="space-y-1">
-                        <li>• 点击"开始跟踪"来监控鼠标事件</li>
-                        <li>• 移动鼠标查看当前元素的CSS属性</li>
-                        <li>• 右键点击查看该位置的所有元素层级</li>
-                        <li>• 红色表示阻止鼠标事件，绿色表示允许</li>
-                        <li>• 详细信息会输出到浏览器控制台</li>
+                        <li>• Click "Start Tracking" to monitor mouse events</li>
+                        <li>• Move the mouse to view CSS properties for the current element</li>
+                        <li>• Right-click to inspect the element stack at that position</li>
+                        <li>• Red means mouse events are blocked; green means they are allowed</li>
+                        <li>• Detailed information is also printed to the browser console</li>
                     </ul>
                 </div>
             </div>

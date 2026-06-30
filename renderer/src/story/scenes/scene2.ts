@@ -9,45 +9,44 @@ export const scene2 = new Scene("Scene2", {
 });
 
 scene2.action([
-    "这个人会是谁呢？走在路上的时候，我一直在想。",
-    "难道我认识吗？",
-    "我和她来到了街道旁，正值寒冬，街上满是雪。",
-    "她的手往垃圾桶那边指着，我向那边看过去，看见一个红发少女，与遍地雪白产生了鲜明的对比。",
+    "Who could this person be? I kept wondering as we walked.",
+    "Did I know them somehow?",
+    "We arrived at the side of the street. It was the middle of winter, and snow covered everything.",
+    "She pointed toward the trash cans. When I looked that way, I saw a red-haired girl standing in bright contrast to the white snow.",
 
     Youki.show({ duration: 500 }),
 
-    Y`嘿？Nattou早上好，这就是Mina吗？`,
-    Y`初次见面～！我叫Youki，是Nattou的朋友喔～`,
+    Y`Huh? Good morning, Nattou. So this is Mina?`,
+    Y`Nice to meet you! I am Youki, one of Nattou's friends.`,
     Youki.transform(bounce),
 
-    "Youki.......？好熟悉的名字。",
+    "Youki...? That name sounded so familiar.",
     
-    M`我叫Mina，也是Nattou的......朋友？`,
-    Y`早有耳闻，听Nattou说，你会画画吧？`,
-    M`的确如此，Nattou告诉你这个干什么。`,
+    M`I am Mina. I am also Nattou's... friend?`,
+    Y`I have heard a lot about you. Nattou said you can draw, right?`,
+    M`That is true, but why did Nattou tell you that?`,
 
     Youki.hide({ duration: 100 }),
     Nattou.show({ duration: 100 }),
 
-    N`Youki最近在做游戏，缺一个画师，所以我就把你推荐过去了。`,
+    N`Youki is making a game and needs an artist, so I recommended you.`,
     Nattou.hide({ duration: 100 }),
     Youki.show({ duration: 100 }),
 
-    Y`真的会画画对吗，好诶好诶！那个，能和我做一辈子的游戏吗？`,
+    Y`So you really can draw? Awesome, awesome! Um, would you make games with me forever?`,
     Youki.transform(shake),
-    "她眼睛里像是有什么东西在燃烧，果然不能低估红发少女的性格啊。",
+    "There was something burning in her eyes. You really should never underestimate a red-haired girl's energy.",
 
     Menu.prompt(undefined)
-        .choose("你这Youki，还真是满脑子都是自己呢。", [
-            Y`是这样......虽然但是，如果Mina能来我这里做画师，我什么都会做的！`,
-            Youki.scale(0.6, 500, "easeInOut"),
-            M`你是抱着个什么决心说的这句话啊......`,
+        .choose("Youki, you really only think about yourself.", [
+            Y`That is true... but still, if you come work as my artist, I will do anything!`,
+            Youki.scale(0.6, 0.6, 500, "easeInOut"),
+            M`What kind of resolve are you saying that with...?`,
         ])
-        .choose("好，我来", [
+        .choose("Yes. I will join.", [
             Youki.transform(shake),
-            Y`好诶，Mina酱真的是帮大忙了`,
+            Y`Yay! Mina, you are really saving me!`,
         ]),
 
     scene2.jumpTo(scene3, new Dissolve(500)),
 ]);
-

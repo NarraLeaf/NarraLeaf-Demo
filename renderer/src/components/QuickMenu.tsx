@@ -1,11 +1,11 @@
 import { History, FastForward, Save, Settings, Home, Play, FileText, FileUp, ArrowLeft } from 'lucide-react';
 import { LiveGameEventToken, NotificationToken, useGame, usePreference, useRouter } from 'narraleaf-react';
 import { useConfirm } from '../hooks/useConfirm';
-import { useApp, useSaveAction } from 'narraleaf/client';
+import { useApp, useSaveAction } from 'narraleaf/renderer';
 import { useBackdrop } from '../hooks/useBackdrop';
 import clsx from 'clsx';
 import { useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface MenuItemProps {
     icon: React.ElementType;
@@ -59,10 +59,10 @@ export function QuickMenu() {
     const fastForwardNotification = useRef<NotificationToken | null>(null);
 
     const [confirmExit, ConfirmExitDialog] = useConfirm({
-        message: "确定要退出游戏吗？",
+        message: "Return to the title screen?",
     });
     const [confirmQuickRead, ConfirmQuickReadDialog] = useConfirm({
-        message: "确定要读取快速保存吗？",
+        message: "Load the quick save?",
     });
 
     useEffect(() => {
@@ -77,7 +77,7 @@ export function QuickMenu() {
                 if (fastForwardNotification.current) {
                     return;
                 }
-                fastForwardNotification.current = game.getLiveGame().notify("快进中...", null);
+                fastForwardNotification.current = game.getLiveGame().notify("Fast-forwarding...", null);
                 game.preference.setPreference("gameSpeed", 10);
                 game.preference.setPreference("autoForward", true);
             } else if (e.key === 'Escape' && router.getPathname() !== "settings") {
@@ -184,7 +184,7 @@ export function QuickMenu() {
 
     function handleQuickSave() {
         quickSave();
-        game.getLiveGame().notify("快速保存成功");
+        game.getLiveGame().notify("Quick save complete");
     }
 
     function handleSkipDialog() {
@@ -196,12 +196,12 @@ export function QuickMenu() {
         if (result) {
             const savedGame = await quickRead();
             if (!savedGame) {
-                game.getLiveGame().notify("快速读取失败");
+                game.getLiveGame().notify("Quick load failed");
                 return;
             }
 
             game.getLiveGame().deserialize(savedGame);
-            game.getLiveGame().notify("快速读取成功");
+            game.getLiveGame().notify("Quick load complete");
         }
     }
 
@@ -222,17 +222,17 @@ export function QuickMenu() {
                                 duration: 0.3
                             }}
                         >
-                            <MenuItem icon={ArrowLeft} label="上一步" onClick={handleUndo} />
-                            <MenuItem icon={History} label="历史" onClick={handleHistory} />
-                            <MenuItem icon={FastForward} label="跳过" onClick={handleSkipDialog} />
+                            <MenuItem icon={ArrowLeft} label="Back" onClick={handleUndo} />
+                            <MenuItem icon={History} label="History" onClick={handleHistory} />
+                            <MenuItem icon={FastForward} label="Skip" onClick={handleSkipDialog} />
                             {/* <MenuItem icon={FastForward} label="快进" onClick={handleGameSpeed} active={gameSpeed > 1}/> */}
-                            <MenuItem icon={Play} label="自动" onClick={handleAutoForward} active={autoForward}/>
-                            <MenuItem icon={Save} label="保存" onClick={handleSave} />
-                            <MenuItem icon={Save} label="快速保存" onClick={handleQuickSave} />
-                            <MenuItem icon={FileText} label="读取" onClick={handleLoad} />
-                            <MenuItem icon={FileUp} label="快速读取" onClick={handleQuickRead} />
-                            <MenuItem icon={Settings} label="设置" onClick={handleSettings} />
-                            <MenuItem icon={Home} label="主页" onClick={handleExit} />
+                            <MenuItem icon={Play} label="Auto" onClick={handleAutoForward} active={autoForward}/>
+                            <MenuItem icon={Save} label="Save" onClick={handleSave} />
+                            <MenuItem icon={Save} label="Quick Save" onClick={handleQuickSave} />
+                            <MenuItem icon={FileText} label="Load" onClick={handleLoad} />
+                            <MenuItem icon={FileUp} label="Quick Load" onClick={handleQuickRead} />
+                            <MenuItem icon={Settings} label="Settings" onClick={handleSettings} />
+                            <MenuItem icon={Home} label="Home" onClick={handleExit} />
                         </motion.div>
                     </div>
                 )}

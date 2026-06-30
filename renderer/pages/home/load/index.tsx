@@ -1,6 +1,6 @@
 import { useGame, useRouter } from "narraleaf-react";
-import type { SavedGameMeta } from "narraleaf/client";
-import { SaveType, useApp, useSavedGames, readGame } from "narraleaf/client";
+import type { SavedGameMeta } from "narraleaf/renderer";
+import { SaveType, useApp, useSavedGames, readGame } from "narraleaf/renderer";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { HomePagesAnimation } from "../index";
@@ -23,24 +23,24 @@ export default function Load() {
 
     const handleLoad = async (slotData: LoadSlotData) => {
         if (slotData.isEmpty) {
-            liveGame.notify("此存档槽位为空");
+            liveGame.notify("This save slot is empty");
             return;
         }
 
-        const confirmed = await showConfirm({ message: "确定要加载这个存档吗？" });
+        const confirmed = await showConfirm({ message: "Load this save file?" });
         if (confirmed) {
             try {
                 app.loadGame(slotData.id);
             } catch (error) {
                 console.error("Failed to load game:", error);
-                liveGame.notify("加载游戏失败");
+                liveGame.notify("Failed to load game");
             }
         }
     };
 
     // Create load slots (9 slots in 2 columns)
     const createLoadSlots = (): LoadSlotData[] => {
-        const results = savedGames?.results || [];
+        const results = (savedGames?.results || []) as SavedGameMeta[];
         return Array.from({ length: 9 }, (_, index) => {
             const slotId = index.toString();
             const existingSave = results.find(result => 
@@ -86,13 +86,13 @@ export default function Load() {
             className="flex flex-col items-center justify-center h-full text-center p-8"
         >
             <div className="text-red-400 text-6xl mb-4">⚠️</div>
-            <h3 className="text-white text-xl font-medium mb-2">加载失败</h3>
+            <h3 className="text-white text-xl font-medium mb-2">Failed to Load Saves</h3>
             <p className="text-white/70 text-sm max-w-md">{error}</p>
             <button
                 onClick={() => window.location.reload()}
                 className="mt-6 px-6 py-3 bg-primary/80 hover:bg-primary text-white rounded-lg transition-colors"
             >
-                重试
+                Retry
             </button>
         </motion.div>
     );
@@ -122,7 +122,7 @@ export default function Load() {
                 <div className="absolute inset-0 pointer-events-none">
                     <img
                         src={slotData.existingSave.capture}
-                        alt="存档预览"
+                        alt="Save preview"
                         className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-black/40"></div>
@@ -135,7 +135,7 @@ export default function Load() {
             <div className="relative z-10 p-4 h-full flex flex-col justify-between">
                 <div>
                     <h3 className="text-white text-lg font-medium mb-1">
-                        {slotData.isEmpty ? `存档位 ${parseInt(slotData.id) + 1}` : "存档"}
+                        {slotData.isEmpty ? `Slot ${parseInt(slotData.id) + 1}` : "Save"}
                     </h3>
                     {!slotData.isEmpty && slotData.existingSave && (
                         <p className="text-white/90 text-xs">
@@ -192,7 +192,7 @@ export default function Load() {
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.1, duration: 0.3 }}
                     >
-                        <h1 className="text-2xl font-bold text-white">读取存档</h1>
+                        <h1 className="text-2xl font-bold text-white">Load Game</h1>
                     </motion.div>
 
                     <div className="flex-1 min-h-0">
@@ -219,7 +219,7 @@ export default function Load() {
                                     transition={{ duration: 0.2 }}
                                     className="h-full"
                                 >
-                                    <ErrorDisplay error={savedGames?.error?.message || "未知错误"} />
+                                    <ErrorDisplay error={savedGames?.error?.message || "Unknown error"} />
                                 </motion.div>
                             ) : (
                                 <motion.div

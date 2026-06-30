@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import clsx from "clsx";
 import { useBackdrop } from "../../hooks/useBackdrop";
 import { KeyBindingValue } from "narraleaf-react";
@@ -58,7 +58,7 @@ export const KeyBindingInput: React.FC<KeyBindingInputProps> = ({ value, onChang
     // Display value as string
     const displayValue = Array.isArray(value)
         ? value.join(" + ")
-        : value ?? "未绑定";
+        : value ?? "Unbound";
 
     // Backdrop style respecting demo config
     const backdrop = useBackdrop("md");
@@ -101,8 +101,8 @@ export const KeyBindingInput: React.FC<KeyBindingInputProps> = ({ value, onChang
                                 backgroundPosition: 'center',
                             }}
                         >
-                            <h3 className="text-2xl text-white mb-6 text-center">按下要绑定的按键</h3>
-                            <p className="text-xl text-white text-center">按 Esc 取消</p>
+                            <h3 className="text-2xl text-white mb-6 text-center">Press a key to bind</h3>
+                            <p className="text-xl text-white text-center">Press Esc to cancel</p>
                         </motion.div>
                     </div>
                 )}

@@ -1,6 +1,6 @@
-const {BuildTarget, WindowsBuildTarget} = require("narraleaf");
+const {BuildTarget, WindowsBuildTarget} = require("narraleaf/config");
 
-/**@type {import("narraleaf").ProjectConfig} */
+/**@type {import("narraleaf/config").ProjectConfig} */
 module.exports = {
   build: {
     appId: "com.example.narraleaf-demo",

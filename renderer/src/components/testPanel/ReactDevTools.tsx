@@ -46,7 +46,7 @@ export function ReactDevTools({ isVisible, onClose }: ReactDevToolsProps) {
             setComponents(tree);
             setAnalysisTime(performance.now() - startTime);
         } catch (err) {
-            setError(err instanceof Error ? err.message : '分析失败');
+            setError(err instanceof Error ? err.message : 'Analysis failed');
             console.error('React tree analysis failed:', err);
         } finally {
             setIsAnalyzing(false);
@@ -289,7 +289,7 @@ export function ReactDevTools({ isVisible, onClose }: ReactDevToolsProps) {
 
         return (
             <div className="bg-gray-800 p-4 rounded-lg space-y-4">
-                <h4 className="text-lg font-semibold">组件详情</h4>
+                <h4 className="text-lg font-semibold">Component Details</h4>
                 
                 <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -297,25 +297,25 @@ export function ReactDevTools({ isVisible, onClose }: ReactDevToolsProps) {
                         <span className="ml-2">{selectedComponent.id}</span>
                     </div>
                     <div>
-                        <span className="text-gray-400">名称:</span>
+                        <span className="text-gray-400">Name:</span>
                         <span className="ml-2 font-mono">{selectedComponent.name}</span>
                     </div>
                     <div>
-                        <span className="text-gray-400">类型:</span>
+                        <span className="text-gray-400">Type:</span>
                         <span className="ml-2">{selectedComponent.type}</span>
                     </div>
                     <div>
-                        <span className="text-gray-400">深度:</span>
+                        <span className="text-gray-400">Depth:</span>
                         <span className="ml-2">{selectedComponent.depth}</span>
                     </div>
                     <div>
-                        <span className="text-gray-400">渲染次数:</span>
+                        <span className="text-gray-400">Render Count:</span>
                         <span className="ml-2">{selectedComponent.renderCount}</span>
                     </div>
                     <div>
-                        <span className="text-gray-400">可见性:</span>
+                        <span className="text-gray-400">Visibility:</span>
                         <span className={`ml-2 ${selectedComponent.isVisible ? 'text-green-400' : 'text-red-400'}`}>
-                            {selectedComponent.isVisible ? '可见' : '隐藏'}
+                            {selectedComponent.isVisible ? 'Visible' : 'Hidden'}
                         </span>
                     </div>
                 </div>
@@ -381,15 +381,15 @@ export function ReactDevTools({ isVisible, onClose }: ReactDevToolsProps) {
                             disabled={isAnalyzing}
                             className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-4 py-2 rounded transition-colors"
                         >
-                            {isAnalyzing ? '分析中...' : '分析React组件树'}
+                            {isAnalyzing ? 'Analyzing...' : 'Analyze React Component Tree'}
                         </button>
                         {analysisTime > 0 && (
                             <span className="text-gray-400">
-                                分析耗时: {analysisTime.toFixed(2)}ms
+                                Analysis Time: {analysisTime.toFixed(2)}ms
                             </span>
                         )}
                         <span className="text-gray-400">
-                            当前页面: {router.getPathname()}
+                            Current Page: {router.getPathname()}
                         </span>
                     </div>
                     {error && (
@@ -403,9 +403,9 @@ export function ReactDevTools({ isVisible, onClose }: ReactDevToolsProps) {
                 <div className="flex-1 flex overflow-hidden">
                     {/* Component Tree */}
                     <div className="w-1/2 p-4 border-r border-gray-700 overflow-auto">
-                        <h4 className="text-md font-semibold mb-3">组件树结构</h4>
+                        <h4 className="text-md font-semibold mb-3">Component Tree Structure</h4>
                         {components.length === 0 ? (
-                            <p className="text-gray-400">点击"分析React组件树"开始分析</p>
+                            <p className="text-gray-400">Click "Analyze React Component Tree" to start</p>
                         ) : (
                             <div className="font-mono text-sm">
                                 {renderComponentTree(components)}
@@ -415,11 +415,11 @@ export function ReactDevTools({ isVisible, onClose }: ReactDevToolsProps) {
 
                     {/* Details Panel */}
                     <div className="w-1/2 p-4 overflow-auto">
-                        <h4 className="text-md font-semibold mb-3">组件详情</h4>
+                        <h4 className="text-md font-semibold mb-3">Component Details</h4>
                         {selectedComponent ? (
                             renderComponentDetails()
                         ) : (
-                            <p className="text-gray-400">选择一个组件查看详情</p>
+                            <p className="text-gray-400">Select a component to view details</p>
                         )}
                     </div>
                 </div>

@@ -1,5 +1,6 @@
 import { motion, Variants } from "motion/react";
-import { SaveType, useApp, useSavedGames } from "narraleaf/client";
+import type { SavedGameMeta } from "narraleaf/renderer";
+import { SaveType, useApp, useSavedGames } from "narraleaf/renderer";
 import React from "react";
 import clsx from "clsx";
 
@@ -32,7 +33,7 @@ export default function HomePage() {
             return;
         }
 
-        const latestSave = results
+        const latestSave = (results as SavedGameMeta[])
             .filter(save => save.type === SaveType.Save)
             .sort((a, b) => b.updated - a.updated)[0];
 

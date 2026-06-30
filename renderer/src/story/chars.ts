@@ -1,9 +1,10 @@
 import { Character, Image } from "narraleaf-react";
 
 export const N = new Character("Nattou");
-export const Nattou = new Image({
+export const Nattou = new Image<null>({
     src: "/static/img/char/nattou/Nattou.png",
-    scale: 0.5,
+    scaleX: 0.5,
+    scaleY: 0.5,
     position: {
         yalign: 0.2,
         xalign: 0.5,
@@ -11,9 +12,10 @@ export const Nattou = new Image({
 });
 
 export const Y = new Character("Youki");
-export const Youki = new Image({
+export const Youki = new Image<null>({
     src: "/static/img/char/youki/YouKi.png",
-    scale: 0.5,
+    scaleX: 0.5,
+    scaleY: 0.5,
     position: {
         yalign: 0.2,
         xalign: 0.5,

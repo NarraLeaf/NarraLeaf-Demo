@@ -43,53 +43,53 @@ export function GlobalTestPanel() {
                 onClose={handleClose}
                 onMinimize={handleMinimize}
                 isMinimized={isMinimized}
-                title="React组件分析工具"
+                title="React Component Analysis Tools"
                 initialPosition={{ x: 50, y: 50 }}
                 initialSize={{ width: 500, height: 500 }}
             >
                 <div className="text-white">
-                    <h3 className="text-lg mb-4">React组件分析工具</h3>
+                    <h3 className="text-lg mb-4">React Component Analysis Tools</h3>
                     <p className="text-white/80 mb-4">
-                        这些工具可以帮助你分析和调试React组件树结构。
+                        These tools help inspect and debug the React component tree.
                     </p>
                     <div className="space-y-3">
                         <button 
                             onClick={() => setShowComponentTree(true)}
                             className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors"
                         >
-                            基础组件树分析器
+                            Basic Component Tree Analyzer
                         </button>
                         <button 
                             onClick={() => setShowAdvancedAnalyzer(true)}
                             className="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition-colors"
                         >
-                            高级性能分析器
+                            Advanced Performance Analyzer
                         </button>
                         <button 
                             onClick={() => setShowComprehensiveAnalyzer(true)}
                             className="w-full bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded transition-colors"
                         >
-                            全面组件分析器 (Electron)
+                            Comprehensive Component Analyzer (Electron)
                         </button>
                         <button 
                             onClick={() => setShowMouseDebugger(true)}
                             className="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition-colors"
                         >
-                            鼠标事件调试器
+                            Mouse Event Debugger
                         </button>
                         <button 
                             onClick={() => setShowReactDevTools(true)}
                             className="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded transition-colors"
                         >
-                            React DevTools集成
+                            React DevTools Integration
                         </button>
                         <div className="text-xs text-gray-400 mt-4 p-2 bg-gray-800 rounded">
-                            <p>• 基础组件树分析器：分析当前页面的React组件结构</p>
-                            <p>• 高级性能分析器：监控组件渲染性能和状态变化</p>
-                            <p>• 全面组件分析器：Electron环境专用，支持未挂载组件检测</p>
-                            <p>• 鼠标事件调试器：跟踪鼠标事件和元素层级，调试右键菜单问题</p>
-                            <p>• React DevTools集成：深度分析组件树和Hooks</p>
-                            <p>• 支持实时监控和性能趋势分析</p>
+                            <p>• Basic Component Tree Analyzer: inspect the React component structure on the current page</p>
+                            <p>• Advanced Performance Analyzer: monitor render performance and state changes</p>
+                            <p>• Comprehensive Component Analyzer: Electron-only tool with unmounted component detection</p>
+                            <p>• Mouse Event Debugger: track mouse events and element stacking for context-menu debugging</p>
+                            <p>• React DevTools Integration: inspect component trees and hooks in depth</p>
+                            <p>• Supports live monitoring and performance trend analysis</p>
                         </div>
                     </div>
                 </div>
@@ -99,7 +99,7 @@ export function GlobalTestPanel() {
             <MinimizedTestPanel 
                 isVisible={isVisible && isMinimized}
                 onRestore={handleRestore}
-                title="测试面板"
+                title="Test Panel"
             />
             
             {/* Component Tree Analyzer */}
@@ -136,7 +136,7 @@ export function GlobalTestPanel() {
             <TestPanelTrigger 
                 triggerKeys="dev"
                 onTrigger={togglePanel}
-                hintText="输入 'dev' 显示测试面板"
+                hintText="Type 'dev' to show the test panel"
                 showHint={isSettingsPage} // Only show hint on settings page
             />
         </>

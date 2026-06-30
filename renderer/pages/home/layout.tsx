@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback, createContext, useContext, useMemo } from "react";
-import { SaveType, useApp, useGamePlayback, useSavedGames } from "narraleaf/client";
+import { SaveType, useApp, useGamePlayback, useSavedGames } from "narraleaf/renderer";
 import { motion, usePresence } from "motion/react";
 import { HomePanel, MenuButton } from "../../src/components/HomePanel";
 import { usePathname, useRouter } from "narraleaf-react";
@@ -31,30 +31,30 @@ export const useAppConfirm = () => {
 // ConfirmProvider component
 function ConfirmProvider({ children }: { children: React.ReactNode }) {
     const [confirmExit, ConfirmExitDialog] = useConfirm({
-        message: "确定要退出游戏吗？",
+        message: "Return to the title screen?",
     });
     const [confirmQuit, ConfirmQuitDialog] = useConfirm({
-        message: "确定要结束游戏吗？",
+        message: "Quit the game?",
     });
     const [confirmLoad, ConfirmLoadDialog] = useConfirm({
-        message: "确定要加载这个存档吗？",
+        message: "Load this save file?",
     });
     const [confirmSave, ConfirmSaveDialog] = useConfirm({
-        message: "确定要覆盖当前存档吗？",
+        message: "Overwrite this save file?",
     });
     const [confirmGeneric, ConfirmGenericDialog] = useConfirm({
-        message: "确定要执行此操作吗？",
+        message: "Continue with this action?",
     });
 
     const showConfirm = useCallback(async (config: ConfirmConfig): Promise<boolean> => {
         switch (config.message) {
-            case "确定要退出游戏吗？":
+            case "Return to the title screen?":
                 return await confirmExit();
-            case "确定要结束游戏吗？":
+            case "Quit the game?":
                 return await confirmQuit();
-            case "确定要加载这个存档吗？":
+            case "Load this save file?":
                 return await confirmLoad();
-            case "确定要覆盖当前存档吗？":
+            case "Overwrite this save file?":
                 return await confirmSave();
             default:
                 // For generic messages, update the confirm message and use generic dialog
@@ -286,7 +286,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     const menuButtons: MenuButton[] = [
         ...onlyInHome({
             id: "start-game",
-            label: "开始游戏",
+            label: "New Game",
             active: false,
             onClick: () => {
                 app.newGame();
@@ -294,7 +294,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         }),
         ...onlyInHome({
             id: "continue-game",
-            label: "继续游戏",
+            label: "Continue",
             active: false,
             onClick: () => {
                 app.continueGame();
@@ -302,14 +302,14 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         }),
         ...onlyInPlaying({
             id: "continue-game",
-            label: "继续游戏",
+            label: "Continue",
             onClick: () => {
                 router.navigate("/");
             }
         }),
         {
             id: "load-game",
-            label: "读取存档",
+            label: "Load Game",
             active: router.getPathname() === "/home/load",
             onClick: () => {
                 router.navigate("/home/load");
@@ -317,7 +317,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         },
         ...onlyInPlaying({
             id: "save-game",
-            label: "保存游戏",
+            label: "Save Game",
             active: router.getPathname() === "/home/save",
             onClick: () => {
                 router.navigate("/home/save");
@@ -325,7 +325,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         }),
         {
             id: "settings",
-            label: "游戏设置",
+            label: "Settings",
             active: router.getPathname() === "/home/settings",
             onClick: () => {
                 router.navigate("/home/settings");
@@ -333,7 +333,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         },
         {
             id: "about",
-            label: "关于游戏",
+            label: "About",
             active: router.getPathname() === "/home/about",
             onClick: () => {
                 router.navigate("/home/about");
@@ -341,7 +341,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         },
         ...onlyInPlaying({
             id: "exit-game",
-            label: "返回主页",
+            label: "Title Screen",
             active: false,
             onClick: () => {
                 handleExit();
@@ -349,10 +349,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         }),
         {
             id: "exit-app",
-            label: "退出",
+            label: "Quit",
             active: false,
             onClick: async () => {
-                const result = await showConfirm({ message: "确定要结束游戏吗？" });
+                const result = await showConfirm({ message: "Quit the game?" });
                 if (result) {
                     app.quit();
                 }
@@ -381,7 +381,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     const backgroundRotation = getBackgroundRotation();
 
     async function handleExit() {
-        const result = await showConfirm({ message: "确定要退出游戏吗？" });
+        const result = await showConfirm({ message: "Return to the title screen?" });
         if (result) {
             app.exitGame();
         }
@@ -450,7 +450,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                                 />
                                 <p className="text-sm font-medium">© 2025 NarraLeaf Project.</p>
                                 <p className="text-xs mt-2 text-gray-100 max-w-md ml-auto font-medium">
-                                    这是NarraLeaf引擎的演示项目，仅用于展示引擎基础特性，无法代表最终成品
+                                    This NarraLeaf engine demo showcases core features only and does not represent a final product.
                                 </p>
                             </div>
                         </div>
@@ -469,4 +469,3 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </ConfirmProvider>
     );
 }
-

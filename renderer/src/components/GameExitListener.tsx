@@ -1,5 +1,5 @@
 import { useRouter } from "narraleaf-react";
-import { useGamePlayback } from "narraleaf/client";
+import { useGamePlayback } from "narraleaf/renderer";
 import { useEffect } from "react";
 
 

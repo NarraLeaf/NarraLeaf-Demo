@@ -1537,26 +1537,26 @@ export function ComprehensiveComponentAnalyzer({ isVisible, onClose }: Comprehen
                                 {/* Mount status */}
                                 {!component.isMounted && (
                                     <span className="text-xs text-yellow-400 bg-yellow-900 px-1 rounded flex-shrink-0">
-                                        未挂载
+                                        Unmounted
                                     </span>
                                 )}
                                 
                                 {/* Special flags */}
                                 {component.errorBoundary && (
                                     <span className="text-xs text-red-400 bg-red-900 px-1 rounded flex-shrink-0">
-                                        错误边界
+                                        Error Boundary
                                     </span>
                                 )}
                                 {component.lazy && (
                                     <span className="text-xs text-blue-400 bg-blue-900 px-1 rounded flex-shrink-0">
-                                        懒加载
+                                        Lazy
                                     </span>
                                 )}
                             </div>
                             <div className="text-xs text-gray-400 flex-shrink-0 ml-2">
                                 {component.children.length} children
                                 {component.children.length === 0 && component.depth > 0 && (
-                                    <span className="text-yellow-400 ml-1">(无子组件)</span>
+                                    <span className="text-yellow-400 ml-1">(no children)</span>
                                 )}
                             </div>
                         </div>
@@ -1593,15 +1593,15 @@ export function ComprehensiveComponentAnalyzer({ isVisible, onClose }: Comprehen
 
         return (
             <div className="bg-gray-800 p-4 rounded-lg space-y-4">
-                <h4 className="text-lg font-semibold">组件详情</h4>
+                <h4 className="text-lg font-semibold">Component Details</h4>
                 
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <span className="text-gray-400">组件名称:</span>
+                        <span className="text-gray-400">Component Name:</span>
                         <span className="ml-2 font-mono font-medium">{selectedComponent.name}</span>
                     </div>
                     <div>
-                        <span className="text-gray-400">组件类型:</span>
+                        <span className="text-gray-400">Component Type:</span>
                         <span className={`ml-2 px-2 py-1 rounded text-xs ${
                             selectedComponent.componentType === 'function' ? 'bg-green-600' :
                             selectedComponent.componentType === 'class' ? 'bg-blue-600' :
@@ -1614,23 +1614,23 @@ export function ComprehensiveComponentAnalyzer({ isVisible, onClose }: Comprehen
                         </span>
                     </div>
                     <div>
-                        <span className="text-gray-400">挂载状态:</span>
+                        <span className="text-gray-400">Mount Status:</span>
                         <span className={`ml-2 ${selectedComponent.isMounted ? 'text-green-400' : 'text-yellow-400'}`}>
-                            {selectedComponent.isMounted ? '已挂载' : '未挂载'}
+                            {selectedComponent.isMounted ? 'Mounted' : 'Unmounted'}
                         </span>
                     </div>
                     <div>
-                        <span className="text-gray-400">可见性:</span>
+                        <span className="text-gray-400">Visibility:</span>
                         <span className={`ml-2 ${selectedComponent.isVisible ? 'text-green-400' : 'text-red-400'}`}>
-                            {selectedComponent.isVisible ? '可见' : '不可见'}
+                            {selectedComponent.isVisible ? 'Visible' : 'Hidden'}
                         </span>
                     </div>
                     <div>
-                        <span className="text-gray-400">层级深度:</span>
+                        <span className="text-gray-400">Depth:</span>
                         <span className="ml-2">{selectedComponent.depth}</span>
                     </div>
                     <div>
-                        <span className="text-gray-400">子组件数量:</span>
+                        <span className="text-gray-400">Children:</span>
                         <span className="ml-2">{selectedComponent.children.length}</span>
                     </div>
                 </div>
@@ -1638,13 +1638,13 @@ export function ComprehensiveComponentAnalyzer({ isVisible, onClose }: Comprehen
                 {/* Special flags */}
                 {(selectedComponent.errorBoundary || selectedComponent.lazy || selectedComponent.memo || selectedComponent.forwardRef) && (
                     <div>
-                        <span className="text-gray-400">特殊标记:</span>
+                        <span className="text-gray-400">Special Flags:</span>
                         <div className="mt-2 flex flex-wrap gap-2">
                             {selectedComponent.errorBoundary && (
-                                <span className="text-xs bg-red-600 px-2 py-1 rounded">错误边界</span>
+                                <span className="text-xs bg-red-600 px-2 py-1 rounded">Error Boundary</span>
                             )}
                             {selectedComponent.lazy && (
-                                <span className="text-xs bg-blue-600 px-2 py-1 rounded">懒加载</span>
+                                <span className="text-xs bg-blue-600 px-2 py-1 rounded">Lazy</span>
                             )}
                             {selectedComponent.memo && (
                                 <span className="text-xs bg-purple-600 px-2 py-1 rounded">Memo</span>
@@ -1668,7 +1668,7 @@ export function ComprehensiveComponentAnalyzer({ isVisible, onClose }: Comprehen
                                             try {
                                                 return JSON.stringify(hook.value, null, 2);
                                             } catch (e) {
-                                                return '[循环引用或无法序列化的值]';
+                                                return '[Circular reference or unserializable value]';
                                             }
                                         })()}
                                     </pre>
@@ -2123,7 +2123,7 @@ export function ComprehensiveComponentAnalyzer({ isVisible, onClose }: Comprehen
             <div className="bg-gray-900 text-white rounded-lg shadow-xl w-11/12 h-5/6 flex flex-col">
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-700">
-                    <h3 className="text-lg font-semibold">全面组件分析器 (Electron环境)</h3>
+                    <h3 className="text-lg font-semibold">Comprehensive Component Analyzer (Electron)</h3>
                     <button 
                         onClick={onClose}
                         className="text-gray-400 hover:text-white"
@@ -2140,14 +2140,14 @@ export function ComprehensiveComponentAnalyzer({ isVisible, onClose }: Comprehen
                             disabled={isAnalyzing}
                             className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-4 py-2 rounded transition-colors"
                         >
-                            {isAnalyzing ? '分析中...' : '全面分析组件'}
+                            {isAnalyzing ? 'Analyzing...' : 'Analyze Components'}
                         </button>
                         {isAnalyzing && (
                             <button
                                 onClick={cancelAnalysis}
                                 className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded transition-colors"
                             >
-                                取消分析
+                                Cancel Analysis
                             </button>
                         )}
                         <button
@@ -2382,11 +2382,11 @@ export function ComprehensiveComponentAnalyzer({ isVisible, onClose }: Comprehen
                                 
                                 setComponents([app, contextProvider]); // Only show root components
                                 setAnalysisTime(50);
-                                addDebugLog('测试数据加载完成，展示层级关系');
+                                addDebugLog('Test data loaded; showing hierarchy');
                             }}
                             className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded transition-colors"
                         >
-                            测试层级关系
+                            Test Hierarchy
                         </button>
                         {components.length > 0 && (
                             <>
@@ -2403,20 +2403,20 @@ export function ComprehensiveComponentAnalyzer({ isVisible, onClose }: Comprehen
                                         };
                                         collectIds(components);
                                         setExpandedComponents(allComponentIds);
-                                        addDebugLog('全部展开组件树');
+                                        addDebugLog('Expanded all components');
                                     }}
                                     className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded transition-colors"
                                 >
-                                    全部展开
+                                    Expand All
                                 </button>
                                 <button
                                     onClick={() => {
                                         setExpandedComponents(new Set());
-                                        addDebugLog('全部折叠组件树');
+                                        addDebugLog('Collapsed all components');
                                     }}
                                     className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded transition-colors"
                                 >
-                                    全部折叠
+                                    Collapse All
                                 </button>
                                 <button
                                     onClick={() => {
@@ -2425,28 +2425,28 @@ export function ComprehensiveComponentAnalyzer({ isVisible, onClose }: Comprehen
                                         const newHierarchy = buildComprehensiveHierarchy(flatComponents);
                                         setComponents(newHierarchy);
                                         setExpandedComponents(new Set());
-                                        addDebugLog('强制重建层级关系');
+                                        addDebugLog('Rebuilt component hierarchy');
                                     }}
                                     className="bg-orange-600 hover:bg-orange-700 px-4 py-2 rounded transition-colors"
                                 >
-                                    重建层级
+                                    Rebuild Hierarchy
                                 </button>
                             </>
                         )}
                         {analysisTime > 0 && (
                             <span className="text-gray-400">
-                                分析耗时: {analysisTime.toFixed(2)}ms
+                                Analysis Time: {analysisTime.toFixed(2)}ms
                             </span>
                         )}
                         <span className="text-gray-400">
-                            当前页面: {router.getPathname()}
+                            Current Page: {router.getPathname()}
                         </span>
                         <span className="text-green-400 text-sm">
-                            支持深层组件检测
+                            Deep Component Detection
                         </span>
                         {components.length > 0 && (
                             <div className="text-xs text-gray-400">
-                                检测方法: DOM + Fiber + 全局 + 内部 + 直接 + 深层
+                                Methods: DOM + Fiber + Global + Internal + Direct + Deep
                             </div>
                         )}
                     </div>
@@ -2457,13 +2457,13 @@ export function ComprehensiveComponentAnalyzer({ isVisible, onClose }: Comprehen
                     {/* Component Tree */}
                     <div className="w-1/2 p-4 border-r border-gray-700 overflow-auto">
                         <div className="flex items-center justify-between mb-3">
-                            <h4 className="text-md font-semibold">组件树结构</h4>
+                            <h4 className="text-md font-semibold">Component Tree Structure</h4>
                             {components.length > 0 && (
                                 <div className="text-sm text-gray-400">
-                                    共 {components.length} 个组件
+                                    {components.length} components
                                     {expandedComponents.size > 0 && (
                                         <span className="ml-2">
-                                            ({expandedComponents.size} 个已展开)
+                                            ({expandedComponents.size} expanded)
                                         </span>
                                     )}
                                 </div>
@@ -2471,9 +2471,9 @@ export function ComprehensiveComponentAnalyzer({ isVisible, onClose }: Comprehen
                         </div>
                         {components.length === 0 ? (
                             <div className="text-gray-400">
-                                <p>点击"全面分析组件"开始分析</p>
-                                <p className="text-sm mt-2">此工具支持检测已挂载、未挂载和深层嵌套的组件</p>
-                                <p className="text-sm mt-1">点击"测试层级关系"查看示例</p>
+                                <p>Click "Analyze Components" to start</p>
+                                <p className="text-sm mt-2">This tool can detect mounted, unmounted, and deeply nested components</p>
+                                <p className="text-sm mt-1">Click "Test Hierarchy" to view an example</p>
                             </div>
                         ) : (
                             <div className="space-y-1">
@@ -2484,7 +2484,7 @@ export function ComprehensiveComponentAnalyzer({ isVisible, onClose }: Comprehen
 
                     {/* Details Panel */}
                     <div className="w-1/2 p-4 overflow-auto">
-                        <h4 className="text-md font-semibold mb-3">组件详情</h4>
+                        <h4 className="text-md font-semibold mb-3">Component Details</h4>
                         <div className="space-y-4">
                             {/* Component Details */}
                             {selectedComponent && renderComponentDetails()}

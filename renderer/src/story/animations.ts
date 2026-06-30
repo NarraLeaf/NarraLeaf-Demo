@@ -20,7 +20,7 @@ export const shake: Transform<TransformDefinitions.ImageTransformProps> = Transf
     .commit({ duration: 75, ease: "easeInOut" });
 
 export const bounce: Transform<TransformDefinitions.ImageTransformProps> = Transform.create()
-    .scale(0.6)
+    .scale(0.6, 0.6)
     .commit({ duration: 500, ease: "easeInOut" })
-    .scale(0.5)
+    .scale(0.5, 0.5)
     .commit({ duration: 500, ease: "easeIn" });
