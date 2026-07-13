@@ -55,7 +55,7 @@ export default function History() {
     return (
         <div className="flex flex-col h-full">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold text-white">历史记录</h1>
+                <h1 className="text-2xl font-bold text-white">History</h1>
             </div>
             <ScrollableContainer
                 className="flex-1 pr-4 min-h-[450px] max-h-[450px]"

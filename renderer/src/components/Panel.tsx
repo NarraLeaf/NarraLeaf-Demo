@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useGamePlayback } from "narraleaf/client";
+import { useGamePlayback } from "narraleaf/renderer";
 import React, { useEffect } from "react";
 import { useBackdrop } from "../hooks/useBackdrop";
 import { useRouter } from "narraleaf-react";

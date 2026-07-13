@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 // SVG path data
 const LOGO_PATHS = {

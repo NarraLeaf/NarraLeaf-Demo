@@ -30,9 +30,9 @@ interface Tab {
 }
 
 const tabs: Tab[] = [
-    { id: "text", label: "文字" },
-    { id: "display", label: "显示" },
-    { id: "audio", label: "音频" },
+    { id: "text", label: "Text" },
+    { id: "display", label: "Display" },
+    { id: "audio", label: "Audio" },
 ];
 
 const SettingItem: React.FC<SettingItemProps> = ({ label, children }) => (
@@ -56,7 +56,7 @@ const AudioSettings: React.FC<{
     setBgmVolume: (value: number) => void;
 }> = ({ globalVolume, setGlobalVolume, soundVolume, setSoundVolume, voiceVolume, setVoiceVolume, bgmVolume, setBgmVolume }) => (
     <div className="space-y-4" style={{ minHeight: '200px' }}>
-        <SettingItem label="全局音量">
+        <SettingItem label="Master Volume">
             <Slider
                 value={globalVolume || 0.5}
                 onChange={(e) => setGlobalVolume(Number(e.target.value))}
@@ -67,7 +67,7 @@ const AudioSettings: React.FC<{
             />
         </SettingItem>
 
-        <SettingItem label="音效音量">
+        <SettingItem label="Sound Effects">
             <Slider
                 value={soundVolume || 0.5}
                 onChange={(e) => setSoundVolume(Number(e.target.value))}
@@ -78,7 +78,7 @@ const AudioSettings: React.FC<{
             />
         </SettingItem>
 
-        <SettingItem label="语音音量">
+        <SettingItem label="Voice Volume">
             <Slider
                 value={voiceVolume || 0.5}
                 onChange={(e) => setVoiceVolume(Number(e.target.value))}
@@ -89,7 +89,7 @@ const AudioSettings: React.FC<{
             />
         </SettingItem>
 
-        <SettingItem label="BGM音量">
+        <SettingItem label="BGM Volume">
             <Slider
                 value={bgmVolume || 0.5}
                 onChange={(e) => setBgmVolume(Number(e.target.value))}
@@ -112,7 +112,7 @@ const TextSettings: React.FC<{
     setSkipInterval: (value: number) => void;
 }> = ({ cps, setCps, skipDelay, setSkipDelay, skipInterval, setSkipInterval }) => (
     <div className="space-y-4" style={{ minHeight: '200px' }}>
-        <SettingItem label="文字速度">
+        <SettingItem label="Text Speed">
             <Slider
                 value={cps || 30}
                 onChange={(e) => setCps(Number(e.target.value))}
@@ -122,7 +122,7 @@ const TextSettings: React.FC<{
             />
         </SettingItem>
 
-        <SettingItem label="跳过延迟">
+        <SettingItem label="Skip Delay">
             <Slider
                 value={skipDelay || 100}
                 onChange={(e) => setSkipDelay(Number(e.target.value))}
@@ -133,7 +133,7 @@ const TextSettings: React.FC<{
             />
         </SettingItem>
 
-        <SettingItem label="跳过间隔">
+        <SettingItem label="Skip Interval">
             <Slider
                 value={skipInterval || 200}
                 onChange={(e) => setSkipInterval(Number(e.target.value))}
@@ -156,7 +156,7 @@ const DisplaySettings: React.FC<{
     setSkipKeyBinding: (value: KeyBindingValue) => void;
 }> = ({ fullscreen, setFullscreen, visualEffect, setVisualEffect, skipKeyBinding, setSkipKeyBinding }) => (
     <div className="space-y-4" style={{ minHeight: '200px' }}>
-        <SettingItem label="全屏">
+        <SettingItem label="Fullscreen">
             <Checkbox
                 checked={fullscreen}
                 onChange={(e) => {
@@ -168,14 +168,14 @@ const DisplaySettings: React.FC<{
             />
         </SettingItem>
 
-        <SettingItem label="视觉效果">
+        <SettingItem label="Visual Effects">
             <Checkbox
                 checked={visualEffect}
                 onChange={(e) => setVisualEffect(e.target.checked)}
             />
         </SettingItem>
 
-        <SettingItem label="跳过键">
+        <SettingItem label="Skip Key">
             <KeyBindingInput
                 value={skipKeyBinding}
                 onChange={setSkipKeyBinding}
@@ -414,7 +414,7 @@ export default function Settings() {
                     />
                 );
             default:
-                return <div className="text-white p-4">未知的选项卡: {activeTab}</div>;
+                return <div className="text-white p-4">Unknown tab: {activeTab}</div>;
         }
     };
 
@@ -427,7 +427,7 @@ export default function Settings() {
             <div className="flex flex-col h-full">
                 {/* 标题栏 */}
                 <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold text-white">设置</h1>
+                    <h1 className="text-2xl font-bold text-white">Settings</h1>
                 </div>
 
                 {/* Tab导航 */}

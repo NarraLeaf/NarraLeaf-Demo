@@ -562,15 +562,15 @@ export function ComponentTreeAnalyzer({ isVisible, onClose }: ComponentTreeAnaly
 
         return (
             <div className="bg-gray-800 p-4 rounded-lg">
-                <h4 className="text-lg font-semibold mb-3">组件详情</h4>
+                <h4 className="text-lg font-semibold mb-3">Component Details</h4>
                 <div className="space-y-3">
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <span className="text-gray-400">组件名称:</span>
+                            <span className="text-gray-400">Component Name:</span>
                             <span className="ml-2 font-mono font-medium">{selectedNode.name}</span>
                         </div>
                         <div>
-                            <span className="text-gray-400">组件类型:</span>
+                            <span className="text-gray-400">Component Type:</span>
                             <span className={`ml-2 px-2 py-1 rounded text-xs ${
                                 selectedNode.componentType === 'function' ? 'bg-green-600' :
                                 selectedNode.componentType === 'class' ? 'bg-blue-600' :
@@ -583,11 +583,11 @@ export function ComponentTreeAnalyzer({ isVisible, onClose }: ComponentTreeAnaly
                             </span>
                         </div>
                         <div>
-                            <span className="text-gray-400">层级深度:</span>
+                            <span className="text-gray-400">Depth:</span>
                             <span className="ml-2">{selectedNode.depth}</span>
                         </div>
                         <div>
-                            <span className="text-gray-400">子组件数量:</span>
+                            <span className="text-gray-400">Children:</span>
                             <span className="ml-2">{selectedNode.children.length}</span>
                         </div>
                     </div>
@@ -774,7 +774,7 @@ export function ComponentTreeAnalyzer({ isVisible, onClose }: ComponentTreeAnaly
             <div className="bg-gray-900 text-white rounded-lg shadow-xl w-11/12 h-5/6 flex flex-col">
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-700">
-                    <h3 className="text-lg font-semibold">React组件树分析器 (调试版)</h3>
+                    <h3 className="text-lg font-semibold">React Component Tree Analyzer (Debug)</h3>
                     <button 
                         onClick={onClose}
                         className="text-gray-400 hover:text-white"
@@ -791,18 +791,18 @@ export function ComponentTreeAnalyzer({ isVisible, onClose }: ComponentTreeAnaly
                             disabled={isAnalyzing}
                             className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-4 py-2 rounded transition-colors"
                         >
-                            {isAnalyzing ? '分析中...' : '分析React组件树'}
+                            {isAnalyzing ? 'Analyzing...' : 'Analyze React Component Tree'}
                         </button>
                         {analysisTime > 0 && (
                             <span className="text-gray-400">
-                                分析耗时: {analysisTime.toFixed(2)}ms
+                                Analysis Time: {analysisTime.toFixed(2)}ms
                             </span>
                         )}
                         <span className="text-gray-400">
-                            当前页面: {router.getPathname()}
+                            Current Page: {router.getPathname()}
                         </span>
                         <span className="text-green-400 text-sm">
-                            调试模式
+                            Debug Mode
                         </span>
                     </div>
                 </div>
@@ -811,11 +811,11 @@ export function ComponentTreeAnalyzer({ isVisible, onClose }: ComponentTreeAnaly
                 <div className="flex-1 flex overflow-hidden">
                     {/* Component Tree */}
                     <div className="w-1/2 p-4 border-r border-gray-700 overflow-auto">
-                        <h4 className="text-md font-semibold mb-3">React组件树结构</h4>
+                        <h4 className="text-md font-semibold mb-3">React Component Tree Structure</h4>
                         {componentTree.length === 0 ? (
                             <div className="text-gray-400">
-                                <p>点击"分析React组件树"开始分析</p>
-                                <p className="text-sm mt-2">此工具专注于React组件，不显示DOM元素</p>
+                                <p>Click "Analyze React Component Tree" to start</p>
+                                <p className="text-sm mt-2">This tool focuses on React components and does not show DOM elements</p>
                             </div>
                         ) : (
                             <div className="space-y-1">
@@ -826,11 +826,11 @@ export function ComponentTreeAnalyzer({ isVisible, onClose }: ComponentTreeAnaly
 
                     {/* Details Panel */}
                     <div className="w-1/2 p-4 overflow-auto">
-                        <h4 className="text-md font-semibold mb-3">调试信息</h4>
+                        <h4 className="text-md font-semibold mb-3">Debug Information</h4>
                         <div className="space-y-4">
                             {/* Debug Info */}
                             <div className="bg-gray-800 p-3 rounded-lg">
-                                <h5 className="text-sm font-semibold mb-2">调试日志</h5>
+                                <h5 className="text-sm font-semibold mb-2">Debug Log</h5>
                                 <div className="text-xs space-y-1 max-h-32 overflow-auto">
                                     {debugInfo.map((log, index) => (
                                         <div key={index} className="text-gray-300 font-mono">

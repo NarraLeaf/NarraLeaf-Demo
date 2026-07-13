@@ -1,5 +1,5 @@
 import { useBackdrop } from '../../hooks/useBackdrop';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { useEffect } from 'react';
 import clsx from 'clsx';
 
@@ -19,8 +19,8 @@ export function Confirm({
     onCancel,
     title,
     message,
-    confirmText = "确认",
-    cancelText = "取消"
+    confirmText = "Confirm",
+    cancelText = "Cancel"
 }: ConfirmProps) {
     const backdrop = useBackdrop("md");
 

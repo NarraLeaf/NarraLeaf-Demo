@@ -1,6 +1,6 @@
 import { useGame, useRouter } from "narraleaf-react";
-import type { SavedGameMeta } from "narraleaf/client";
-import { SaveType, useSavedGames, useSaveAction } from "narraleaf/client";
+import type { SavedGameMeta } from "narraleaf/renderer";
+import { SaveType, useSavedGames, useSaveAction } from "narraleaf/renderer";
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { HomePagesAnimation } from "../index";
@@ -26,7 +26,7 @@ export default function Save() {
     const handleSave = async (slotData: SaveSlotData) => {
         // If slot has existing save, confirm overwrite
         if (!slotData.isEmpty) {
-            const confirmed = await showConfirm({ message: "确定要覆盖当前存档吗？" });
+            const confirmed = await showConfirm({ message: "Overwrite this save file?" });
             if (!confirmed) return;
         }
 
@@ -36,17 +36,17 @@ export default function Save() {
         setTimeout(async () => {
             try {
                 await saveAction.save(slotData.id);
-                liveGame.notify("保存成功");
+                liveGame.notify("Saved");
             } catch (error) {
                 console.error("Failed to save game:", error);
-                liveGame.notify("保存游戏失败");
+                liveGame.notify("Failed to save game");
             }
         }, 1);
     };
 
     // Create save slots (9 slots in 2 columns, so some slots will be on the right)
     const createSaveSlots = (): SaveSlotData[] => {
-        const results = savedGames?.results || [];
+        const results = (savedGames?.results || []) as SavedGameMeta[];
         return Array.from({ length: 9 }, (_, index) => {
             const slotId = index.toString();
             const existingSave = results.find(result => 
@@ -92,13 +92,13 @@ export default function Save() {
             className="flex flex-col items-center justify-center h-full text-center p-8"
         >
             <div className="text-red-400 text-6xl mb-4">⚠️</div>
-            <h3 className="text-white text-xl font-medium mb-2">加载失败</h3>
+            <h3 className="text-white text-xl font-medium mb-2">Failed to Load Saves</h3>
             <p className="text-white/70 text-sm max-w-md">{error}</p>
             <button
                 onClick={() => window.location.reload()}
                 className="mt-6 px-6 py-3 bg-primary/80 hover:bg-primary text-white rounded-lg transition-colors"
             >
-                重试
+                Retry
             </button>
         </motion.div>
     );
@@ -125,7 +125,7 @@ export default function Save() {
                 <div className="absolute inset-0 pointer-events-none">
                     <img
                         src={slotData.existingSave.capture}
-                        alt="存档预览"
+                        alt="Save preview"
                         className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-black/40"></div>
@@ -138,7 +138,7 @@ export default function Save() {
             <div className="relative z-10 p-4 h-full flex flex-col justify-between">
                 <div>
                     <h3 className="text-white text-lg font-medium mb-1">
-                        {slotData.isEmpty ? `存档位 ${parseInt(slotData.id) + 1}` : "存档"}
+                        {slotData.isEmpty ? `Slot ${parseInt(slotData.id) + 1}` : "Save"}
                     </h3>
                     {!slotData.isEmpty && slotData.existingSave && (
                         <p className="text-white/90 text-xs">
@@ -197,7 +197,7 @@ export default function Save() {
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.1, duration: 0.3 }}
                     >
-                        <h1 className="text-2xl font-bold text-white">保存游戏</h1>
+                        <h1 className="text-2xl font-bold text-white">Save Game</h1>
                     </motion.div>
 
                     <div className="flex-1 min-h-0">
@@ -224,7 +224,7 @@ export default function Save() {
                                     transition={{ duration: 0.2 }}
                                     className="h-full"
                                 >
-                                    <ErrorDisplay error={savedGames?.error?.message || "未知错误"} />
+                                    <ErrorDisplay error={savedGames?.error?.message || "Unknown error"} />
                                 </motion.div>
                             ) : (
                                 <motion.div

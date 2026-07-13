@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { motion, PanInfo } from "framer-motion";
+import { motion, PanInfo } from "motion/react";
 
 export interface TestPanelProps {
     isVisible: boolean;
@@ -23,7 +23,7 @@ export function TestPanel({
     isVisible, 
     onClose, 
     children, 
-    title = "测试控制面板",
+    title = "Test Control Panel",
     className = "",
     initialPosition = { x: 20, y: 20 }
 }: TestPanelProps) {
@@ -161,7 +161,7 @@ export function TestPanelTrigger({
             transition={{ delay: 1 }}
         >
             <p className="text-white/80 text-sm">
-                💡 {hintText || `输入 "${triggerKeys}" 显示测试面板`}
+                Tip: {hintText || `Type "${triggerKeys}" to show the test panel`}
             </p>
         </motion.div>
     );

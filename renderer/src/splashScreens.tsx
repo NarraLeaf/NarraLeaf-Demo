@@ -76,7 +76,7 @@ export const splashScreen = [{
             <div className="flex flex-col items-center gap-4">
                 <h1 className="text-4xl font-bold ZhanKu">NarraLeaf Demo</h1>
                 <p className="text-xl text-gray-500 ZhanKu">
-                    该项目仅用于展示NarraLeaf引擎基础特性，无法代表最终成品
+                    This demo showcases core NarraLeaf engine features and does not represent a final product.
                 </p>
                 <div className="mt-4 text-sm text-gray-500 text-center">
                     <p>NarraLeaf v0.2.0</p>

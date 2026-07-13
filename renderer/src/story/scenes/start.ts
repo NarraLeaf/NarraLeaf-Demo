@@ -11,37 +11,37 @@ const start = new Scene("Start", {
 start.action([
     start.background.char(Backgrounds.Room, new Dissolve(500)),
 
-    "窗外阳光明媚，看来是一个好天气。",
-    "现在是早上八点，不知道为什么今天自己会起的这么早。",
+    "Sunlight poured through the window. It looked like the start of a beautiful day.",
+    "It was eight in the morning. For some reason, I had woken up earlier than usual.",
     
     Nattou.show({ duration: 500 }),
 
-    N`早上好！Mina！`,
+    N`Good morning, Mina!`,
 
     Nattou.darken(0.5, 500, "easeIn"),
-    "身旁站着一个女孩，一看就是趁着我睡觉的时候溜进来的。",
+    "A girl was standing beside me. Clearly, she had slipped in while I was asleep.",
     Nattou.darken(0, 500, "easeOut"),
 
-    M`已经和你说过好多次了，不要在睡觉的时候进到我家里。`,
-    N`看你屋门没有关，我就直接进来了。`,
+    M`I have told you so many times not to come into my house while I am sleeping.`,
+    N`Your door was not closed, so I just came in.`,
 
     Menu.prompt(undefined)
-        .choose("我们一起出去玩吧？", [
-            N`真的吗？你终于愿意和我出去玩了吗？那我们现在就出发！`,
+        .choose("Want to go out together?", [
+            N`Really? You finally want to go out with me? Then let us leave right now!`,
             Nattou.pos({ xalign: 0.7 }, 500, "easeInOut"),
-            N`不过去玩之前，先和我去见一个朋友吧。`,
-            M`才八点就要出去吗？你不困吗？不再睡一会吗？`,
-            "她摇摇头，没办法，跟她去吧。",
+            N`But before we have fun, come meet a friend with me first.`,
+            M`We are going out at eight? Are you not tired? Do you not want to sleep a little longer?`,
+            "She shook her head. I had no choice but to go with her.",
             Nattou.hide({ duration: 500 }),
 
             start.jumpTo(scene2, new Dissolve(500)),
         ])
-        .choose("累了 ，摆烂吧", [
-            N`真是个杂鱼，一早上起来就摆烂了。`,
+        .choose("I am tired. Let us give up for today.", [
+            N`What a slacker. You just woke up and you are already giving up.`,
             Nattou.transform(shake),
-            N`不过，我想去见一个朋友，和我一起去，好不好？`,
-            M`啊喂，现在才八点啊，你不困吗？不再睡一会吗？`,
-            "她摇摇头，没办法，虽然还不想起，但还是跟她去吧。",
+            N`Anyway, I want to go meet a friend. Come with me, okay?`,
+            M`Hey, it is only eight. Are you not tired? Do you not want to sleep a little longer?`,
+            "She shook her head. I still did not want to get up, but I went with her anyway.",
             Nattou.hide({ duration: 500 }),
 
             start.jumpTo(scene2, new Dissolve(500)),

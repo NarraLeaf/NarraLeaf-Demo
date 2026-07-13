@@ -8,55 +8,55 @@ export const scene3 = new Scene("Scene3", {
 });
 
 scene3.action([
-    M`感觉去画画总比在家里宅着无所事事好些一些，所以就这样同意了。`,
-    "在Youki那里工作了很久，Youki的游戏也非常顺利地发布了。",
+    M`Drawing sounded better than sitting around at home doing nothing, so I agreed.`,
+    "After working with Youki for quite a while, her game launched smoothly.",
 
     Youki.show({ duration: 500 }),
-    Y`要出去走走吗？Mina？`,
-    "发布工作结束后，Youki约我出去走走。",
+    Y`Want to take a walk, Mina?`,
+    "After the release work was finished, Youki invited me outside.",
 
     scene3.background.char(Backgrounds.Outside_s, new Dissolve(500)),
-    "我和Youki走在工作室门外的小路上，不知道说些什么。",
+    "Youki and I walked along the path outside the studio, neither of us sure what to say.",
 
-    Y`Mina，你认识我吗？我是说以前。`,
-    M`刚见到你的时候，感觉名字有些熟悉。所以应该是见过，但好像又没见过。`,
+    Y`Mina, do you know me? I mean, from before.`,
+    M`When I first met you, your name felt familiar. So I thought we might have met, but also maybe not.`,
 
-    Y`我和你，是同学喔，你忘记了吗？小学同学？`,
-    M`小学同学？我们班级里好像没有叫Youki的人。`,
+    Y`You and I were classmates. Did you forget? Elementary school classmates?`,
+    M`Elementary school? I do not remember anyone named Youki in our class.`,
 
-    Y`毕业之后就改名啦，Konado，还记着吗？`,
-    M`Konado？真的是你？我就说为什么会这么熟悉......除了发色变了之外其他都没有变啊。`,
+    Y`I changed my name after graduation. Konado. Do you remember?`,
+    M`Konado? It is really you? No wonder you felt so familiar... aside from your hair color, you have not changed at all.`,
 
-    Y`是啊，当时我和你，还有Nattou都是同学。`,
-    Y`毕业之后，我就离开了这个城市，临走前只给Nattou留下了自己的信息。`,
-    Y`可能是因为思念的缘故吧，大学干脆就考回来了。`,
-    Y`我通过Nattou找到了你，希望你能来我这里一起做想做的事情。`,
-    Y`一直没告诉你我的名字，是因为怕你不会同意，毕竟我们分开了好长时间。`,
-    Y`既然你已经知道我是谁了，那我有一件事情，要告诉你，你一定要同意。`,
+    Y`Right. Back then, you, Nattou, and I were classmates.`,
+    Y`After graduation, I left this city. Before I went, I only left my contact information with Nattou.`,
+    Y`Maybe I missed this place too much, because I ended up coming back for college.`,
+    Y`I found you through Nattou because I wanted you to come here and make something with me.`,
+    Y`I never told you my name because I was afraid you would refuse. We had been apart for such a long time.`,
+    Y`Now that you know who I am, there is something I need to tell you. You have to say yes.`,
 
-    M`什么事？说吧。`,
+    M`What is it? Go ahead.`,
 
     Youki.hide({ duration: 300 }),
     Youki.show(Transform.create()
         .position({ yalign: -0.5, xalign: 0.5 })
-        .scale(1.1)
+        .scale(1.1, 1.1)
         .commit({ duration: 1000 })),
 
-    Y`其实，我喜欢你。`,
+    Y`The truth is, I like you.`,
     M`.......？`,
-    Y`真的喜欢你啊喂，从小学的时候就喜欢了。`,
-    Y`这就是我让你来这里的第二个原因，想和你在一起。`,
+    Y`I really like you, okay? I have liked you since elementary school.`,
+    Y`That is the second reason I asked you to come here. I wanted to be with you.`,
 
     Youki.hide({ duration: 1000 }),
     Youki.show({ duration: 300 }),
 
-    Y`所以.......`,
-    M`我没意见。`,
-    Y`你也喜欢我吗？`,
-    M`不然呢，我亲爱的Youki......应该是Konado。`,
-    Y`好诶！`,
+    Y`So...`,
+    M`I have no objection.`,
+    Y`You like me too?`,
+    M`What else would this mean, my dear Youki... or should I say Konado?`,
+    Y`Yay!`,
     Youki.transform(shake),
 
-    "我和她望着远处的风景，不再说话。",
-    "之后的之后，就没有之后了",
+    "We looked out at the distant scenery and said nothing more.",
+    "After that, there was nothing more to add.",
 ]);

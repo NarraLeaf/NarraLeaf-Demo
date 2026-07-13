@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { motion, PanInfo } from "framer-motion";
+import { motion, PanInfo } from "motion/react";
 
 export interface EnhancedTestPanelProps {
     isVisible: boolean;
@@ -17,7 +17,7 @@ export function EnhancedTestPanel({
     isVisible, 
     onClose, 
     children, 
-    title = "测试控制面板",
+    title = "Test Control Panel",
     className = "",
     initialPosition = { x: 20, y: 20 },
     initialSize = { width: 500, height: 600 },
@@ -176,14 +176,14 @@ export function EnhancedTestPanel({
                         <button 
                             onClick={handleMinimize}
                             className="text-white/60 hover:text-white text-sm transition-colors p-1 hover:bg-white/10 rounded"
-                            title="最小化"
+                            title="Minimize"
                         >
                             {isMinimizedState ? '□' : '−'}
                         </button>
                         <button 
                             onClick={onClose}
                             className="text-white/60 hover:text-white text-sm transition-colors p-1 hover:bg-white/10 rounded"
-                            title="关闭"
+                            title="Close"
                         >
                             ✕
                         </button>
@@ -249,7 +249,7 @@ export function EnhancedTestPanel({
 export function MinimizedTestPanel({
     isVisible,
     onRestore,
-    title = "测试面板"
+    title = "Test Panel"
 }: {
     isVisible: boolean;
     onRestore: () => void;
@@ -270,7 +270,7 @@ export function MinimizedTestPanel({
                     <button 
                         onClick={onRestore}
                         className="text-white/60 hover:text-white text-sm transition-colors p-1 hover:bg-white/10 rounded"
-                        title="恢复"
+                        title="Restore"
                     >
                         □
                     </button>

@@ -237,30 +237,30 @@ export function AdvancedComponentAnalyzer({ isVisible, onClose }: AdvancedCompon
 
         return (
             <div className="bg-gray-800 p-4 rounded-lg space-y-4">
-                <h4 className="text-lg font-semibold">组件性能详情</h4>
+                <h4 className="text-lg font-semibold">Component Performance Details</h4>
                 
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <span className="text-gray-400">组件名称:</span>
+                        <span className="text-gray-400">Component Name:</span>
                         <span className="ml-2 font-mono">{selectedComponent.name}</span>
                     </div>
                     <div>
-                        <span className="text-gray-400">渲染次数:</span>
+                        <span className="text-gray-400">Render Count:</span>
                         <span className="ml-2">{selectedComponent.renderCount}</span>
                     </div>
                     <div>
-                        <span className="text-gray-400">平均渲染时间:</span>
+                        <span className="text-gray-400">Average Render Time:</span>
                         <span className="ml-2">{selectedComponent.averageRenderTime.toFixed(2)}ms</span>
                     </div>
                     <div>
-                        <span className="text-gray-400">总渲染时间:</span>
+                        <span className="text-gray-400">Total Render Time:</span>
                         <span className="ml-2">{selectedComponent.totalRenderTime.toFixed(2)}ms</span>
                     </div>
                 </div>
 
                 {selectedComponent.hooks.length > 0 && (
                     <div>
-                        <span className="text-gray-400">使用的Hooks:</span>
+                        <span className="text-gray-400">Hooks Used:</span>
                         <div className="mt-2 flex flex-wrap gap-2">
                             {selectedComponent.hooks.map((hook, index) => (
                                 <span key={index} className="bg-blue-600 px-2 py-1 rounded text-xs">
@@ -301,7 +301,7 @@ export function AdvancedComponentAnalyzer({ isVisible, onClose }: AdvancedCompon
 
         return (
             <div className="bg-gray-800 p-4 rounded-lg">
-                <h4 className="text-md font-semibold mb-3">性能趋势</h4>
+                <h4 className="text-md font-semibold mb-3">Performance Trend</h4>
                 <div className="h-32 flex items-end space-x-1">
                     {recentSnapshots.map((snapshot, index) => (
                         <div
@@ -338,7 +338,7 @@ export function AdvancedComponentAnalyzer({ isVisible, onClose }: AdvancedCompon
             <div className="bg-gray-900 text-white rounded-lg shadow-xl w-11/12 h-5/6 flex flex-col">
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-700">
-                    <h3 className="text-lg font-semibold">高级组件性能分析器</h3>
+                    <h3 className="text-lg font-semibold">Advanced Component Performance Analyzer</h3>
                     <button 
                         onClick={onClose}
                         className="text-gray-400 hover:text-white"
@@ -358,14 +358,14 @@ export function AdvancedComponentAnalyzer({ isVisible, onClose }: AdvancedCompon
                                     : 'bg-green-600 hover:bg-green-700'
                             }`}
                         >
-                            {isMonitoring ? '停止监控' : '开始监控'}
+                            {isMonitoring ? 'Stop Monitoring' : 'Start Monitoring'}
                         </button>
                         <span className="text-gray-400">
-                            当前页面: {router.getPathname()}
+                            Current Page: {router.getPathname()}
                         </span>
                         {isMonitoring && (
                             <span className="text-green-400 animate-pulse">
-                                ● 监控中
+                                Monitoring
                             </span>
                         )}
                     </div>
@@ -375,9 +375,9 @@ export function AdvancedComponentAnalyzer({ isVisible, onClose }: AdvancedCompon
                 <div className="flex-1 flex overflow-hidden">
                     {/* Component Tree */}
                     <div className="w-1/3 p-4 border-r border-gray-700 overflow-auto">
-                        <h4 className="text-md font-semibold mb-3">组件树</h4>
+                        <h4 className="text-md font-semibold mb-3">Component Tree</h4>
                         {currentMetrics.length === 0 ? (
-                            <p className="text-gray-400">开始监控以查看组件树</p>
+                            <p className="text-gray-400">Start monitoring to view the component tree</p>
                         ) : (
                             <div className="font-mono text-sm">
                                 {renderComponentTree(currentMetrics)}
@@ -387,35 +387,35 @@ export function AdvancedComponentAnalyzer({ isVisible, onClose }: AdvancedCompon
 
                     {/* Details Panel */}
                     <div className="w-1/3 p-4 border-r border-gray-700 overflow-auto">
-                        <h4 className="text-md font-semibold mb-3">组件详情</h4>
+                        <h4 className="text-md font-semibold mb-3">Component Details</h4>
                         {selectedComponent ? (
                             renderComponentDetails()
                         ) : (
-                            <p className="text-gray-400">选择一个组件查看详情</p>
+                            <p className="text-gray-400">Select a component to view details</p>
                         )}
                     </div>
 
                     {/* Performance Chart */}
                     <div className="w-1/3 p-4 overflow-auto">
-                        <h4 className="text-md font-semibold mb-3">性能监控</h4>
+                        <h4 className="text-md font-semibold mb-3">Performance Monitor</h4>
                         {renderPerformanceChart()}
                         
                         {snapshots.length > 0 && (
                             <div className="mt-4 bg-gray-800 p-4 rounded-lg">
-                                <h5 className="text-sm font-semibold mb-2">统计信息</h5>
+                                <h5 className="text-sm font-semibold mb-2">Statistics</h5>
                                 <div className="space-y-1 text-sm">
                                     <div>
-                                        <span className="text-gray-400">快照数量:</span>
+                                        <span className="text-gray-400">Snapshots:</span>
                                         <span className="ml-2">{snapshots.length}</span>
                                     </div>
                                     <div>
-                                        <span className="text-gray-400">平均组件数:</span>
+                                        <span className="text-gray-400">Average Components:</span>
                                         <span className="ml-2">
                                             {(snapshots.reduce((sum, s) => sum + s.totalComponents, 0) / snapshots.length).toFixed(1)}
                                         </span>
                                     </div>
                                     <div>
-                                        <span className="text-gray-400">平均渲染时间:</span>
+                                        <span className="text-gray-400">Average Render Time:</span>
                                         <span className="ml-2">
                                             {(snapshots.reduce((sum, s) => sum + s.totalRenderTime, 0) / snapshots.length).toFixed(2)}ms
                                         </span>
